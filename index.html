@@ -255,60 +255,76 @@ async function longAt(S,b,D){let d=D/2.4,best=null;for(let k=0;k<2;k++){const w=
 async function obAt(S,b,D){let d=D/2/1.2,best=null;for(let k=0;k<2;k++){const T=dest(S,b,d),r=await osrm([S,T]),go=r.coords,c=[...go,...go.slice(0,-1).reverse()],rt=mkRoute(c,[...r.steps,...r.steps.slice().reverse()],"ob",{bear:b,turn:go[go.length-1]});
     if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.05)break;d*=clamp(ratio,.5,1.8)}return best}
 
-/* ================= area data (OpenStreetMap via Overpass) ================= */
-const OVERPASS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
+/* ================= area data: OpenStreetMap vector tiles (VersaTiles), Overpass as a bonus ================= */
+const OVERPASS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter","https://overpass.private.coffee/api/interpreter"];
+const VT_URL="https://tiles.versatiles.org/tiles/osm/{z}/{x}/{y}",VT_Z=14;
 const G=0.0003,gk=(a,b)=>a+":"+b,cell=p=>[Math.floor(p[0]/G),Math.floor(p[1]/G)];
-function gridOf(ways,step){const s=new Set();for(const w of ways){if(w.length===1){const[a,b]=cell(w[0]);s.add(gk(a,b));continue}for(let i=1;i<w.length;i++){const d=hav(w[i-1],w[i]),n=Math.max(1,Math.ceil(d/step));for(let k=0;k<=n;k++){const f=k/n,[a,b]=cell([w[i-1][0]+(w[i][0]-w[i-1][0])*f,w[i-1][1]+(w[i][1]-w[i-1][1])*f]);s.add(gk(a,b))}}}return s}
+function gridOf(ways,step,s){s=s||new Set();for(const w of ways){if(w.length===1){const[a,b]=cell(w[0]);s.add(gk(a,b));continue}for(let i=1;i<w.length;i++){const d=hav(w[i-1],w[i]),n=Math.max(1,Math.ceil(d/step));for(let k=0;k<=n;k++){const f=k/n,[a,b]=cell([w[i-1][0]+(w[i][0]-w[i-1][0])*f,w[i-1][1]+(w[i][1]-w[i-1][1])*f]);s.add(gk(a,b))}}}return s}
 function nearG(s,p,r){if(!s)return false;const[a,b]=cell(p);for(let i=-r;i<=r;i++)for(let j=-r;j<=r;j++)if(s.has(gk(a+i,b+j)))return true;return false}
 function inPoly(p,ring){let c=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const[yi,xi]=ring[i],[yj,xj]=ring[j];if(((yi>p[0])!==(yj>p[0]))&&(p[1]<(xj-xi)*(p[0]-yi)/((yj-yi)||1e-12)+xi))c=!c}return c}
-const AREAS={};
+const AREAS={};let VTlib=null;
+async function vtLib(){if(VTlib)return VTlib;const[a,b]=await Promise.all([import("https://cdn.jsdelivr.net/npm/@mapbox/vector-tile@2.0.3/+esm"),import("https://cdn.jsdelivr.net/npm/pbf@4.0.1/+esm")]);return VTlib={VectorTile:a.VectorTile,Pbf:b.default}}
+const t2x=lon=>(lon+180)/360*2**VT_Z,t2y=lat=>(1-Math.log(Math.tan(rad(lat))+1/Math.cos(rad(lat)))/Math.PI)/2*2**VT_Z;
+const x2lon=x=>x/2**VT_Z*360-180,y2lat=y=>deg(Math.atan(Math.sinh(Math.PI*(1-2*y/2**VT_Z))));
+const POIMAP=p=>{const a=p.amenity,s=p.shop,t=p.tourism;if(/^(cafe|fast_food|ice_cream|juice_bar|food_court)$/.test(a)||p.cuisine==="coffee_shop")return"cafe";if(a==="drinking_water"||a==="water_point")return"water";if(a==="toilets")return"toilet";if(a==="bench")return"bench";
+  if(/^(convenience|supermarket|beverages|kiosk|bakery|chemist)$/.test(s)||a==="pharmacy")return"shop";if(/^(attraction|viewpoint|artwork|museum)$/.test(t)||p.historic||p.leisure==="park"||p.leisure==="garden")return"sight";return null};
 async function loadArea(center,radius){const key=center.map(v=>v.toFixed(3)).join()+":"+Math.ceil(radius/600);if(AREAS[key])return AREAS[key];
-  const s=dest(center,180,radius)[0],n=dest(center,0,radius)[0],w=dest(center,270,radius)[1],e=dest(center,90,radius)[1],bb=`${s.toFixed(5)},${w.toFixed(5)},${n.toFixed(5)},${e.toFixed(5)}`;
-  const q=`[out:json][timeout:25];(node["amenity"~"^(cafe|drinking_water|toilets|bench|fast_food|ice_cream|juice_bar)$"](${bb});node["shop"~"^(convenience|supermarket|chemist|kiosk|beverages)$"](${bb});node["highway"~"^(traffic_signals|crossing)$"](${bb});node["tourism"~"^(attraction|viewpoint|artwork|museum)$"](${bb});node["historic"](${bb});way["leisure"~"^(park|garden|playground)$"](${bb});way["highway"~"^(footway|pedestrian|path|living_street|track)$"](${bb});way["natural"="coastline"](${bb});way["lit"="yes"](${bb});way["bridge"="yes"]["highway"](${bb}););out geom qt;`;
-  let j=null;
-  for(const u of OVERPASS){try{const r=await fetchT(u,28000,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"data="+encodeURIComponent(q)});if(r.ok){j=await r.json();break}}catch(e){}}
-  const out={ok:!!j,pois:[],foot:null,lit:null,coast:null,parks:[],bridges:[]};if(!j){AREAS[key]=out;return out}
-  const foot=[],lit=[],coast=[];
-  for(const el of j.elements||[]){const t=el.tags||{};
-    if(el.type==="node"){const p=[el.lat,el.lon],nm=t.name||t["name:en"]||"";let ty=null;
-      if(/^(cafe|fast_food|ice_cream|juice_bar)$/.test(t.amenity))ty="cafe";else if(t.amenity==="drinking_water")ty="water";else if(t.amenity==="toilets")ty="toilet";else if(t.amenity==="bench")ty="bench";else if(t.shop)ty="shop";
-      else if(t.highway==="traffic_signals")ty="signal";else if(t.highway==="crossing")ty=t.crossing==="traffic_signals"?"signal":"cross";else if(t.tourism||t.historic)ty="sight";
-      if(ty)out.pois.push({t:ty,name:nm||(ty==="cafe"?(t.amenity==="fast_food"?"Snack stop":"Cafe"):ty==="shop"?(t.shop==="chemist"?"Chemist":"Store"):""),p,sub:t.amenity||t.shop||t.tourism||t.historic||""})}
-    else if(el.type==="way"&&el.geometry){const g=el.geometry.map(x=>[x.lat,x.lon]);
-      if(t.leisure){out.parks.push({ring:g,name:t.name||"",bb:[Math.min(...g.map(x=>x[0])),Math.min(...g.map(x=>x[1])),Math.max(...g.map(x=>x[0])),Math.max(...g.map(x=>x[1]))]});if(t.name&&g.length>3){const c=[g.reduce((a,x)=>a+x[0],0)/g.length,g.reduce((a,x)=>a+x[1],0)/g.length];out.pois.push({t:"sight",name:t.name,p:c,sub:"park",ring:g})}}
-      if(/^(footway|pedestrian|path|living_street|track)$/.test(t.highway))foot.push(g);
-      if(t.natural==="coastline")coast.push(g);
-      if(t.lit==="yes")lit.push(g);
-      if(t.bridge==="yes"&&t.highway)out.bridges.push({g,name:t.name||""})}}
-  out.foot=gridOf(foot,15);out.lit=gridOf(lit,15);out.coast=gridOf(coast,25);out.bridgeG=gridOf(out.bridges.map(b=>b.g),8);
+  const s=dest(center,180,radius)[0],n=dest(center,0,radius)[0],w=dest(center,270,radius)[1],e=dest(center,90,radius)[1];
+  const out={ok:false,src:[],pois:[],parks:[],bridges:[],majors:[],foot:new Set(),lit:null,coast:new Set(),bridgeG:new Set(),hasSignals:false};
+  const tilesP=(async()=>{try{const{VectorTile,Pbf}=await vtLib(),x0=Math.floor(t2x(w)),x1=Math.floor(t2x(e)),y0=Math.floor(t2y(n)),y1=Math.floor(t2y(s)),jobs=[];
+    for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++)jobs.push([x,y]);let got=0;const foot=[],coast=[],bridges=[];
+    await Promise.all(jobs.map(([x,y])=>lim(async()=>{try{const r=await fetchT(VT_URL.replace("{z}",VT_Z).replace("{x}",x).replace("{y}",y),12000);if(!r.ok)return;const t=new VectorTile(new Pbf(await r.arrayBuffer()));got++;
+      const conv=(L,f)=>{const ex=L.extent||4096;return f.loadGeometry().map(ring=>ring.map(pt=>[y2lat(y+pt.y/ex),x2lon(x+pt.x/ex)]))};
+      const L=t.layers;
+      if(L.pois)for(let i=0;i<L.pois.length;i++){const f=L.pois.feature(i),p=f.properties,ty=POIMAP(p);if(!ty)continue;const g=conv(L.pois,f)[0]?.[0];if(g)out.pois.push({t:ty,name:p.name_en||p.name||"",p:g,sub:p.amenity||p.shop||p.tourism||p.leisure||p.historic||""})}
+      if(L.streets)for(let i=0;i<L.streets.length;i++){const f=L.streets.feature(i),p=f.properties,k=p.kind;if(p.tunnel)continue;const gs=conv(L.streets,f);
+        if(/^(footway|pedestrian|path|living_street|track)$/.test(k))foot.push(...gs);
+        if(p.bridge&&/^(motorway|trunk|primary|secondary|tertiary|residential|unclassified)/.test(k))bridges.push(...gs);
+        if(!p.bridge&&!p.link&&/^(trunk|primary|secondary|tertiary)$/.test(k))out.majors.push(...gs.map(g=>({g,k})))}
+      if(L.land)for(let i=0;i<L.land.length;i++){const f=L.land.feature(i),p=f.properties;if(!/^(park|garden|recreation_ground|grass|playground|village_green)$/.test(p.kind))continue;for(const ring of conv(L.land,f)){if(ring.length<4)continue;out.parks.push({ring,name:"",bb:[Math.min(...ring.map(q=>q[0])),Math.min(...ring.map(q=>q[1])),Math.max(...ring.map(q=>q[0])),Math.max(...ring.map(q=>q[1]))]})}}
+      if(L.ocean)for(let i=0;i<L.ocean.length;i++){const f=L.ocean.feature(i),ex=L.ocean.extent||4096;for(const ring of f.loadGeometry()){const seg=[];for(let k=0;k<ring.length;k++){const a=ring[k],edge=a.x<=0||a.y<=0||a.x>=ex||a.y>=ex;if(edge){if(seg.length>1)coast.push(seg.splice(0));seg.length=0}else seg.push([y2lat(y+a.y/ex),x2lon(x+a.x/ex)])}if(seg.length>1)coast.push(seg)}}
+    }catch(e){}})));
+    if(got){out.ok=true;out.src.push("tiles");gridOf(foot,15,out.foot);gridOf(coast,25,out.coast);gridOf(bridges,8,out.bridgeG);out.bridges=bridges}}catch(e){}})();
+  const opP=(async()=>{const bb=`${s.toFixed(5)},${w.toFixed(5)},${n.toFixed(5)},${e.toFixed(5)}`,q=`[out:json][timeout:20];(node["highway"~"^(traffic_signals|crossing)$"](${bb});node["amenity"~"^(drinking_water|bench|toilets)$"](${bb});way["lit"="yes"](${bb}););out geom qt;`;
+    for(const u of OVERPASS){try{const r=await fetchT(u,15000,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"data="+encodeURIComponent(q)});if(!r.ok)continue;return await r.json()}catch(e){}}return null})();
+  await tilesP;const j=await Promise.race([opP,new Promise(r=>setTimeout(()=>r(null),8000))]);
+  if(j){out.ok=true;out.src.push("overpass");out.hasSignals=true;const lit=[];for(const el of j.elements||[]){const t=el.tags||{};if(el.type==="node"){const p=[el.lat,el.lon];let ty=t.highway==="traffic_signals"?"signal":t.highway==="crossing"?(t.crossing==="traffic_signals"?"signal":"cross"):t.amenity==="drinking_water"?"water":t.amenity==="toilets"?"toilet":t.amenity==="bench"?"bench":null;
+      if(ty&&!(ty!=="signal"&&ty!=="cross"&&out.pois.some(q=>q.t===ty&&hav(q.p,p)<20)))out.pois.push({t:ty,name:t.name||"",p,sub:t.amenity||""})}else if(el.geometry&&t.lit==="yes")lit.push(el.geometry.map(x=>[x.lat,x.lon]))}out.lit=gridOf(lit,15)}
   AREAS[key]=out;return out}
 const inPark=(ar,p)=>ar.parks.some(k=>p[0]>=k.bb[0]&&p[0]<=k.bb[2]&&p[1]>=k.bb[1]&&p[1]<=k.bb[3]&&inPoly(p,k.ring));
+function segX(p1,p2,p3,p4){const d=(p4[1]-p3[1])*(p2[0]-p1[0])-(p4[0]-p3[0])*(p2[1]-p1[1]);if(!d)return null;const ua=((p4[0]-p3[0])*(p1[1]-p3[1])-(p4[1]-p3[1])*(p1[0]-p3[0]))/d,ub=((p2[0]-p1[0])*(p1[1]-p3[1])-(p2[1]-p1[1])*(p1[0]-p3[0]))/d;return ua>=0&&ua<=1&&ub>=0&&ub<=1?ua:null}
+function roadCrossings(rt,ar){if(!ar?.majors?.length)return[];const c=rt.coords,cum=rt.cum,out=[],la=c.map(p=>p[0]),lo=c.map(p=>p[1]),bb=[Math.min(...la)-.002,Math.min(...lo)-.002,Math.max(...la)+.002,Math.max(...lo)+.002];
+  const M=ar.majors.filter(({g})=>g.some(p=>p[0]>=bb[0]&&p[0]<=bb[2]&&p[1]>=bb[1]&&p[1]<=bb[3]));
+  for(const{g}of M)for(let j=1;j<g.length;j++)for(let i=1;i<c.length;i++){const u=segX(c[i-1],c[i],g[j-1],g[j]);if(u==null)continue;const m=cum[i-1]+(cum[i]-cum[i-1])*u;
+    const pa=ptAt(c,cum,m-35),pb=ptAt(c,cum,m+35),along=[pa,pb].every(q=>{for(let k=1;k<g.length;k++){const d=distSeg(q,g[k-1],g[k]);if(d<14)return true}return false});if(!along&&!out.some(o=>Math.abs(o.m-m)<45))out.push({m,p:ptAt(c,cum,m)})}
+  return out.sort((a,b)=>a.m-b.m)}
+function distSeg(p,a,b){const k=Math.cos(rad(p[0])),ax=a[1]*k,ay=a[0],bx=b[1]*k,by=b[0],px=p[1]*k,py=p[0],dx=bx-ax,dy=by-ay,L=dx*dx+dy*dy||1e-12,t=clamp(((px-ax)*dx+(py-ay)*dy)/L,0,1);return Math.hypot(px-(ax+t*dx),py-(ay+t*dy))*111320}
 
 /* ================= analysis ================= */
 function analyse(rt,ar){const S=samples(rt.coords,rt.cum,25);let sc=0,lt=0,br=[];
-  if(ar?.ok){for(const s of S){const scen=nearG(ar.foot,s.p,1)||nearG(ar.coast,s.p,4)||inPark(ar,s.p);if(scen)sc++;if(nearG(ar.lit,s.p,1))lt++}
-    // bridges / flyovers: runs of samples sitting on a bridge
-    let cur=null;for(const s of samples(rt.coords,rt.cum,10)){const on=nearG(ar.bridgeG,s.p,0);if(on){if(!cur)cur={a:s.m,b:s.m};cur.b=s.m}else if(cur){if(cur.b-cur.a>=60)br.push(cur);cur=null}}if(cur&&cur.b-cur.a>=60)br.push(cur)}
-  rt.scenic=ar?.ok?sc/S.length:null;rt.litF=ar?.ok?lt/S.length:null;rt.bridges=br;
-  // POIs within 50 m (signals 15 m)
+  if(ar?.ok){for(const s of S){const scen=nearG(ar.foot,s.p,1)||nearG(ar.coast,s.p,4)||inPark(ar,s.p);if(scen)sc++;if(ar.lit&&nearG(ar.lit,s.p,1))lt++}
+    let cur=null;for(const s of samples(rt.coords,rt.cum,10)){const on=nearG(ar.bridgeG,s.p,0);if(on){if(!cur)cur={a:s.m,b:s.m};cur.b=s.m}else if(cur){if(cur.b-cur.a>=80)br.push(cur);cur=null}}if(cur&&cur.b-cur.a>=80)br.push(cur)}
+  rt.scenic=ar?.ok?sc/S.length:null;rt.litF=ar?.lit?lt/S.length:null;rt.bridges=br;
   const RG=new Map();for(const s of samples(rt.coords,rt.cum,10)){const[a,b]=cell(s.p),k=gk(a,b);(RG.get(k)||RG.set(k,[]).get(k)).push(s)}
   const hits=[];if(ar?.ok)for(const q of ar.pois){const[a,b]=cell(q.p);let best=null;for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++){for(const s of RG.get(gk(a+i,b+j))||[]){const d=hav(s.p,q.p);if(!best||d<best.d)best={d,m:s.m}}}
     if(!best)continue;const lim_=q.t==="signal"||q.t==="cross"?15:q.t==="sight"&&q.sub==="park"?120:50;if(best.d<=lim_)hits.push({...q,m:best.m,d:best.d})}
-  // dedupe signals within 40 m (a junction has several nodes)
-  const sig=[];for(const h of hits.filter(h=>h.t==="signal").sort((a,b)=>a.m-b.m))if(!sig.some(x=>Math.abs(x.m-h.m)<40))sig.push(h);
-  const crs=[];for(const h of hits.filter(h=>h.t==="cross").sort((a,b)=>a.m-b.m))if(!crs.some(x=>Math.abs(x.m-h.m)<40)&&!sig.some(x=>Math.abs(x.m-h.m)<40))crs.push(h);
-  rt.pois=[...hits.filter(h=>h.t!=="signal"&&h.t!=="cross"),...sig];rt.signals=sig.length;rt.cross=crs.length;rt.areaOk=!!ar?.ok;
+  const dd=(L,t)=>{const o=[];for(const h of L.filter(h=>h.t===t).sort((a,b)=>a.m-b.m))if(!o.some(x=>Math.abs(x.m-h.m)<40))o.push(h);return o};
+  const sig=dd(hits,"signal"),others=[];for(const t of["cafe","water","shop","toilet","bench","sight"])others.push(...dd(hits,t).filter(h=>!(t==="sight"&&!h.name)));
+  const rc=roadCrossings(rt,ar);rt.roadX=rc;
+  rt.pois=[...others,...sig];rt.signals=ar?.hasSignals?sig.length:null;rt.cross=rc.length;rt.areaOk=!!ar?.ok;
+  rt.flyoverM=(rt.bridges||[]).reduce((a,b)=>a+(b.b-b.a),0)+(rt.steps||[]).filter(s=>/flyover|bridge|setu/i.test(s.name)).reduce((a,s)=>a+s.dist,0)/(rt.mode==="ob"?1:1);
   rt.name=rt.name||nameOf(rt);return rt}
-function nameOf(rt){const w={};for(const s of rt.steps)if(s.name)w[s.name]=(w[s.name]||0)+s.dist;const top=Object.entries(w).sort((a,b)=>b[1]-a[1]).map(x=>x[0].replace(/ Road$/," Rd").replace(/ Marg$/," Marg"));
+function nameOf(rt){const w={};for(const s of rt.steps)if(s.name&&!/flyover/i.test(s.name))w[s.name]=(w[s.name]||0)+s.dist;const top=Object.entries(w).sort((a,b)=>b[1]-a[1]).map(x=>x[0].replace(/ Road$/," Rd").replace(/ Marg$/," Marg"));
   const km=r1(rt.dist/1000);if(!top.length)return`${km} km ${rt.mode==="ob"?"out & back":"loop"}`;return rt.mode==="ob"?`${top[0]} out & back`:top[1]?`${top[0]} + ${top[1]}`:`${top[0]} loop`}
 async function addElev(rt){const L=rt.dist,n=clamp(Math.round(L/50),12,100),pts=[...Array(n)].map((_,i)=>({m:L*i/(n-1),p:ptAt(rt.coords,rt.cum,L*i/(n-1))}));
-  try{const u=`https://api.open-meteo.com/v1/elevation?latitude=${pts.map(x=>x.p[0].toFixed(5)).join(",")}&longitude=${pts.map(x=>x.p[1].toFixed(5)).join(",")}`;const j=await lim(async()=>(await fetchT(u,9000)).json());if(!j.elevation)throw 0;
-    let E=pts.map((x,i)=>({m:x.m,e:j.elevation[i]}));E=E.map((x,i)=>({m:x.m,e:(E[Math.max(0,i-1)].e+x.e+E[Math.min(E.length-1,i+1)].e)/3}));
-    for(const b of rt.bridges||[]){const mid=(b.a+b.b)/2,half=(b.b-b.a)/2;for(const x of E)if(x.m>=b.a&&x.m<=b.b)x.e+=6*(1-Math.abs(x.m-mid)/(half||1))}
-    rt.elev=E}catch(e){rt.elev=null}
-  let up=0;if(rt.elev)for(let i=1;i<rt.elev.length;i++){const d=rt.elev[i].e-rt.elev[i-1].e;if(d>.3)up+=d}rt.climb=r0(up+(rt.elev?0:(rt.bridges||[]).length*6));return rt}
-function score(rt,D){const km=rt.dist/1000,err=Math.abs(rt.dist-D)/D,P=A.prefs,night=isDark();
-  let s=100-err*220;if(P.scenic&&rt.scenic!=null)s+=rt.scenic*45;if(P.cross)s-=((rt.signals||0)*1.6+(rt.cross||0)*.6)/km*4;if(P.flat)s-=(rt.climb||0)*.6;if(night&&rt.litF!=null)s+=rt.litF*30;if(painNow()>=3&&rt.scenic!=null)s+=rt.scenic*15;return s}
+  const u=`https://api.open-meteo.com/v1/elevation?latitude=${pts.map(x=>x.p[0].toFixed(5)).join(",")}&longitude=${pts.map(x=>x.p[1].toFixed(5)).join(",")}`;let j=null;
+  for(let a=0;a<3&&!j;a++){try{const r=await lim(()=>fetchT(u,9000));if(r.ok){const x=await r.json();if(x.elevation)j=x}else await new Promise(z=>setTimeout(z,900*(a+1)))}catch(e){await new Promise(z=>setTimeout(z,600))}}
+  if(j){let E=pts.map((x,i)=>({m:x.m,e:j.elevation[i]}));const W=Math.max(2,Math.round(150/(L/(n-1))));E=E.map((x,i)=>{let s=0,c=0;for(let k=Math.max(0,i-W);k<=Math.min(E.length-1,i+W);k++){s+=E[k].e;c++}return{m:x.m,e:s/c}});
+    for(const b of rt.bridges||[]){const mid=(b.a+b.b)/2,half=(b.b-b.a)/2;for(const x of E)if(x.m>=b.a&&x.m<=b.b)x.e+=6*(1-Math.abs(x.m-mid)/(half||1))}rt.elev=E}else rt.elev=null;
+  let up=0;if(rt.elev){let ref=rt.elev[0].e;for(const x of rt.elev){if(x.e>ref+2.5){up+=x.e-ref;ref=x.e}else if(x.e<ref-2.5)ref=x.e}}
+  rt.climb=r0(up||(rt.bridges||[]).length*6);return rt}
+function score(rt,D){const km=rt.dist/1000,err=Math.abs(rt.dist-D)/D,P=A.prefs,night=isDark(),stops=rt.signals!=null?rt.signals*1.6+(rt.cross||0)*.5:(rt.cross||0)*1.3;
+  let s=100-err*220;if(P.scenic&&rt.scenic!=null)s+=rt.scenic*45;if(P.cross)s-=stops/km*4;if(P.flat)s-=(rt.climb||0)*.5;s-=(rt.flyoverM||0)/100*(P.flat?6:3);if(night&&rt.litF!=null)s+=rt.litF*30;if(painNow()>=3&&rt.scenic!=null)s+=rt.scenic*15;return s}
 function overlap(a,b){const S=samples(a.coords,a.cum,60);let n=0;const B=samples(b.coords,b.cum,20);for(const s of S)if(B.some(x=>hav(x.p,s.p)<35))n++;return n/S.length}
 
 /* ================= session zones ================= */
@@ -346,20 +362,20 @@ const penCol=p=>p<=0?"#35D07F":p<=.75?"#9BE15D":p<=1.5?"#F2C94C":p<=2.5?"#FF9F43
 const painNow=()=>Math.max(A.pace?.pain?.shin||0,A.pace?.pain?.knee||0);
 function zonesOf(rt){return planZones(rt.dist)}
 function estTime(rt){const P=pz(),w=hourWx(),heat=1+(w?w.pen:0)/100;let t=0;for(const z of zonesOf(rt))t+=(z.b-z.a)/1000*P[z.z];return t*heat+(rt.signals||0)*12}
-function difficulty(rt){const km=rt.dist/1000,long=Math.max(3,A.pace?.longest||5),w=hourWx(),parts=[["Distance vs your longest ("+r1(long)+" km)",clamp(km/long/1.3,0,1)*45],["Climb ("+(rt.climb||0)+" m)",clamp((rt.climb||0)/40,0,1)*20],["Heat"+(w?" (+"+w.pen+"%)":""),w?clamp(w.pen/5,0,1)*15:5],["Air"+(w?.aqi!=null?" (AQI "+w.aqi+")":""),w?.aqi!=null?clamp((w.aqi-50)/150,0,1)*10:3],["Stop-starts ("+(rt.signals||0)+" signals)",clamp((rt.signals||0)/km/3,0,1)*10]];
+function difficulty(rt){const km=rt.dist/1000,long=Math.max(3,A.pace?.longest||5),w=hourWx(),parts=[["Distance vs your longest ("+r1(long)+" km)",clamp(km/long/1.3,0,1)*45],["Climb ("+(rt.climb||0)+" m)",clamp((rt.climb||0)/40,0,1)*20],["Heat"+(w?" (+"+w.pen+"%)":""),w?clamp(w.pen/5,0,1)*15:5],["Air"+(w?.aqi!=null?" (AQI "+w.aqi+")":""),w?.aqi!=null?clamp((w.aqi-50)/150,0,1)*10:3],["Stop-starts ("+(rt.signals??rt.cross??0)+(rt.signals!=null?" signals":" road crossings")+")",clamp((rt.signals??rt.cross??0)/km/3,0,1)*10]];
   const s=r0(parts.reduce((a,p)=>a+p[1],0));return{s,parts,lbl:s<30?"Easy":s<50?"Moderate":s<70?"Hard":"Brutal",col:s<30?"#35D07F":s<50?"#F2C94C":s<70?"#FF9F43":"#FF5C5F"}}
 function windNote(rt){const w=hourWx();if(!w||w.ws<6)return w?"Light wind":"";const half=rt.mode==="ob"?rt.dist/2:rt.dist;let into=0,n=0;for(let m=0;m<rt.dist-30;m+=50){const a=ptAt(rt.coords,rt.cum,m),b=ptAt(rt.coords,rt.cum,m+30),d=Math.cos(rad(brg(a,b)-w.wd));if(m<half)n++;if(d>.5)into+=50}
   if(rt.mode==="ob"){const out=Math.cos(rad(brg(rt.coords[0],rt.turn)-w.wd));return out>.3?"Headwind out, tailwind home":out<-.3?"Tailwind out, headwind home":"Crosswind"}
   return`Headwind on ${r0(into/rt.dist*100)}% of the loop`}
 function splits(rt){const P=pz(),Z=zonesOf(rt),w=hourWx(),heat=1+(w?w.pen:0)/100,o=[];for(let a=0;a<rt.dist-1;a+=1000){const b=Math.min(rt.dist,a+1000);let t=0,dom={};for(const z of Z){const lo=Math.max(a,z.a),hi=Math.min(b,z.b);if(hi>lo){t+=(hi-lo)/1000*P[z.z];dom[z.z]=(dom[z.z]||0)+hi-lo}}
-    const sg=(rt.pois||[]).filter(p=>p.t==="signal"&&p.m>=a&&p.m<b).length;t=t*heat+sg*12;let el=0;if(rt.elev){const e=x=>{const i=rt.elev.findIndex(q=>q.m>=x);return(rt.elev[i<0?rt.elev.length-1:i]).e};el=e(b)-e(a)}
+    const sg=(rt.pois||[]).filter(p=>p.t==="signal"&&p.m>=a&&p.m<b).length+(rt.roadX||[]).filter(p=>p.m>=a&&p.m<b).length;t=t*heat+sg*12;let el=0;if(rt.elev){const e=x=>{const i=rt.elev.findIndex(q=>q.m>=x);return(rt.elev[i<0?rt.elev.length-1:i]).e};el=e(b)-e(a)}
     o.push({k:o.length+1,len:b-a,t,z:Object.entries(dom).sort((x,y)=>y[1]-x[1])[0][0],sg,el})}return o}
 function cues(rt){const P=pz(),Z=zonesOf(rt),w=hourWx(),o=[],km=m=>r1(m/1000),pain=painNow();
   if(Z.length>1){o.push({m:0,t:`Warm up easy at ${fmtT(P.easy)}/km. Don't start the work early.`});for(const z of Z.slice(1)){if(z.z!=="easy")o.push({m:z.a,t:`${ZL[z.z]} starts. Settle at ${fmtT(P[z.z])}/km, smooth not sprinting.`});else if(z.b<rt.dist-50||z.a>0)o.push({m:z.a,t:z.b>=rt.dist-5?"Work done. Cool down easy all the way home.":"Recover. Jog it out, get your breath back."})}}
   else o.push({m:0,t:`Easy the whole way, ${fmtT(P[Z[0].z])}/km. You should be able to talk.`});
   for(const b of rt.bridges||[])o.push({m:b.a,t:`Flyover (${r0(b.b-b.a)} m). Shorten stride, hold effort, let pace drop.`});
   if(rt.elev){for(let i=0;i<rt.elev.length;i++){let j=i;while(j+1<rt.elev.length&&rt.elev[j+1].m-rt.elev[i].m<500)j++;const g=rt.elev[j].e-rt.elev[i].e;if(g>=7&&!(rt.bridges||[]).some(b=>Math.abs(b.a-rt.elev[i].m)<300)&&!o.some(c=>c.cl&&Math.abs(c.m-rt.elev[i].m)<800)){o.push({m:rt.elev[i].m,cl:1,t:`Climb ahead, +${r0(g)} m. Short steps, arms drive.`})}}}
-  const sig=(rt.pois||[]).filter(p=>p.t==="signal").sort((a,b)=>a.m-b.m);for(let i=0;i<sig.length;i++){let j=i;while(j+1<sig.length&&sig[j+1].m-sig[i].m<900)j++;if(j-i>=2){o.push({m:sig[i].m,t:`${j-i+1} signals in a row. Jog on the spot, don't sprint the greens.`});i=j}}
+  const sig=[...(rt.pois||[]).filter(p=>p.t==="signal"),...(rt.roadX||[])].sort((a,b)=>a.m-b.m);for(let i=0;i<sig.length;i++){let j=i;while(j+1<sig.length&&sig[j+1].m-sig[i].m<900)j++;if(j-i>=2){o.push({m:sig[i].m,t:`${j-i+1} road crossings close together. Jog on the spot, don't sprint the gaps.`});i=j}}
   const wt=(rt.pois||[]).filter(p=>(p.t==="water"||p.t==="shop"||p.t==="cafe")&&p.m>1500).sort((a,b)=>a.m-b.m)[0];if(wt&&rt.dist>4500)o.push({m:wt.m,t:`Water stop option: ${wt.name||PT[wt.t][0].slice(0,-1)}.`});
   if(rt.mode==="ob")o.push({m:rt.dist/2,t:"Turnaround. Check the watch, run home even or faster."});
   o.push({m:Math.max(0,rt.dist-1000),t:"Last km. Run tall, relax the shoulders, finish strong."});
