@@ -32,7 +32,7 @@ button,input,select{font:inherit;color:inherit}
 .search input{width:100%;height:44px;padding:0 14px 0 40px;border-radius:14px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(18px);outline:none}
 .search input:focus{border-color:rgba(46,139,255,.6);box-shadow:0 0 0 3px rgba(46,139,255,.18)}
 .search svg{position:absolute;left:13px;top:13px;opacity:.6}
-.sres{position:absolute;left:0;right:0;top:50px;background:rgba(10,14,22,.95);border:1px solid var(--line);border-radius:14px;overflow:hidden;backdrop-filter:blur(18px)}
+.sres{position:absolute;left:0;right:0;top:50px;background:rgba(10,14,22,.95);border:1px solid var(--line);border-radius:14px;overflow:auto;max-height:62vh;backdrop-filter:blur(18px)}
 .sres button{display:block;width:100%;text-align:left;padding:10px 14px;border:0;background:none;cursor:pointer;border-bottom:1px solid var(--line)}.sres button:hover{background:rgba(46,139,255,.12)}
 .status{height:44px;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:14px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(18px);font-size:12.5px;color:var(--mute)}
 .spin{width:14px;height:14px;border-radius:50%;border:2px solid rgba(46,139,255,.25);border-top-color:var(--accent);animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
@@ -562,16 +562,25 @@ function confirmDel(r){return window.confirm(`Delete “${r.name}”? Runs logge
 let nameCb=null;function openName(title,ph,val,cb){nameCb=cb;$("#modal").innerHTML=`<div class="ov" data-act="mclose-bg"><div class="md" role="dialog" aria-modal="true"><h2>${esc(title)}</h2><input class="inp" id="nmIn" placeholder="${esc(ph)}" value="${esc(val)}" style="margin:12px 0"><div class="ft"><button class="btn" data-act="mclose">Cancel</button><button class="btn p" data-act="nameok">Save</button></div></div></div>`;$("#nmIn").focus()}
 
 /* search (Nominatim) */
-let sT;$("#q").addEventListener("input",e=>{clearTimeout(sT);const v=e.target.value.trim();if(v.length<3){$("#sres").hidden=true;return}sT=setTimeout(()=>search(v),450)});
+let sT;$("#q").addEventListener("input",e=>{clearTimeout(sT);const v=e.target.value.trim();if(v.length<2){$("#sres").hidden=true;return}sT=setTimeout(()=>search(v),320)});
 $("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){clearTimeout(sT);search(e.target.value.trim())}if(e.key==="Escape")$("#sres").hidden=true});
-async function search(v){if(!v)return;const box=$("#sres"),c=map.getCenter(),my=++search.n;box.hidden=false;box.innerHTML=`<button disabled><span class="muted"><span class="spin" style="display:inline-block;vertical-align:-2px;margin-right:8px"></span>Searching…</span></button>`;
-  const srcs=[async()=>{const j=await(await fetchT(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&countrycodes=in&q=${encodeURIComponent(v)}&viewbox=${c.lng-.4},${c.lat+.4},${c.lng+.4},${c.lat-.4}`,7000,{headers:{"Accept-Language":"en"}})).json();return j.map(r=>({lat:+r.lat,lon:+r.lon,name:r.name||r.display_name.split(",")[0],sub:r.display_name.split(",").slice(1,4).join(",")}))},
-    async()=>{const j=await(await fetchT(`https://photon.komoot.io/api/?q=${encodeURIComponent(v)}&limit=6&lat=${c.lat}&lon=${c.lng}&lang=en`,7000)).json();return(j.features||[]).map(f=>({lat:f.geometry.coordinates[1],lon:f.geometry.coordinates[0],name:f.properties.name||v,sub:[f.properties.street,f.properties.district||f.properties.locality,f.properties.city].filter(Boolean).join(", ")}))},
-    async()=>{const j=await(await fetchT(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=6&language=en&countryCode=IN`,7000)).json();return(j.results||[]).map(r=>({lat:r.latitude,lon:r.longitude,name:r.name,sub:[r.admin2,r.admin1].filter(Boolean).join(", ")}))}];
-  let res=null,fail=0;for(const f of srcs){try{const r=await f();if(r&&r.length){res=r;break}if(r)res=res||[]}catch(e){fail++}}if(my!==search.n)return;
-  if(!res){box.innerHTML=`<button disabled><span class="muted">Search can't reach the map servers. If you're on a VPN, turn it off for this site, or click the map to set a start.</span></button>`;return}
-  box.innerHTML=res.length?res.map(r=>`<button data-lat="${r.lat}" data-lon="${r.lon}"><b>${esc(r.name)}</b><br><span class="small muted">${esc(r.sub)}</span></button>`).join(""):`<button disabled><span class="muted">No places found for “${esc(v)}”. Try a landmark or area name.</span></button>`;
-  box.querySelectorAll("button[data-lat]").forEach(b=>b.onclick=()=>{const p=[+b.dataset.lat,+b.dataset.lon];box.hidden=true;$("#q").value="";map.setView(p,16);setStart(p,false);toast("Start set. Hit Build.")})}
+async function search(v){if(!v)return;const box=$("#sres"),c=map.getCenter(),C=[c.lat,c.lng],my=++search.n,all=[],state={done:0,fail:0};
+  const m=v.match(/(-?\d{1,2}\.\d+)\s*[, ]\s*(-?\d{1,3}\.\d+)/);if(m){all.push({lat:+m[1],lon:+m[2],name:"Coordinates",sub:`${m[1]}, ${m[2]}`,src:"pin"})}
+  const ql=v.toLowerCase();for(const ar of Object.values(AREAS))for(const q of ar.pois||[])if(q.name&&q.name.toLowerCase().includes(ql))all.push({lat:q.p[0],lon:q.p[1],name:q.name,sub:(PT[q.t]?.[0]||"").replace(/s$/,"")+" · nearby",src:"local"});
+  const kind=x=>String(x||"").replace(/_/g," ");
+  const render=()=>{if(my!==search.n)return;const seen=[];const L=all.filter(r=>{if(!isFinite(r.lat)||!isFinite(r.lon))return false;if(seen.some(x=>x.name.toLowerCase()===r.name.toLowerCase()&&hav([x.lat,x.lon],[r.lat,r.lon])<200))return false;seen.push(r);return true})
+      .map(r=>({...r,d:hav(C,[r.lat,r.lon]),hit:r.name.toLowerCase().startsWith(ql)?0:r.name.toLowerCase().includes(ql)?1:2})).sort((a,b)=>(a.src==="pin"?-1:0)-(b.src==="pin"?-1:0)||a.hit-b.hit||a.d-b.d);const near=L.some(r=>r.d<150e3);L.splice(0,L.length,...L.filter(r=>!near||r.d<150e3||r.src==="pin").slice(0,12));
+    const busy=state.done<3;box.hidden=false;
+    box.innerHTML=(L.length?L.map(r=>`<button data-lat="${r.lat}" data-lon="${r.lon}"><b>${esc(r.name)}</b> <span class="small muted" style="float:right">${r.d<1000?r0(r.d)+" m":r1(r.d/1000)+" km"}</span><br><span class="small muted">${esc(r.sub)}</span></button>`).join(""):"")
+      +(busy?`<button disabled><span class="muted"><span class="spin" style="display:inline-block;vertical-align:-2px;margin-right:8px"></span>${L.length?"Finding more…":"Searching…"}</span></button>`:!L.length?`<button disabled><span class="muted">${state.fail>=3?"Search can't reach the map servers. If you're on a VPN, turn it off for this site, or click the map to set a start.":`No places found for “${esc(v)}”. Try another spelling, a landmark, or paste coordinates.`}</span></button>`:"");
+    box.querySelectorAll("button[data-lat]").forEach(b=>b.onclick=()=>{const p=[+b.dataset.lat,+b.dataset.lon];box.hidden=true;$("#q").value="";map.setView(p,16);setStart(p,false);toast("Start set. Hit Build.")})};
+  render();
+  const vb=`${c.lng-.6},${c.lat+.6},${c.lng+.6},${c.lat-.6}`;
+  const srcs=[async()=>{const[a,b]=await Promise.all([fetchT(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=10&addressdetails=1&q=${encodeURIComponent(v)}&viewbox=${vb}&bounded=1`,7000,{headers:{"Accept-Language":"en"}}).then(r=>r.json()).catch(()=>[]),fetchT(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&addressdetails=1&q=${encodeURIComponent(v)}&viewbox=${vb}`,7000,{headers:{"Accept-Language":"en"}}).then(r=>r.json())]);
+      return[...a,...b].map(r=>{const ad=r.address||{};return{lat:+r.lat,lon:+r.lon,name:r.name||r.display_name.split(",")[0],sub:[kind(r.type!=="yes"?r.type:r.category),ad.road,ad.suburb||ad.neighbourhood,ad.city||ad.town||ad.state].filter(Boolean).slice(0,4).join(" · ")}})},
+    async()=>{const j=await(await fetchT(`https://photon.komoot.io/api/?q=${encodeURIComponent(v)}&limit=12&lat=${c.lat}&lon=${c.lng}&location_bias_scale=0.6&lang=en`,8000)).json();return(j.features||[]).map(f=>{const p=f.properties;return{lat:f.geometry.coordinates[1],lon:f.geometry.coordinates[0],name:p.name||[p.housenumber,p.street].filter(Boolean).join(" ")||v,sub:[kind(p.osm_value),p.street,p.district||p.locality,p.city].filter(Boolean).join(" · ")}})},
+    async()=>{const j=await(await fetchT(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=8&language=en`,7000)).json();return(j.results||[]).map(r=>({lat:r.latitude,lon:r.longitude,name:r.name,sub:["place",r.admin2,r.admin1,r.country].filter(Boolean).join(" · ")}))}];
+  await Promise.all(srcs.map(f=>f().then(r=>{all.push(...(r||[]))}).catch(()=>{state.fail++}).finally(()=>{state.done++;render()})))}
 search.n=0;
 document.addEventListener("click",e=>{if(!e.target.closest(".search"))$("#sres").hidden=true});
 
