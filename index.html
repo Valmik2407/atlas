@@ -1,0 +1,518 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PACE Atlas</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23050810'/%3E%3Cpath d='M8 23 C10 12 16 8 24 9' stroke='%232E8BFF' stroke-width='3.5' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='23' r='3' fill='%2335D07F'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04060A;--fg:#EAF0F7;--mute:#8A97AB;--dim:#5C677A;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.16);--glass:rgba(10,14,22,.74);--glass2:rgba(255,255,255,.045);
+--accent:#2E8BFF;--accent2:#19D3FF;--good:#35D07F;--amber:#FFB020;--bad:#FF5C5F;--warn:#FF9F43;--race:#B76CFF;
+--z-easy:#2E8BFF;--z-steady:#19D3FF;--z-tempo:#FFB020;--z-int:#FF5C5F;--z-race:#B76CFF}
+*{box-sizing:border-box}[hidden]{display:none!important}html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:14px/1.45 Archivo,system-ui,sans-serif;overflow:hidden}
+button,input,select{font:inherit;color:inherit}
+.num{font-family:"Chakra Petch",ui-monospace,monospace;font-weight:700;letter-spacing:.01em;font-variant-numeric:tabular-nums}
+.ey{font:600 10.5px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.small{font-size:12.5px}.muted{color:var(--mute)}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}.amb{color:var(--amber)}
+#gl{position:fixed;inset:0;background:#05070b}#gl.inv canvas{filter:invert(.93) hue-rotate(180deg) saturate(.55) brightness(.95)}#map{position:fixed;inset:0;background:transparent}
+.leaflet-container{background:transparent;font-family:Archivo,system-ui,sans-serif}
+.leaflet-tile-pane.inv{filter:invert(.93) hue-rotate(180deg) saturate(.5) brightness(.9) contrast(1.05)}
+.leaflet-control-attribution{background:rgba(0,0,0,.55)!important;color:#6b778a!important;font-size:10px}.leaflet-control-attribution a{color:#8a97ab!important}
+.leaflet-control-zoom{border:none!important;margin:0 330px 220px 0!important}.leaflet-control-zoom a{background:var(--glass)!important;color:var(--fg)!important;border:1px solid var(--line)!important;backdrop-filter:blur(14px)}
+.glass{position:fixed;z-index:500;background:var(--glass);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border:1px solid var(--line);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05)}
+#left{left:18px;top:18px;bottom:18px;width:318px;display:flex;flex-direction:column;overflow:hidden}
+#right{right:18px;top:76px;width:300px;max-height:calc(100vh - 94px);overflow:auto}
+#bottom{left:352px;right:334px;bottom:18px;min-height:96px;padding:14px 18px}
+#top{position:fixed;z-index:600;left:352px;right:18px;top:18px;display:flex;gap:10px;align-items:center;pointer-events:none}
+#top>*{pointer-events:auto}
+.scroll{overflow:auto;padding:16px 16px 18px;flex:1}.scroll::-webkit-scrollbar,#right::-webkit-scrollbar{width:6px}.scroll::-webkit-scrollbar-thumb,#right::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:9px}
+.brand{display:flex;align-items:center;gap:10px;padding:16px 16px 12px;border-bottom:1px solid var(--line)}
+.brand b{font:800 15px "Chakra Petch",monospace;letter-spacing:.22em}.brand .sync{margin-left:auto;font-size:11px;display:flex;align-items:center;gap:6px;color:var(--mute)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--dim);display:inline-block}.dot.on{background:var(--good);box-shadow:0 0 10px var(--good)}
+.search{flex:1;max-width:420px;position:relative}
+.search input{width:100%;height:44px;padding:0 14px 0 40px;border-radius:14px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(18px);outline:none}
+.search input:focus{border-color:rgba(46,139,255,.6);box-shadow:0 0 0 3px rgba(46,139,255,.18)}
+.search svg{position:absolute;left:13px;top:13px;opacity:.6}
+.sres{position:absolute;left:0;right:0;top:50px;background:rgba(10,14,22,.95);border:1px solid var(--line);border-radius:14px;overflow:hidden;backdrop-filter:blur(18px)}
+.sres button{display:block;width:100%;text-align:left;padding:10px 14px;border:0;background:none;cursor:pointer;border-bottom:1px solid var(--line)}.sres button:hover{background:rgba(46,139,255,.12)}
+.status{height:44px;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:14px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(18px);font-size:12.5px;color:var(--mute)}
+.spin{width:14px;height:14px;border-radius:50%;border:2px solid rgba(46,139,255,.25);border-top-color:var(--accent);animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.tbtns{margin-left:auto;display:flex;gap:8px}
+.btn{height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--line2);background:var(--glass2);cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:13px;white-space:nowrap;text-decoration:none;transition:.15s;color:var(--fg)}
+.btn:hover{background:rgba(255,255,255,.09)}.btn:disabled{opacity:.45;cursor:default}
+.btn.p{background:linear-gradient(135deg,#2E8BFF,#19A8FF);border-color:transparent;color:#03101f;box-shadow:0 8px 24px rgba(46,139,255,.35)}.btn.p:hover{filter:brightness(1.1)}
+.btn.sm{height:30px;padding:0 10px;font-size:12px;border-radius:9px}.btn.g{background:var(--glass);backdrop-filter:blur(18px)}.btn.on{border-color:rgba(255,122,26,.6);color:#FFB27A;box-shadow:0 0 18px rgba(255,122,26,.2)}
+.btn.w{width:100%;justify-content:center}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.seg button{height:32px;border:0;border-radius:9px;background:none;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--mute)}
+.seg button[aria-pressed=true]{background:rgba(46,139,255,.18);color:#fff;box-shadow:inset 0 0 0 1px rgba(46,139,255,.5)}
+.sec{margin-top:16px}.sec>.ey{display:block;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{height:28px;padding:0 10px;border-radius:99px;border:1px solid var(--line2);background:rgba(255,255,255,.03);cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:6px;color:var(--mute)}
+.chip[aria-pressed=true]{color:#fff;border-color:rgba(46,139,255,.55);background:rgba(46,139,255,.14)}
+.chip .x{opacity:.5;margin-left:2px}.chip .x:hover{opacity:1;color:var(--bad)}
+.today{border-radius:16px;padding:14px;background:linear-gradient(140deg,rgba(46,139,255,.16),rgba(25,211,255,.05));border:1px solid rgba(46,139,255,.32);position:relative;overflow:hidden}
+.today h3{margin:4px 0 2px;font-size:17px}.today p{margin:0}
+.today .kip{display:flex;gap:8px;align-items:flex-start;margin-top:10px;padding:9px 10px;border-radius:12px;background:rgba(0,0,0,.25);font-size:12.5px}
+.kipav{width:24px;height:24px;flex:none;border-radius:8px;background:linear-gradient(135deg,#2E8BFF,#19D3FF);display:grid;place-items:center;font:800 11px "Chakra Petch";color:#03101f}
+.dist{display:flex;align-items:center;gap:10px}.dist input[type=range]{flex:1;accent-color:var(--accent)}
+.dist .val{min-width:74px;text-align:right}.dist .val b{font-size:26px}
+.tog{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.tog:last-child{border:0}
+.sw{width:36px;height:20px;border-radius:20px;background:rgba(255,255,255,.12);position:relative;cursor:pointer;border:0;flex:none;transition:.2s}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.2s}.sw[aria-pressed=true]{background:var(--accent)}.sw[aria-pressed=true]::after{left:19px}
+.opt{display:block;width:100%;text-align:left;padding:11px 12px;border-radius:13px;border:1px solid var(--line);background:rgba(255,255,255,.03);cursor:pointer;margin-top:7px;transition:.15s}
+.opt:hover{border-color:var(--line2)}.opt[aria-pressed=true]{border-color:rgba(46,139,255,.6);background:rgba(46,139,255,.13);box-shadow:0 0 22px rgba(46,139,255,.15)}
+.opt .t{display:flex;justify-content:space-between;gap:8px;font-weight:600}.opt .m{font-size:12px;color:var(--mute);margin-top:3px}
+.badge{font:700 10.5px "IBM Plex Mono",monospace;letter-spacing:.06em;padding:3px 7px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
+.lib{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}.lib:last-child{border:0}
+.lib .mini{width:42px;height:42px;flex:none;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.lib .i{flex:1;min-width:0}.lib .i b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}.lib .i span{font-size:11.5px;color:var(--mute)}
+.lib .del{opacity:0;border:0;background:none;color:var(--mute);cursor:pointer;font-size:16px}.lib:hover .del{opacity:1}
+.inp{width:100%;height:38px;border-radius:11px;border:1px solid var(--line2);background:rgba(0,0,0,.25);padding:0 12px;outline:none}.inp:focus{border-color:rgba(46,139,255,.6)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;gap:10px}.row:last-child{border:0}.row>span:first-child{color:var(--mute)}
+.wxhead{padding:16px 16px 6px}.wxbig{display:flex;align-items:baseline;gap:10px;margin:4px 0 2px}.wxbig b{font-size:46px;line-height:1}
+.daypick{display:flex;gap:4px;margin-top:8px}.daypick button{flex:1;height:28px;border-radius:8px;border:1px solid var(--line);background:none;cursor:pointer;font-size:11.5px;color:var(--mute)}.daypick button[aria-pressed=true]{color:#fff;background:rgba(255,255,255,.08);border-color:var(--line2)}
+.hours{display:flex;align-items:flex-end;gap:2px;height:64px;margin:10px 0 2px;padding:0 16px}
+.hours button{flex:1;border:0;padding:0;border-radius:3px 3px 1px 1px;cursor:pointer;opacity:.55;transition:.12s;min-width:0}
+.hours button:hover{opacity:.9}.hours button[aria-pressed=true]{opacity:1;box-shadow:0 0 12px currentColor}
+.hours button.best{outline:1.5px solid var(--good);outline-offset:1px}
+.hlab{display:flex;justify-content:space-between;padding:0 16px;font:500 10px "IBM Plex Mono";color:var(--dim)}
+.pad{padding:6px 16px 16px}
+.aqi{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.wind{display:inline-block;transition:.3s}
+.poichips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pc{display:flex;align-items:center;gap:8px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.03);cursor:pointer;font-size:12.5px;color:var(--mute)}
+.pc b{margin-left:auto;font-family:"Chakra Petch";color:var(--fg)}.pc[aria-pressed=true]{border-color:var(--line2);color:var(--fg);background:rgba(255,255,255,.06)}
+.pc i{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;flex:none}
+.pc i svg,.poi svg{width:12px;height:12px}
+.bgrid{display:grid;grid-template-columns:250px minmax(0,1fr);gap:20px;align-items:stretch}.bgrid>div{min-width:0}.seg button{white-space:nowrap}
+.bstats{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;align-content:start}
+.bstats .big{grid-column:span 2;display:flex;align-items:baseline;gap:8px}.bstats .big b{font-size:42px;line-height:1}
+.bstats div>b{font-size:19px;display:block}
+.rname{width:100%;background:none;border:0;border-bottom:1px dashed transparent;font-weight:700;font-size:15px;padding:0 0 2px;outline:none;margin-bottom:6px}.rname:hover,.rname:focus{border-bottom-color:var(--line2)}
+.tabs{display:flex;gap:4px;margin-bottom:8px;align-items:center}.tabs>button{white-space:nowrap;border:0;background:none;color:var(--mute);font:600 10.5px "IBM Plex Mono";letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:7px;cursor:pointer}.tabs>button[aria-pressed=true]{background:rgba(255,255,255,.08);color:#fff}
+.tabs .sp{flex:1}
+.prof{width:100%;height:118px;display:block;cursor:crosshair}
+.splits{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(64px,1fr);gap:6px;overflow-x:auto;padding-bottom:4px}
+.split{border-radius:11px;padding:8px 9px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-top:3px solid var(--zc)}
+.split span{display:block;font-size:10.5px;color:var(--mute);font-family:"IBM Plex Mono"}.split b{font-size:16px}
+.cues{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px;max-height:122px;overflow:auto}
+.cue{display:flex;gap:9px;padding:8px 10px;border-radius:11px;background:rgba(255,255,255,.035);border:1px solid var(--line);font-size:12.5px;cursor:pointer}
+.cue .k{font:700 12px "Chakra Petch";color:var(--accent2);min-width:44px}
+.empty{display:flex;align-items:center;gap:14px;color:var(--mute)}
+.legend{display:flex;gap:10px;font-size:11px;color:var(--mute)}.legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:5px;vertical-align:middle}
+/* map objects */
+.rt-case{stroke:#000;stroke-opacity:.55}
+.rt{filter:drop-shadow(0 0 6px var(--c)) drop-shadow(0 0 14px var(--c))}
+.rt-alt{cursor:pointer}
+.km{width:22px;height:22px;border-radius:50%;background:#0a0e16;border:2px solid var(--c,#2E8BFF);display:grid;place-items:center;font:700 10.5px "Chakra Petch";color:#fff;box-shadow:0 0 10px rgba(0,0,0,.6)}
+.startpin{width:20px;height:20px;border-radius:50%;background:var(--good);border:3px solid #04120a;box-shadow:0 0 0 2px var(--good),0 0 22px var(--good)}
+.startpin.pulse{animation:pl 2s infinite}@keyframes pl{0%,100%{box-shadow:0 0 0 2px var(--good),0 0 10px var(--good)}50%{box-shadow:0 0 0 7px rgba(53,208,127,.25),0 0 26px var(--good)}}
+.turnpin{padding:3px 8px;border-radius:8px;background:#0a0e16;border:1.5px solid var(--amber);font:700 10.5px "IBM Plex Mono";color:var(--amber);white-space:nowrap;box-shadow:0 0 14px rgba(255,176,32,.4)}
+.wp{width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 0 12px var(--accent)}
+.poi{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:#0a0e16;border:1.5px solid var(--pc);color:var(--pc);box-shadow:0 0 14px color-mix(in srgb,var(--pc) 55%,transparent)}
+.poi.sm{width:16px;height:16px;border-radius:50%;border-width:2px}.poi.sm svg{display:none}
+.hover-dot{width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.25),0 0 18px #fff}
+.leaflet-tooltip.tt{background:rgba(10,14,22,.95);border:1px solid var(--line2);color:var(--fg);border-radius:10px;font:12.5px Archivo;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:6px 10px}.leaflet-tooltip.tt::before{display:none}
+.heat{mix-blend-mode:screen}
+#toast{position:fixed;z-index:900;left:50%;top:76px;transform:translateX(-50%);pointer-events:none}
+#toast div{background:rgba(10,14,22,.96);border:1px solid var(--line2);padding:10px 16px;border-radius:12px;box-shadow:0 14px 40px rgba(0,0,0,.5);animation:tin .25s}#toast div.bad{border-color:rgba(255,92,95,.5)}
+@keyframes tin{from{opacity:0;transform:translateY(-8px)}}
+#modal .ov{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.55);display:grid;place-items:center;backdrop-filter:blur(4px)}
+#modal .md{width:min(520px,92vw);background:#0b0f17;border:1px solid var(--line2);border-radius:20px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+#modal h2{margin:0 0 6px;font-size:20px}#modal textarea{width:100%;height:110px;margin:12px 0;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid var(--line2);padding:10px;font:11px "IBM Plex Mono";color:var(--mute);resize:none}
+#modal ol{padding-left:18px;color:var(--mute);margin:8px 0}#modal .ft{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+.hint{font-size:12px;color:var(--mute);margin-top:8px;display:flex;gap:6px;align-items:flex-start}
+@media (max-width:1100px){#right{width:260px}#bottom{left:340px;right:290px}.bgrid{grid-template-columns:1fr}}
+@media (max-width:820px){#left{width:auto;right:18px;bottom:auto;max-height:46vh}#right{display:none}#bottom{left:18px;right:18px}#top{left:18px;top:auto;bottom:240px}.leaflet-control-zoom{margin:0 18px 260px 0!important}}
+</style></head><body>
+<div id="gl" aria-hidden="true"></div><div id="map" role="application" aria-label="Map"></div>
+<div id="top"><div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Search a place to run from…" autocomplete="off" aria-label="Search a place"><div class="sres" id="sres" hidden></div></div>
+<div class="status" id="status" hidden></div>
+<div class="tbtns"><button class="btn g" data-act="heat" id="heatBtn" title="Glow where you've run">Heatmap</button><button class="btn p" data-act="send">Send to PACE</button><a class="btn g" id="paceLink" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">Open PACE ↗</a></div></div>
+<aside id="left" class="glass" aria-label="Build a route"><div class="brand"><svg width="26" height="26" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0a1222"/><path d="M8 23 C10 12 16 8 24 9" stroke="#2E8BFF" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="8" cy="23" r="3" fill="#35D07F"/><circle cx="24" cy="9" r="2.4" fill="#19D3FF"/></svg><b>ATLAS</b><span class="sync" id="sync"></span></div><div class="scroll" id="L"></div></aside>
+<aside id="right" class="glass" aria-label="The day"></aside>
+<section id="bottom" class="glass" aria-label="Route stats"></section>
+<div id="toast" role="status" aria-live="polite"></div><div id="modal"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+"use strict";
+/* ================= utils ================= */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),r0=Math.round,r1=v=>Math.round(v*10)/10;
+const fmtT=s=>{s=Math.round(s||0);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(x).padStart(2,"0")}`:`${m}:${String(x).padStart(2,"0")}`};
+const LS={get(k,d){try{const v=localStorage.getItem("atlas-"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("atlas-"+k,JSON.stringify(v))}catch(e){}}};
+const ER=6371000,rad=d=>d*Math.PI/180,deg=r=>r*180/Math.PI;
+function hav(a,b){const dl=rad(b[0]-a[0]),dn=rad(b[1]-a[1]),x=Math.sin(dl/2)**2+Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dn/2)**2;return 2*ER*Math.asin(Math.min(1,Math.sqrt(x)))}
+function brg(a,b){const y=Math.sin(rad(b[1]-a[1]))*Math.cos(rad(b[0])),x=Math.cos(rad(a[0]))*Math.sin(rad(b[0]))-Math.sin(rad(a[0]))*Math.cos(rad(b[0]))*Math.cos(rad(b[1]-a[1]));return(deg(Math.atan2(y,x))+360)%360}
+function dest(p,b,m){const d=m/ER,t=rad(b),l1=rad(p[0]),n1=rad(p[1]),l2=Math.asin(Math.sin(l1)*Math.cos(d)+Math.cos(l1)*Math.sin(d)*Math.cos(t)),n2=n1+Math.atan2(Math.sin(t)*Math.sin(d)*Math.cos(l1),Math.cos(d)-Math.sin(l1)*Math.sin(l2));return[deg(l2),deg(n2)]}
+function cumd(c){const o=[0];for(let i=1;i<c.length;i++)o.push(o[i-1]+hav(c[i-1],c[i]));return o}
+function idxAt(cum,m){let lo=0,hi=cum.length-1;while(hi-lo>1){const md=(lo+hi)>>1;cum[md]<=m?lo=md:hi=md}return lo}
+function ptAt(c,cum,m){m=clamp(m,0,cum[cum.length-1]);if(c.length<2)return c[0];const i=idxAt(cum,m),j=Math.min(i+1,c.length-1),f=(m-cum[i])/((cum[j]-cum[i])||1);return[c[i][0]+(c[j][0]-c[i][0])*f,c[i][1]+(c[j][1]-c[i][1])*f]}
+function slice(c,cum,a,b){const o=[ptAt(c,cum,a)];for(let i=0;i<c.length;i++)if(cum[i]>a&&cum[i]<b)o.push(c[i]);o.push(ptAt(c,cum,b));return o}
+function samples(c,cum,step){const L=cum[cum.length-1],o=[];for(let m=0;m<L;m+=step)o.push({m,p:ptAt(c,cum,m)});o.push({m:L,p:c[c.length-1]});return o}
+function despur(c){const s=[];for(const p of c){if(s.length&&hav(s[s.length-1],p)<1)continue;if(s.length>=2&&hav(s[s.length-2],p)<6){s.pop();continue}s.push(p)}return s}
+function simplify(c,tol){if(c.length<3)return c;const lat0=rad(c[0][0]),P=c.map(p=>[rad(p[1])*Math.cos(lat0)*ER,rad(p[0])*ER]),keep=new Uint8Array(c.length);keep[0]=keep[c.length-1]=1;const st=[[0,c.length-1]];
+  while(st.length){const[a,b]=st.pop();let mx=0,ix=-1;const[x1,y1]=P[a],[x2,y2]=P[b],dx=x2-x1,dy=y2-y1,L=dx*dx+dy*dy||1;for(let i=a+1;i<b;i++){const t=clamp(((P[i][0]-x1)*dx+(P[i][1]-y1)*dy)/L,0,1),d=Math.hypot(P[i][0]-(x1+t*dx),P[i][1]-(y1+t*dy));if(d>mx){mx=d;ix=i}}if(mx>tol){keep[ix]=1;st.push([a,ix],[ix,b])}}
+  return c.filter((_,i)=>keep[i])}
+function encPoly(c){let o="",pl=0,pn=0;const e=v=>{v=v<0?~(v<<1):v<<1;let s="";while(v>=32){s+=String.fromCharCode((32|(v&31))+63);v>>=5}return s+String.fromCharCode(v+63)};for(const[a,b]of c){const la=Math.round(a*1e5),lo=Math.round(b*1e5);o+=e(la-pl)+e(lo-pn);pl=la;pn=lo}return o}
+function decPoly(s){const o=[];let i=0,la=0,lo=0;while(i<s.length){for(const k of[0,1]){let r=0,sh=0,b;do{b=s.charCodeAt(i++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);const d=r&1?~(r>>1):r>>1;k?lo+=d:la+=d}o.push([la/1e5,lo/1e5])}return o}
+const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const b64d=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,"+").replace(/_/g,"/")))));
+function fetchT(url,ms,opt){const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);return fetch(url,{...(opt||{}),signal:c.signal}).finally(()=>clearTimeout(t))}
+let qA=0;const qW=[];async function lim(fn){while(qA>=2)await new Promise(r=>qW.push(r));qA++;try{return await fn()}finally{qA--;const n=qW.shift();n&&n()}}
+const uid=()=>Math.random().toString(36).slice(2,9);
+function heatPenalty(T,RH){const a=17.62,b=243.12,g=Math.log(clamp(RH,1,100)/100)+a*T/(b+T),td=b*g/(a-g),comb=(T*9/5+32)+(td*9/5+32);const p=comb<=100?0:comb<=110?.25:comb<=120?.75:comb<=130?1.5:comb<=140?2.5:comb<=150?3.75:comb<=160?5:6.5;return{comb:r0(comb),p}}
+const DN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const hLbl=h=>(h%12||12)+(h<12?" am":" pm");
+function toast(m,bad){const t=$("#toast");t.innerHTML=`<div class="${bad?"bad":""}">${esc(m)}</div>`;clearTimeout(toast.t);toast.t=setTimeout(()=>t.innerHTML="",3800)}
+function status(m){const s=$("#status");if(!m){s.hidden=true;return}s.hidden=false;s.innerHTML=`<span class="spin"></span>${esc(m)}`}
+
+/* ================= state ================= */
+const ZC={easy:"#2E8BFF",steady:"#19D3FF",tempo:"#FFB020",int:"#FF5C5F",race:"#B76CFF"},ZL={easy:"Easy",steady:"Steady",tempo:"Tempo",int:"Fast",race:"Race pace"};
+const PT={cafe:["Cafes","#FFB020"],water:["Water","#19D3FF"],shop:["Shops","#35D07F"],toilet:["Toilets","#B76CFF"],bench:["Benches","#8A97AB"],signal:["Signals","#FF5C5F"],sight:["Sights","#5BE38F"]};
+const ICON={cafe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 11h2a2 2 0 0 1 0 4h-2M8 3v3M12 3v3"/></svg>',
+ water:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s7 7.6 7 12.5A7 7 0 0 1 5 14.5C5 9.6 12 2 12 2z"/></svg>',
+ shop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2"/></svg>',
+ toilet:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="7" cy="4.5" r="2.2"/><circle cx="17" cy="4.5" r="2.2"/><path d="M5 8h4l1 7H8v6H6v-6H4zM15 8h4l2 8h-3v5h-3v-5h-3z"/></svg>',
+ bench:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 10h16M3 14h18M6 14v5M18 14v5M6 10V6M18 10V6"/></svg>',
+ signal:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="8" y="2" width="8" height="20" rx="3" opacity=".35"/><circle cx="12" cy="7" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="17" r="2.2"/></svg>',
+ sight:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 9 9H4l4 4-2 7 6-4 6 4-2-7 4-4h-5z"/></svg>'};
+const MUMBAI=[18.9432,72.8236];
+const A={pace:LS.get("pace",null),start:LS.get("start",null),mode:"loop",km:5,prefs:LS.get("prefs",{scenic:true,cross:true,flat:true}),options:[],sel:null,draw:[],drawClosed:"",
+  poiOn:LS.get("poiOn",{cafe:1,water:1,shop:1,toilet:1,bench:0,signal:1,sight:1}),wx:null,aq:null,day:0,hour:null,routes:LS.get("routes",[]),favs:LS.get("favs",[]),heat:false,colour:"easy",tab:"profile",busy:false,area:null,hoverM:null};
+function pz(){const p=A.pace?.paces;if(p&&p.easySlow)return{easy:(p.easySlow+p.easyFast)/2,steady:p.easyFast*.97,tempo:p.tempo,int:p.int,race:p.race};return{easy:400,steady:375,tempo:345,int:318,race:360}}
+const sess=()=>{const s=A.pace?.session;return s&&s.date===todayISO()?s:null};
+function todayISO(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+
+/* ================= PACE link (incoming) ================= */
+function readHash(){const m=location.hash.match(/[#&]p=([^&]+)/);if(!m)return;try{const d=b64d(m[1]);if(d&&d.v===1){A.pace={...d,got:Date.now()};LS.set("pace",A.pace);
+  if(Array.isArray(d.routes)){const byId=Object.fromEntries(A.routes.map(r=>[r.id,r]));for(const pr of d.routes){if(byId[pr.id]){byId[pr.id].ran=pr.ran||[];byId[pr.id].name=pr.name||byId[pr.id].name}else if(pr.poly)A.routes.push({id:pr.id,name:pr.name,poly:pr.poly,km:pr.km,climb:pr.climb||0,signals:pr.cross||0,mode:pr.mode||"loop",created:pr.created||Date.now(),ran:pr.ran||[]})}LS.set("routes",A.routes)}
+  toast("Synced from PACE: "+(sess()?sess().title:"no run planned today"));if(d.focus)A.focus=d.focus}}catch(e){toast("That PACE link looks broken. Open Atlas from PACE again.",true)}
+  history.replaceState(null,"",location.pathname+location.search)}
+
+/* ================= map ================= */
+let map,tiles=null,L_route,L_alts,L_poi,L_marks,L_heat,L_draw,hoverMk;
+
+/* ===== base map: VersaTiles vector (dark) → raster fallbacks ===== */
+let gl=null,baseOk=false;
+const BASES=[
+  {kind:"gl",style:"https://tiles.versatiles.org/assets/styles/eclipse/style.json",inv:false,attr:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://versatiles.org">VersaTiles</a>'},
+  {kind:"gl",style:"https://tiles.versatiles.org/assets/styles/colorful/style.json",inv:true,attr:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://versatiles.org">VersaTiles</a>'},
+  {kind:"raster",url:"https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",max:16,inv:false,attr:"Tiles &copy; Esri"},
+  {kind:"raster",url:"https://tile.openstreetmap.org/{z}/{x}/{y}.png",max:19,inv:true,attr:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}];
+function glSync(){if(!gl)return;const c=map.getCenter();gl.jumpTo({center:[c.lng,c.lat],zoom:map.getZoom()-1})}
+function initBase(i=0){if(baseOk)return;const B=BASES[i];if(!B){blockedNote();return}
+  if(gl){try{gl.remove()}catch(e){}gl=null}if(tiles){tiles.remove();tiles=null}map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
+  const next=()=>{if(!baseOk)initBase(i+1)};
+  if(B.kind==="gl"){if(!window.maplibregl){next();return}
+    try{const c=map.getCenter();gl=new maplibregl.Map({container:"gl",style:B.style,center:[c.lng,c.lat],zoom:map.getZoom()-1,interactive:false,attributionControl:false,fadeDuration:0});
+      $("#gl").classList.toggle("inv",B.inv);let t=setTimeout(next,9000);
+      gl.on("load",()=>{clearTimeout(t);baseOk=true;map.attributionControl.addAttribution(B.attr);glSync()});
+      gl.on("error",e=>{if(!baseOk&&/style|Failed to fetch|404|403/i.test(String(e?.error?.message||e?.error||""))){clearTimeout(t);next()}})}catch(e){next()}
+    return}
+  tiles=L.tileLayer(B.url,{maxZoom:19,maxNativeZoom:B.max,attribution:B.attr}).addTo(map);tiles.getContainer?.()&&map.getPane("tilePane").classList.toggle("inv",B.inv);
+  let ok=0,bad=0;tiles.on("tileload",()=>{ok++;baseOk=true});tiles.on("tileerror",()=>{bad++;if(!ok&&bad>=4)next()});setTimeout(()=>{if(!ok)next()},8000)}
+function blockedNote(){const b=document.createElement("div");b.style.cssText="position:fixed;z-index:800;left:50%;top:50%;transform:translate(-50%,-50%);max-width:440px;padding:20px 22px;border-radius:18px;background:rgba(10,14,22,.95);border:1px solid rgba(255,159,67,.5);box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center";b.innerHTML='<b style="font-size:17px">The map couldn\'t load</b><p class="muted small" style="margin:8px 0 0">Check your internet. If you opened Atlas inside the Claude app, open it in Chrome instead.</p>';document.body.appendChild(b)}
+function initMap(){map=L.map("map",{zoomControl:false,attributionControl:true,preferCanvas:false,zoomAnimation:false,maxZoom:19}).setView(A.start||MUMBAI,15);
+  L.control.zoom({position:"bottomright"}).addTo(map);
+  initBase();
+  map.createPane("heat").style.zIndex=350;map.getPane("heat").classList.add("heat");
+  L_heat=L.layerGroup().addTo(map);L_alts=L.layerGroup().addTo(map);L_route=L.layerGroup().addTo(map);L_poi=L.layerGroup().addTo(map);L_marks=L.layerGroup().addTo(map);L_draw=L.layerGroup().addTo(map);
+  map.on("move zoom viewreset resize",glSync);map.on("resize",()=>gl&&gl.resize());
+  map.on("click",e=>{const p=[e.latlng.lat,e.latlng.lng];if(A.mode==="draw")addWp(p);else{setStart(p,true)}});
+  setStartMarker()}
+let startMk;function setStartMarker(){if(startMk)startMk.remove();if(!A.start)return;startMk=L.marker(A.start,{draggable:true,icon:L.divIcon({className:"",html:`<div class="startpin ${A.sel?"":"pulse"}"></div>`,iconSize:[20,20],iconAnchor:[10,10]}),zIndexOffset:1000}).addTo(map).bindTooltip("Start",{className:"tt",direction:"top",offset:[0,-10]});
+  startMk.on("dragend",e=>{const l=e.target.getLatLng();setStart([l.lat,l.lng],true)})}
+function setStart(p,user){A.start=p;LS.set("start",p);if(A.mode==="draw"){if(!A.draw.length)A.draw=[p]}else{A.options=[];A.sel=null;clearRoute()}setStartMarker();loadWx();if(user)toast("Start set. Hit Build when you're ready.");renderAll()}
+function clearRoute(){L_route.clearLayers();L_alts.clearLayers();L_poi.clearLayers();L_marks.clearLayers()}
+
+/* ================= routing ================= */
+const ROUTERS=["https://routing.openstreetmap.de/routed-foot/route/v1/foot/","https://router.project-osrm.org/route/v1/foot/"];
+async function osrm(pts){const c=pts.map(p=>p[1].toFixed(6)+","+p[0].toFixed(6)).join(";");let err;
+  for(const base of ROUTERS){try{const j=await lim(async()=>(await fetchT(base+c+"?overview=full&geometries=geojson&steps=true",12000)).json());
+    if(j.code==="Ok"&&j.routes?.[0]){const r=j.routes[0];return{coords:r.geometry.coordinates.map(([x,y])=>[y,x]),steps:r.legs.flatMap(l=>l.steps||[]).map(s=>({name:s.name||"",type:s.maneuver?.type,mod:s.maneuver?.modifier,loc:s.maneuver?.location?[s.maneuver.location[1],s.maneuver.location[0]]:null,dist:s.distance||0}))}}err=j.message}catch(e){err=e.message}}
+  throw new Error(err||"route")}
+function mkRoute(coords,steps,mode,extra){coords=coords.filter((p,i)=>!i||hav(coords[i-1],p)>.5);const cum=cumd(coords);return{id:uid(),coords,cum,dist:cum[cum.length-1],steps:steps||[],mode,created:Date.now(),...(extra||{})}}
+async function loopAt(S,b,D){let R=D/(2*Math.PI*1.25),best=null;
+  for(let k=0;k<3;k++){const C=dest(S,b,R),w=[dest(C,b-90,R),dest(C,b,R),dest(C,b+90,R)];const r=await osrm([S,...w,S]);const c=despur(r.coords),rt=mkRoute(c,r.steps,"loop",{bear:b});
+    if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.06)break;R*=clamp(ratio,.5,1.8)}
+  return best}
+async function obAt(S,b,D){let d=D/2/1.2,best=null;for(let k=0;k<3;k++){const T=dest(S,b,d),r=await osrm([S,T]),go=r.coords,c=[...go,...go.slice(0,-1).reverse()],rt=mkRoute(c,[...r.steps,...r.steps.slice().reverse()],"ob",{bear:b,turn:go[go.length-1]});
+    if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.05)break;d*=clamp(ratio,.5,1.8)}return best}
+
+/* ================= area data (OpenStreetMap via Overpass) ================= */
+const OVERPASS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
+const G=0.0003,gk=(a,b)=>a+":"+b,cell=p=>[Math.floor(p[0]/G),Math.floor(p[1]/G)];
+function gridOf(ways,step){const s=new Set();for(const w of ways){if(w.length===1){const[a,b]=cell(w[0]);s.add(gk(a,b));continue}for(let i=1;i<w.length;i++){const d=hav(w[i-1],w[i]),n=Math.max(1,Math.ceil(d/step));for(let k=0;k<=n;k++){const f=k/n,[a,b]=cell([w[i-1][0]+(w[i][0]-w[i-1][0])*f,w[i-1][1]+(w[i][1]-w[i-1][1])*f]);s.add(gk(a,b))}}}return s}
+function nearG(s,p,r){if(!s)return false;const[a,b]=cell(p);for(let i=-r;i<=r;i++)for(let j=-r;j<=r;j++)if(s.has(gk(a+i,b+j)))return true;return false}
+function inPoly(p,ring){let c=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const[yi,xi]=ring[i],[yj,xj]=ring[j];if(((yi>p[0])!==(yj>p[0]))&&(p[1]<(xj-xi)*(p[0]-yi)/((yj-yi)||1e-12)+xi))c=!c}return c}
+const AREAS={};
+async function loadArea(center,radius){const key=center.map(v=>v.toFixed(3)).join()+":"+Math.ceil(radius/600);if(AREAS[key])return AREAS[key];
+  const s=dest(center,180,radius)[0],n=dest(center,0,radius)[0],w=dest(center,270,radius)[1],e=dest(center,90,radius)[1],bb=`${s.toFixed(5)},${w.toFixed(5)},${n.toFixed(5)},${e.toFixed(5)}`;
+  const q=`[out:json][timeout:25];(node["amenity"~"^(cafe|drinking_water|toilets|bench|fast_food|ice_cream|juice_bar)$"](${bb});node["shop"~"^(convenience|supermarket|chemist|kiosk|beverages)$"](${bb});node["highway"~"^(traffic_signals|crossing)$"](${bb});node["tourism"~"^(attraction|viewpoint|artwork|museum)$"](${bb});node["historic"](${bb});way["leisure"~"^(park|garden|playground)$"](${bb});way["highway"~"^(footway|pedestrian|path|living_street|track)$"](${bb});way["natural"="coastline"](${bb});way["lit"="yes"](${bb});way["bridge"="yes"]["highway"](${bb}););out geom qt;`;
+  let j=null;
+  for(const u of OVERPASS){try{const r=await fetchT(u,28000,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"data="+encodeURIComponent(q)});if(r.ok){j=await r.json();break}}catch(e){}}
+  const out={ok:!!j,pois:[],foot:null,lit:null,coast:null,parks:[],bridges:[]};if(!j){AREAS[key]=out;return out}
+  const foot=[],lit=[],coast=[];
+  for(const el of j.elements||[]){const t=el.tags||{};
+    if(el.type==="node"){const p=[el.lat,el.lon],nm=t.name||t["name:en"]||"";let ty=null;
+      if(/^(cafe|fast_food|ice_cream|juice_bar)$/.test(t.amenity))ty="cafe";else if(t.amenity==="drinking_water")ty="water";else if(t.amenity==="toilets")ty="toilet";else if(t.amenity==="bench")ty="bench";else if(t.shop)ty="shop";
+      else if(t.highway==="traffic_signals")ty="signal";else if(t.highway==="crossing")ty=t.crossing==="traffic_signals"?"signal":"cross";else if(t.tourism||t.historic)ty="sight";
+      if(ty)out.pois.push({t:ty,name:nm||(ty==="cafe"?(t.amenity==="fast_food"?"Snack stop":"Cafe"):ty==="shop"?(t.shop==="chemist"?"Chemist":"Store"):""),p,sub:t.amenity||t.shop||t.tourism||t.historic||""})}
+    else if(el.type==="way"&&el.geometry){const g=el.geometry.map(x=>[x.lat,x.lon]);
+      if(t.leisure){out.parks.push({ring:g,name:t.name||"",bb:[Math.min(...g.map(x=>x[0])),Math.min(...g.map(x=>x[1])),Math.max(...g.map(x=>x[0])),Math.max(...g.map(x=>x[1]))]});if(t.name&&g.length>3){const c=[g.reduce((a,x)=>a+x[0],0)/g.length,g.reduce((a,x)=>a+x[1],0)/g.length];out.pois.push({t:"sight",name:t.name,p:c,sub:"park",ring:g})}}
+      if(/^(footway|pedestrian|path|living_street|track)$/.test(t.highway))foot.push(g);
+      if(t.natural==="coastline")coast.push(g);
+      if(t.lit==="yes")lit.push(g);
+      if(t.bridge==="yes"&&t.highway)out.bridges.push({g,name:t.name||""})}}
+  out.foot=gridOf(foot,15);out.lit=gridOf(lit,15);out.coast=gridOf(coast,25);out.bridgeG=gridOf(out.bridges.map(b=>b.g),8);
+  AREAS[key]=out;return out}
+const inPark=(ar,p)=>ar.parks.some(k=>p[0]>=k.bb[0]&&p[0]<=k.bb[2]&&p[1]>=k.bb[1]&&p[1]<=k.bb[3]&&inPoly(p,k.ring));
+
+/* ================= analysis ================= */
+function analyse(rt,ar){const S=samples(rt.coords,rt.cum,25);let sc=0,lt=0,br=[];
+  if(ar?.ok){for(const s of S){const scen=nearG(ar.foot,s.p,1)||nearG(ar.coast,s.p,4)||inPark(ar,s.p);if(scen)sc++;if(nearG(ar.lit,s.p,1))lt++}
+    // bridges / flyovers: runs of samples sitting on a bridge
+    let cur=null;for(const s of samples(rt.coords,rt.cum,10)){const on=nearG(ar.bridgeG,s.p,0);if(on){if(!cur)cur={a:s.m,b:s.m};cur.b=s.m}else if(cur){if(cur.b-cur.a>=60)br.push(cur);cur=null}}if(cur&&cur.b-cur.a>=60)br.push(cur)}
+  rt.scenic=ar?.ok?sc/S.length:null;rt.litF=ar?.ok?lt/S.length:null;rt.bridges=br;
+  // POIs within 50 m (signals 15 m)
+  const RG=new Map();for(const s of samples(rt.coords,rt.cum,10)){const[a,b]=cell(s.p),k=gk(a,b);(RG.get(k)||RG.set(k,[]).get(k)).push(s)}
+  const hits=[];if(ar?.ok)for(const q of ar.pois){const[a,b]=cell(q.p);let best=null;for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++){for(const s of RG.get(gk(a+i,b+j))||[]){const d=hav(s.p,q.p);if(!best||d<best.d)best={d,m:s.m}}}
+    if(!best)continue;const lim_=q.t==="signal"||q.t==="cross"?15:q.t==="sight"&&q.sub==="park"?120:50;if(best.d<=lim_)hits.push({...q,m:best.m,d:best.d})}
+  // dedupe signals within 40 m (a junction has several nodes)
+  const sig=[];for(const h of hits.filter(h=>h.t==="signal").sort((a,b)=>a.m-b.m))if(!sig.some(x=>Math.abs(x.m-h.m)<40))sig.push(h);
+  const crs=[];for(const h of hits.filter(h=>h.t==="cross").sort((a,b)=>a.m-b.m))if(!crs.some(x=>Math.abs(x.m-h.m)<40)&&!sig.some(x=>Math.abs(x.m-h.m)<40))crs.push(h);
+  rt.pois=[...hits.filter(h=>h.t!=="signal"&&h.t!=="cross"),...sig];rt.signals=sig.length;rt.cross=crs.length;rt.areaOk=!!ar?.ok;
+  rt.name=rt.name||nameOf(rt);return rt}
+function nameOf(rt){const w={};for(const s of rt.steps)if(s.name)w[s.name]=(w[s.name]||0)+s.dist;const top=Object.entries(w).sort((a,b)=>b[1]-a[1]).map(x=>x[0].replace(/ Road$/," Rd").replace(/ Marg$/," Marg"));
+  const km=r1(rt.dist/1000);if(!top.length)return`${km} km ${rt.mode==="ob"?"out & back":"loop"}`;return rt.mode==="ob"?`${top[0]} out & back`:top[1]?`${top[0]} + ${top[1]}`:`${top[0]} loop`}
+async function addElev(rt){const L=rt.dist,n=clamp(Math.round(L/50),12,100),pts=[...Array(n)].map((_,i)=>({m:L*i/(n-1),p:ptAt(rt.coords,rt.cum,L*i/(n-1))}));
+  try{const u=`https://api.open-meteo.com/v1/elevation?latitude=${pts.map(x=>x.p[0].toFixed(5)).join(",")}&longitude=${pts.map(x=>x.p[1].toFixed(5)).join(",")}`;const j=await lim(async()=>(await fetchT(u,9000)).json());if(!j.elevation)throw 0;
+    let E=pts.map((x,i)=>({m:x.m,e:j.elevation[i]}));E=E.map((x,i)=>({m:x.m,e:(E[Math.max(0,i-1)].e+x.e+E[Math.min(E.length-1,i+1)].e)/3}));
+    for(const b of rt.bridges||[]){const mid=(b.a+b.b)/2,half=(b.b-b.a)/2;for(const x of E)if(x.m>=b.a&&x.m<=b.b)x.e+=6*(1-Math.abs(x.m-mid)/(half||1))}
+    rt.elev=E}catch(e){rt.elev=null}
+  let up=0;if(rt.elev)for(let i=1;i<rt.elev.length;i++){const d=rt.elev[i].e-rt.elev[i-1].e;if(d>.3)up+=d}rt.climb=r0(up+(rt.elev?0:(rt.bridges||[]).length*6));return rt}
+function score(rt,D){const km=rt.dist/1000,err=Math.abs(rt.dist-D)/D,P=A.prefs,night=isDark();
+  let s=100-err*220;if(P.scenic&&rt.scenic!=null)s+=rt.scenic*45;if(P.cross)s-=((rt.signals||0)*1.6+(rt.cross||0)*.6)/km*4;if(P.flat)s-=(rt.climb||0)*.6;if(night&&rt.litF!=null)s+=rt.litF*30;if(painNow()>=3&&rt.scenic!=null)s+=rt.scenic*15;return s}
+function overlap(a,b){const S=samples(a.coords,a.cum,60);let n=0;const B=samples(b.coords,b.cum,20);for(const s of S)if(B.some(x=>hav(x.p,s.p)<35))n++;return n/S.length}
+
+/* ================= session zones ================= */
+function planZones(L){const s=sess();if(A.colour!=="session"||!s)return[{a:0,b:L,z:A.colour==="session"?"easy":"easy"}];
+  const P=pz(),d=(s.detail||"")+" "+(s.title||""),zOf=t=>/\{int\}|interval|repeat|800|fast/i.test(t)?"int":/\{race|race/i.test(t)?"race":/\{tempo\}|tempo/i.test(t)?"tempo":/\{steady\}|steady/i.test(t)?"steady":"easy";
+  const blocks=[],ZM={tempo:"tempo",int:"int",race:"race",racePace:"race",steady:"steady"};let m;const wm=d.match(/^\s*(\d+)\s*min\s*easy/i);
+  if(m=d.match(/(\d+)\s*[×x]\s*(\d+(?:\.\d+)?)\s*(min|km|m)\b([^/,]*)(?:[^\d]*?(\d+(?:\.\d+)?)\s*min\s*(?:easy|jog))?/i)){const n=+m[1],v=+m[2],u=m[3],z=zOf(m[4]||d),rest=m[5]?+m[5]:2,len=u==="min"?v*60/P[z]*1000:u==="km"?v*1000:v;for(let i=0;i<n;i++){blocks.push([len,z]);if(i<n-1)blocks.push([rest*60/P.easy*1000,"easy"])}}
+  else{for(const q of d.matchAll(/(\d+)\s*min\s*(?:continuous\s*|steady\s*)?at\s*\{(\w+)\}/gi)){const z=ZM[q[2]];if(z){blocks.push([+q[1]*60/P[z]*1000,z]);break}}
+    if(!blocks.length&&(m=d.match(/(\d+)\s*min\s*(steady|tempo)/i)))blocks.push([+m[1]*60/P[m[2].toLowerCase()]*1000,m[2].toLowerCase()])}
+  if(blocks.length===1&&blocks[0][1]==="steady")return[{a:0,b:L,z:"steady"}];
+  if(!blocks.length){const z=zOf(d);return[{a:0,b:L,z:z==="steady"?"steady":"easy"}]}
+  const work=blocks.reduce((a,b)=>a+b[0],0),warm=wm?+wm[1]*60/P.easy*1000:clamp((L-work)*.55,600,1800);if(work+warm>L-300){const k=Math.max(.3,(L-warm-300)/work);blocks.forEach(b=>b[0]*=k)}
+  const out=[];let pos=0;const push=(len,z)=>{if(len<=0||pos>=L)return;out.push({a:pos,b:Math.min(L,pos+len),z});pos+=len};push(warm,"easy");blocks.forEach(([l,z])=>push(l,z));if(pos<L)push(L-pos,"easy");return out}
+
+/* ================= weather / air ================= */
+async function loadWx(){const p=A.start||MUMBAI,key=p.map(v=>v.toFixed(2)).join(),c=LS.get("wx",null);
+  if(c&&c.key===key&&Date.now()-c.at<30*60e3){A.wx=c.wx;A.aq=c.aq;pickDefaultHour();renderRight();return}
+  try{const[w,q]=await Promise.all([fetchT(`https://api.open-meteo.com/v1/forecast?latitude=${p[0].toFixed(3)}&longitude=${p[1].toFixed(3)}&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,wind_speed_10m,wind_direction_10m,uv_index&daily=sunrise,sunset&timezone=auto&forecast_days=3`,9000).then(r=>r.json()),
+    fetchT(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${p[0].toFixed(3)}&longitude=${p[1].toFixed(3)}&hourly=us_aqi,pm2_5&timezone=auto&forecast_days=3`,9000).then(r=>r.json()).catch(()=>null)]);
+    if(!w.hourly)throw 0;A.wx=w;A.aq=q;LS.set("wx",{key,at:Date.now(),wx:w,aq:q})}catch(e){A.wx=null}pickDefaultHour();renderRight();renderBottom()}
+function dayKey(i){return A.wx?.daily?.time?.[i]}
+function hourIdx(day,h){const k=dayKey(day);if(!k)return-1;return A.wx.hourly.time.indexOf(`${k}T${String(h).padStart(2,"0")}:00`)}
+function hourWx(day=A.day,h=A.hour){if(!A.wx||h==null)return null;const i=hourIdx(day,h);if(i<0)return null;const H=A.wx.hourly,qi=A.aq?.hourly?.time?.indexOf(H.time[i])??-1;
+  const t=H.temperature_2m[i],rh=H.relative_humidity_2m[i],pen=heatPenalty(t,rh);return{t,rh,feels:H.apparent_temperature[i],rain:H.precipitation_probability?.[i]??0,ws:H.wind_speed_10m[i],wd:H.wind_direction_10m[i],uv:H.uv_index?.[i]??0,pen:pen.p,aqi:qi>=0?A.aq.hourly.us_aqi[qi]:null,pm:qi>=0?A.aq.hourly.pm2_5[qi]:null}}
+function sunTimes(day=A.day){const D=A.wx?.daily;if(!D)return null;const f=s=>{const d=new Date(s);return d.getHours()+d.getMinutes()/60};return{rise:f(D.sunrise[day]),set:f(D.sunset[day]),riseS:D.sunrise[day].slice(11,16),setS:D.sunset[day].slice(11,16)}}
+function isDark(day=A.day,h=A.hour){const s=sunTimes(day);if(!s||h==null){const H=h??new Date().getHours();return H<6||H>=19}return h+.5<s.rise||h>=s.set}
+function slotScore(w,day,h){if(!w)return 99;let s=w.pen*10+w.rain/12;if(w.aqi!=null)s+=Math.max(0,w.aqi-80)/12;if(isDark(day,h))s+=3;if(w.uv>5)s+=w.uv-5;return s}
+function bestSlot(day=A.day){if(!A.wx)return null;const now=new Date(),cand=[];for(let h=5;h<=21;h++){if(h>10&&h<16)continue;if(day===0&&h<=now.getHours())continue;const w=hourWx(day,h);if(w)cand.push({h,s:slotScore(w,day,h)})}cand.sort((a,b)=>a.s-b.s);return cand[0]||null}
+function pickDefaultHour(){if(A.hour!=null)return;if(!A.wx){A.hour=new Date().getHours();return}let b=bestSlot(0);if(!b){A.day=1;b=bestSlot(1)}A.hour=b?b.h:6}
+const aqiCol=v=>v==null?"#5C677A":v<=50?"#35D07F":v<=100?"#F2C94C":v<=150?"#FF9F43":v<=200?"#FF5C5F":"#B76CFF";
+const aqiLbl=v=>v==null?"n/a":v<=50?"good":v<=100?"moderate":v<=150?"poor for training":v<=200?"unhealthy":"very unhealthy";
+const penCol=p=>p<=0?"#35D07F":p<=.75?"#9BE15D":p<=1.5?"#F2C94C":p<=2.5?"#FF9F43":"#FF5C5F";
+
+/* ================= derived route numbers ================= */
+const painNow=()=>Math.max(A.pace?.pain?.shin||0,A.pace?.pain?.knee||0);
+function zonesOf(rt){return planZones(rt.dist)}
+function estTime(rt){const P=pz(),w=hourWx(),heat=1+(w?w.pen:0)/100;let t=0;for(const z of zonesOf(rt))t+=(z.b-z.a)/1000*P[z.z];return t*heat+(rt.signals||0)*12}
+function difficulty(rt){const km=rt.dist/1000,long=Math.max(3,A.pace?.longest||5),w=hourWx(),parts=[["Distance vs your longest ("+r1(long)+" km)",clamp(km/long/1.3,0,1)*45],["Climb ("+(rt.climb||0)+" m)",clamp((rt.climb||0)/40,0,1)*20],["Heat"+(w?" (+"+w.pen+"%)":""),w?clamp(w.pen/5,0,1)*15:5],["Air"+(w?.aqi!=null?" (AQI "+w.aqi+")":""),w?.aqi!=null?clamp((w.aqi-50)/150,0,1)*10:3],["Stop-starts ("+(rt.signals||0)+" signals)",clamp((rt.signals||0)/km/3,0,1)*10]];
+  const s=r0(parts.reduce((a,p)=>a+p[1],0));return{s,parts,lbl:s<30?"Easy":s<50?"Moderate":s<70?"Hard":"Brutal",col:s<30?"#35D07F":s<50?"#F2C94C":s<70?"#FF9F43":"#FF5C5F"}}
+function windNote(rt){const w=hourWx();if(!w||w.ws<6)return w?"Light wind":"";const half=rt.mode==="ob"?rt.dist/2:rt.dist;let into=0,n=0;for(let m=0;m<rt.dist-30;m+=50){const a=ptAt(rt.coords,rt.cum,m),b=ptAt(rt.coords,rt.cum,m+30),d=Math.cos(rad(brg(a,b)-w.wd));if(m<half)n++;if(d>.5)into+=50}
+  if(rt.mode==="ob"){const out=Math.cos(rad(brg(rt.coords[0],rt.turn)-w.wd));return out>.3?"Headwind out, tailwind home":out<-.3?"Tailwind out, headwind home":"Crosswind"}
+  return`Headwind on ${r0(into/rt.dist*100)}% of the loop`}
+function splits(rt){const P=pz(),Z=zonesOf(rt),w=hourWx(),heat=1+(w?w.pen:0)/100,o=[];for(let a=0;a<rt.dist-1;a+=1000){const b=Math.min(rt.dist,a+1000);let t=0,dom={};for(const z of Z){const lo=Math.max(a,z.a),hi=Math.min(b,z.b);if(hi>lo){t+=(hi-lo)/1000*P[z.z];dom[z.z]=(dom[z.z]||0)+hi-lo}}
+    const sg=(rt.pois||[]).filter(p=>p.t==="signal"&&p.m>=a&&p.m<b).length;t=t*heat+sg*12;let el=0;if(rt.elev){const e=x=>{const i=rt.elev.findIndex(q=>q.m>=x);return(rt.elev[i<0?rt.elev.length-1:i]).e};el=e(b)-e(a)}
+    o.push({k:o.length+1,len:b-a,t,z:Object.entries(dom).sort((x,y)=>y[1]-x[1])[0][0],sg,el})}return o}
+function cues(rt){const P=pz(),Z=zonesOf(rt),w=hourWx(),o=[],km=m=>r1(m/1000),pain=painNow();
+  if(Z.length>1){o.push({m:0,t:`Warm up easy at ${fmtT(P.easy)}/km. Don't start the work early.`});for(const z of Z.slice(1)){if(z.z!=="easy")o.push({m:z.a,t:`${ZL[z.z]} starts. Settle at ${fmtT(P[z.z])}/km, smooth not sprinting.`});else if(z.b<rt.dist-50||z.a>0)o.push({m:z.a,t:z.b>=rt.dist-5?"Work done. Cool down easy all the way home.":"Recover. Jog it out, get your breath back."})}}
+  else o.push({m:0,t:`Easy the whole way, ${fmtT(P[Z[0].z])}/km. You should be able to talk.`});
+  for(const b of rt.bridges||[])o.push({m:b.a,t:`Flyover (${r0(b.b-b.a)} m). Shorten stride, hold effort, let pace drop.`});
+  if(rt.elev){for(let i=0;i<rt.elev.length;i++){let j=i;while(j+1<rt.elev.length&&rt.elev[j+1].m-rt.elev[i].m<500)j++;const g=rt.elev[j].e-rt.elev[i].e;if(g>=7&&!(rt.bridges||[]).some(b=>Math.abs(b.a-rt.elev[i].m)<300)&&!o.some(c=>c.cl&&Math.abs(c.m-rt.elev[i].m)<800)){o.push({m:rt.elev[i].m,cl:1,t:`Climb ahead, +${r0(g)} m. Short steps, arms drive.`})}}}
+  const sig=(rt.pois||[]).filter(p=>p.t==="signal").sort((a,b)=>a.m-b.m);for(let i=0;i<sig.length;i++){let j=i;while(j+1<sig.length&&sig[j+1].m-sig[i].m<900)j++;if(j-i>=2){o.push({m:sig[i].m,t:`${j-i+1} signals in a row. Jog on the spot, don't sprint the greens.`});i=j}}
+  const wt=(rt.pois||[]).filter(p=>(p.t==="water"||p.t==="shop"||p.t==="cafe")&&p.m>1500).sort((a,b)=>a.m-b.m)[0];if(wt&&rt.dist>4500)o.push({m:wt.m,t:`Water stop option: ${wt.name||PT[wt.t][0].slice(0,-1)}.`});
+  if(rt.mode==="ob")o.push({m:rt.dist/2,t:"Turnaround. Check the watch, run home even or faster."});
+  o.push({m:Math.max(0,rt.dist-1000),t:"Last km. Run tall, relax the shoulders, finish strong."});
+  if(w&&w.pen>=1.5)o.unshift({m:-1,t:`Heat cost +${w.pen}%: run by effort, expect ~${r0(P.easy*w.pen/100)} s/km slower. Water before you go.`});
+  if(w?.aqi>150)o.unshift({m:-1,t:`AQI ${w.aqi}: keep it easy today, or move hard bits indoors.`});
+  if(pain>=3)o.unshift({m:-1,t:`Shin/knee at ${pain}/10: stay on flat, smooth paths. Stop if it sharpens.`});
+  if(isDark()&&rt.litF!=null)o.unshift({m:-1,t:`After sunset: ${r0(rt.litF*100)}% of this route is on lit roads. Wear something bright.`});
+  return o.sort((a,b)=>a.m-b.m)}
+
+/* ================= build ================= */
+async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: My location, a favourite, or click the map.",true);return}
+  const D=A.km*1000,S=A.start;A.busy=true;A.options=[];A.sel=null;clearRoute();renderLeft();renderBottom();status("Reading the area: paths, parks, signals…");
+  const areaP=loadArea(S,clamp(D/2.6,900,4500));const bears=[0,60,120,180,240,300].map(b=>(b+(Math.random()*20-10)+360)%360);
+  try{status(`Scouting ${bears.length} directions…`);const fn=A.mode==="ob"?obAt:loopAt;const res=(await Promise.allSettled(bears.map(b=>fn(S,b,D)))).filter(r=>r.status==="fulfilled"&&r.value).map(r=>r.value);
+    if(!res.length)throw new Error("none");status("Checking crossings, shade and stops…");const ar=await areaP;if(!ar.ok)toast("Couldn't load cafes/signals right now. Routes still work.",true);
+    res.forEach(r=>analyse(r,ar));res.forEach(r=>r.sc=score(r,D));res.sort((a,b)=>b.sc-a.sc);const pick=[];for(const r of res){if(pick.length>=3)break;if(pick.every(p=>overlap(r,p)<.6))pick.push(r)}
+    status("Measuring climbs…");await Promise.all(pick.map(addElev));pick.forEach(r=>r.sc=score(r,D));pick.sort((a,b)=>b.sc-a.sc);A.options=pick;A.busy=false;status("");selectRoute(pick[0]);
+  }catch(e){A.busy=false;status("");toast("Couldn't reach the route service. Check your internet and try again.",true);renderLeft()}}
+async function finishRoute(rt){const ar=A.start?await loadArea(rt.coords[0],clamp(rt.dist/2.6,900,4500)):null;analyse(rt,ar);await addElev(rt);return rt}
+function selectRoute(rt){A.sel=rt;drawRoute();renderAll();if(rt&&rt.coords.length>1)map.fitBounds(L.latLngBounds(rt.coords),{paddingTopLeft:[360,80],paddingBottomRight:[340,230],maxZoom:16})}
+
+/* ================= draw mode ================= */
+let drawT=null;
+function addWp(p){if(!A.draw.length&&!A.start)A.start=p;A.draw.push(p);A.drawClosed="";drawRebuild()}
+function drawRebuild(){L_draw.clearLayers();A.draw.forEach((p,i)=>{const m=L.marker(p,{draggable:true,icon:L.divIcon({className:"",html:i?'<div class="wp"></div>':'<div class="startpin"></div>',iconSize:[14,14],iconAnchor:[7,7]})}).addTo(L_draw);m.on("dragend",e=>{const l=e.target.getLatLng();A.draw[i]=[l.lat,l.lng];if(!i){A.start=A.draw[0];LS.set("start",A.start)}drawRebuild()});m.on("contextmenu",()=>{if(i){A.draw.splice(i,1);drawRebuild()}})});
+  if(startMk)startMk.setOpacity(A.mode==="draw"?0:1);
+  clearTimeout(drawT);if(A.draw.length<2){A.sel=null;clearRoute();renderAll();return}
+  drawT=setTimeout(async()=>{const pts=[...A.draw];if(A.drawClosed==="loop")pts.push(A.draw[0]);status("Snapping to paths…");
+    try{const r=await osrm(pts);let c=r.coords,steps=r.steps,mode="draw";if(A.drawClosed==="ob"){c=[...c,...c.slice(0,-1).reverse()];steps=[...steps,...steps.slice().reverse()];mode="ob"}
+      const rt=mkRoute(c,steps,mode,{turn:A.drawClosed==="ob"?r.coords[r.coords.length-1]:null});if(A.drawClosed==="ob")rt.mode="ob";await finishRoute(rt);A.options=[];status("");A.sel=rt;drawRoute();renderAll()}
+    catch(e){status("");toast("Couldn't snap that to paths. Try moving the point.",true)}},350)}
+
+/* ================= map drawing ================= */
+const ptIcon=(t,small)=>L.divIcon({className:"",html:`<div class="poi ${small?"sm":""}" style="--pc:${PT[t][1]}">${ICON[t]}</div>`,iconSize:small?[16,16]:[26,26],iconAnchor:small?[8,8]:[13,13]});
+function drawRoute(){clearRoute();const rt=A.sel;
+  for(const o of A.options)if(o!==rt){const pl=L.polyline(o.coords,{color:"#8A97AB",weight:4,opacity:.4,dashArray:"2 7",className:"rt-alt"}).addTo(L_alts);pl.on("click",ev=>{L.DomEvent.stop(ev);selectRoute(o)});pl.bindTooltip(esc(o.name)+" · "+r1(o.dist/1000)+" km",{className:"tt",sticky:true})}
+  if(!rt){setStartMarker();return}
+  L.polyline(rt.coords,{weight:11,className:"rt-case",lineCap:"round",lineJoin:"round"}).addTo(L_route);
+  for(const z of zonesOf(rt)){const seg=slice(rt.coords,rt.cum,z.a,z.b);L.polyline(seg,{color:ZC[z.z],weight:5.5,opacity:1,lineCap:"round",lineJoin:"round",className:"rt"}).addTo(L_route).getElement()?.style.setProperty("--c",ZC[z.z])}
+  const Z=zonesOf(rt);for(let k=1;k*1000<rt.dist-150;k++){const m=k*1000,z=Z.find(q=>m>=q.a&&m<q.b)||Z[0];L.marker(ptAt(rt.coords,rt.cum,m),{interactive:false,icon:L.divIcon({className:"",html:`<div class="km" style="--c:${ZC[z.z]}">${k}</div>`,iconSize:[22,22],iconAnchor:[11,11]})}).addTo(L_marks)}
+  if(rt.mode==="ob"&&rt.turn)L.marker(rt.turn,{interactive:false,icon:L.divIcon({className:"",html:'<div class="turnpin">TURN</div>',iconSize:[44,20],iconAnchor:[22,26]})}).addTo(L_marks);
+  if(A.mode!=="draw")setStartMarker();
+  for(const p of rt.pois||[]){if(!A.poiOn[p.t])continue;const small=p.t==="signal"||p.t==="bench";L.marker(p.p,{icon:ptIcon(p.t,small),zIndexOffset:small?0:200}).addTo(L_poi).bindTooltip(`<b>${esc(p.name||PT[p.t][0])}</b><br><span style="color:#8A97AB">km ${r1(p.m/1000)}${p.sub&&p.sub!==p.t?" · "+esc(p.sub.replace(/_/g," ")):""}</span>`,{className:"tt",direction:"top",offset:[0,-12]})}}
+function drawHeat(){L_heat.clearLayers();if(!A.heat)return;let n=0;for(const r of A.routes){const runs=(r.ran||[]).length;if(!runs)continue;n++;const c=decPoly(r.poly);for(let i=0;i<Math.min(runs,6);i++)L.polyline(c,{pane:"heat",color:"#FF7A1A",weight:14,opacity:.16,lineCap:"round",interactive:false}).addTo(L_heat);L.polyline(c,{pane:"heat",color:"#FFC27A",weight:2,opacity:.55,interactive:false}).addTo(L_heat)}
+  if(!n)toast("No runs on saved routes yet. Log a run against a route in PACE and it glows here.")}
+
+/* ================= library ================= */
+function toSaved(rt){return{id:rt.id,name:rt.name,poly:encPoly(simplify(rt.coords,4)),km:r1(rt.dist/1000)*1,climb:rt.climb||0,signals:rt.signals||0,mode:rt.mode,created:rt.created||Date.now(),start:rt.coords[0].map(v=>+v.toFixed(5)),diff:difficulty(rt).s,
+  counts:Object.fromEntries(Object.keys(PT).map(t=>[t,(rt.pois||[]).filter(p=>p.t===t).length])),ran:(A.routes.find(r=>r.id===rt.id)||{}).ran||[]}}
+function saveSel(){const rt=A.sel;if(!rt)return;const nm=($("#rname")?.value||rt.name).trim().slice(0,60)||rt.name;rt.name=nm;const s=toSaved(rt),i=A.routes.findIndex(r=>r.id===rt.id);if(i>=0)A.routes[i]={...A.routes[i],...s,ran:A.routes[i].ran||[]};else A.routes.unshift(s);LS.set("routes",A.routes);rt.saved=true;toast(`Saved “${nm}”. Send to PACE to log runs on it.`);renderAll()}
+async function openSaved(id){const r=A.routes.find(x=>x.id===id);if(!r)return;const c=decPoly(r.poly);status("Loading route…");const rt=mkRoute(c,[],r.mode,{id:r.id,name:r.name,saved:true,turn:r.mode==="ob"?c[Math.floor(c.length/2)]:null});A.start=c[0];LS.set("start",A.start);if(A.mode==="draw")setMode("loop",true);
+  try{await finishRoute(rt)}catch(e){}rt.name=r.name;status("");A.options=[];selectRoute(rt);loadWx()}
+function miniSvg(poly){const c=decPoly(poly);if(c.length<2)return"";const la=c.map(p=>p[0]),lo=c.map(p=>p[1]),a=Math.min(...la),b=Math.max(...la),x=Math.min(...lo),y=Math.max(...lo),s=Math.max(b-a,(y-x)*.95)||1e-4;
+  const P=c.map(p=>`${(4+(p[1]-x)/s*34+(34-(y-x)/s*34)/2).toFixed(1)},${(38-(p[0]-a)/s*34-(34-(b-a)/s*34)/2).toFixed(1)}`).join(" ");return`<svg viewBox="0 0 42 42" class="mini"><polyline points="${P}" fill="none" stroke="#2E8BFF" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" style="filter:drop-shadow(0 0 3px #2E8BFF)"/></svg>`}
+
+/* ================= send to PACE ================= */
+function sendPace(){const hrs=[];if(A.wx){const H=A.wx.hourly,now=new Date(),k0=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0")+"T"+String(now.getHours()).padStart(2,"0");
+  const i0=Math.max(0,H.time.findIndex(t=>t.slice(0,13)>=k0));for(let i=i0;i<Math.min(H.time.length,i0+48);i++){const qi=A.aq?.hourly?.time?.indexOf(H.time[i])??-1;hrs.push([H.time[i],r1(H.temperature_2m[i]),H.relative_humidity_2m[i],r1(H.apparent_temperature[i]),qi>=0?A.aq.hourly.us_aqi[qi]:null,H.precipitation_probability?.[i]??0,r0(H.wind_speed_10m[i])])}}
+  const sel=A.sel?toSaved(A.sel):null;const routes=A.routes.map(r=>({...r}));if(sel&&!routes.some(r=>r.id===sel.id))routes.unshift({...sel,unsaved:true});
+  const S=sunTimes(0);const payload={v:1,app:"atlas",at:Date.now(),routes,sel:sel?.id||null,plan:A.sel?{route:sel.id,date:dayKey(A.day)||todayISO(),hour:A.hour,est:r0(estTime(A.sel))}:null,wx:hrs.length?{at:Date.now(),loc:(A.start||MUMBAI).map(v=>+v.toFixed(3)),sun:S?[S.riseS,S.setS]:null,hours:hrs}:null};
+  const code="ATLAS1."+b64e(payload);const done=ok=>{$("#modal").innerHTML=`<div class="ov" data-act="mclose-bg"><div class="md" role="dialog" aria-modal="true"><h2>${ok?"Copied. Now paste in PACE":"Copy this into PACE"}</h2><p class="muted small">${routes.length} route${routes.length===1?"":"s"}${hrs.length?" + 48 h of real weather and air quality":""}${sel?" + today's pick: "+esc(sel.name):""}.</p>
+    <ol class="small"><li>Open PACE (button below)</li><li>Runs → <b>Paste from Atlas</b></li><li>Paste (Ctrl+V) and hit Import</li></ol><textarea readonly id="codeBox">${esc(code)}</textarea><div class="ft"><button class="btn" data-act="copyagain">Copy again</button><a class="btn p" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">Open PACE ↗</a><button class="btn" data-act="mclose">Done</button></div></div></div>`;if(!ok){const t=$("#codeBox");t.focus();t.select()}};
+  navigator.clipboard?.writeText(code).then(()=>done(true),()=>done(false))??done(false)}
+
+/* ================= render ================= */
+function syncHTML(){const p=A.pace;if(!p)return`<span class="dot"></span>Not linked`;const h=(Date.now()-(p.got||p.at||0))/36e5;return`<span class="dot ${h<20?"on":""}"></span>PACE ${h<1?"just now":h<24?r0(h)+"h ago":r0(h/24)+"d ago"}`}
+function renderLeft(){$("#sync").innerHTML=syncHTML();const s=sess(),P=A.prefs,rec=A.pace?.rec,pain=painNow();
+  const kip=[];if(s){if(rec!=null&&rec<34)kip.push(`Recovery ${rec}. Kip says cut it to ${r1(s.km*.8)} km and keep it all easy.`);if(pain>=3)kip.push(`Shin/knee at ${pain}/10. I'll favour flat promenades and paths.`);if(!kip.length)kip.push(rec!=null&&rec>=67?`Recovery ${rec}. Green light, go get it.`:`Build it, check the day panel, go.`)}
+  const today=s?`<div class="today"><span class="ey" style="color:#9cc6ff">Today from PACE</span><h3>${esc(s.title)}</h3><p class="small muted">${esc((s.detailText||s.detail||"").slice(0,150))}</p><p class="num" style="font-size:20px;margin-top:6px">${s.km} km</p>
+    <div class="kip"><div class="kipav">K</div><div>${esc(kip.join(" "))}</div></div><button class="btn p w" style="margin-top:10px" data-act="buildToday" ${A.busy?"disabled":""}>Build for today</button></div>`
+    :A.pace?`<div class="today"><span class="ey" style="color:#9cc6ff">Today from PACE</span><h3>No run planned</h3><p class="small muted">Rest day, or build an easy one for fun.</p></div>`
+    :`<div class="today"><span class="ey" style="color:#9cc6ff">Not linked yet</span><h3>Open Atlas from PACE</h3><p class="small muted">PACE → Runs → Open Atlas sends today's session, your paces and recovery here.</p></div>`;
+  const favs=A.favs.map((f,i)=>`<button class="chip" data-act="fav" data-i="${i}" aria-pressed="${A.start&&hav(A.start,f.p)<30}">${esc(f.name)}<span class="x" data-act="favdel" data-i="${i}" title="Remove">×</span></button>`).join("");
+  const opts=A.options.map((o,i)=>{const d=difficulty(o);return`<button class="opt" data-act="opt" data-i="${i}" aria-pressed="${o===A.sel}"><div class="t"><span>${"ABC"[i]} · ${esc(o.name)}</span><span class="badge" style="color:${d.col};background:color-mix(in srgb,${d.col} 14%,transparent)">${d.lbl}</span></div><div class="m">${r1(o.dist/1000)} km · ${o.signals??"?"} signals · ${o.climb??0} m climb${o.scenic!=null?" · "+r0(o.scenic*100)+"% paths/sea/parks":""}</div></button>`}).join("");
+  const draw=A.mode==="draw"?`<div class="sec"><span class="ey">Draw</span><p class="small muted" style="margin:0 0 8px">Click the map to add points. It snaps to real paths. Drag to adjust, right-click a point to remove.</p><div class="chips"><button class="chip" data-act="undo" ${A.draw.length?"":"disabled"}>Undo</button><button class="chip" data-act="dclear">Clear</button><button class="chip" data-act="dloop" aria-pressed="${A.drawClosed==="loop"}">Close loop</button><button class="chip" data-act="dob" aria-pressed="${A.drawClosed==="ob"}">Run it back</button></div></div>`:"";
+  const lib=A.routes.length?A.routes.map(r=>{const ran=r.ran||[],pr=ran.length?Math.min(...ran.map(x=>x.secs)):null;return`<div class="lib" data-act="open" data-id="${r.id}" role="button" tabindex="0">${miniSvg(r.poly)}<div class="i"><b>${esc(r.name)}</b><span>${r.km} km${ran.length?` · ran ${ran.length}× · PR ${fmtT(pr)}`:" · not run yet"}</span></div><button class="del" data-act="del" data-id="${r.id}" title="Delete" aria-label="Delete ${esc(r.name)}">×</button></div>`}).join(""):`<p class="small muted" style="margin:0">Saved routes land here. Name them, run them, chase PRs on them.</p>`;
+  $("#L").innerHTML=`${today}
+  <div class="sec"><span class="ey">Mode</span><div class="seg">${[["loop","Auto loop"],["ob","Out & back"],["draw","Draw"]].map(([k,l])=>`<button data-act="mode" data-v="${k}" aria-pressed="${A.mode===k}">${l}</button>`).join("")}</div></div>
+  <div class="sec"><span class="ey">Start</span><div class="chips"><button class="chip" data-act="locate">◎ My location</button>${favs}<button class="chip" data-act="favadd" ${A.start?"":"disabled"}>＋ Save start</button></div><p class="hint">Or click anywhere on the map${A.mode==="draw"?" (in Draw, clicks add points)":""}.</p></div>
+  ${A.mode!=="draw"?`<div class="sec"><span class="ey">Distance</span><div class="dist"><input type="range" min="1" max="21" step="0.5" value="${A.km}" id="kmR" aria-label="Distance in km"><div class="val"><b class="num" id="kmV">${A.km}</b> <span class="muted">km</span></div></div></div>
+  <div class="sec"><span class="ey">Prefer</span><div class="tog"><span>Promenades, parks & paths</span><button class="sw" data-act="pref" data-k="scenic" aria-pressed="${P.scenic}" aria-label="Prefer promenades"></button></div><div class="tog"><span>Fewest crossings</span><button class="sw" data-act="pref" data-k="cross" aria-pressed="${P.cross}" aria-label="Fewest crossings"></button></div><div class="tog"><span>Flat</span><button class="sw" data-act="pref" data-k="flat" aria-pressed="${P.flat}" aria-label="Flat"></button></div><div class="tog"><span>Well-lit roads</span><span class="small ${isDark()?"amb":"muted"}">${isDark()?"On (after sunset)":"Auto after sunset"}</span></div></div>
+  <button class="btn p w" style="margin-top:14px;height:44px" data-act="build" ${A.busy?"disabled":""}>${A.busy?'<span class="spin"></span> Building…':"Build "+(A.mode==="ob"?"out & back":"loops")}</button>`:draw}
+  ${opts?`<div class="sec"><span class="ey">${A.options.length} options · best first</span>${opts}</div>`:""}
+  ${A.sel?`<div class="sec"><span class="ey">Save</span><div style="display:flex;gap:6px"><input class="inp" id="rname" value="${esc(A.sel.name)}" aria-label="Route name"><button class="btn" data-act="save">${A.sel.saved?"Update":"Save"}</button></div></div>`:""}
+  <div class="sec"><span class="ey">Your routes · ${A.routes.length}</span>${lib}</div>`;
+  const r=$("#kmR");if(r)r.oninput=e=>{A.km=+e.target.value;$("#kmV").textContent=A.km}}
+function renderRight(){const el=$("#right");if(!A.wx){el.innerHTML=`<div class="wxhead"><span class="ey">The day</span><p class="muted small" style="margin:10px 0 16px">${A.start?"Loading the forecast…":"Set a start to see the weather there."}</p></div>${poiPanel()}`;return}
+  const w=hourWx(),S=sunTimes(),b=bestSlot(),dk=dayKey(A.day),dd=new Date(dk+"T12:00"),rt=A.sel;
+  const hs=[];for(let h=4;h<=22;h++){const x=hourWx(A.day,h);if(!x)continue;const ht=clamp((x.t-18)/18,.12,1)*100;hs.push(`<button style="height:${ht}%;background:${penCol(x.pen)};color:${penCol(x.pen)}" class="${b&&b.h===h?"best":""}" aria-pressed="${A.hour===h}" data-act="hour" data-h="${h}" title="${hLbl(h)} · ${r0(x.t)}° · heat +${x.pen}%${x.aqi!=null?" · AQI "+x.aqi:""}"></button>`)}
+  const wn=rt?windNote(rt):"";
+  el.innerHTML=`<div class="wxhead"><span class="ey">${DN[dd.getDay()]} ${dd.getDate()} ${MN[dd.getMonth()]} · ${hLbl(A.hour)}</span>
+    <div class="daypick">${[0,1,2].map(i=>{const k=dayKey(i);if(!k)return"";const d=new Date(k+"T12:00");return`<button data-act="day" data-d="${i}" aria-pressed="${A.day===i}">${i===0?"Today":i===1?"Tomorrow":DN[d.getDay()]}</button>`}).join("")}</div>
+    ${w?`<div class="wxbig"><b class="num">${r0(w.t)}°</b><span class="muted">feels ${r0(w.feels)}° · ${w.rh}%</span></div>`:""}</div>
+  <div class="hours" role="group" aria-label="Pick a start hour">${hs.join("")}</div><div class="hlab"><span>4 am</span><span>noon</span><span>10 pm</span></div>
+  <div class="pad">${w?`<div class="row"><span>Heat cost</span><b style="color:${penCol(w.pen)}">${w.pen?"+"+w.pen+"% slower":"None"}</b></div>
+    <div class="row"><span>Air (AQI)</span><b><i class="aqi" style="background:${aqiCol(w.aqi)};box-shadow:0 0 8px ${aqiCol(w.aqi)}"></i>${w.aqi??"–"} <span class="muted" style="font-weight:500">${aqiLbl(w.aqi)}</span></b></div>
+    <div class="row"><span>Rain</span><b>${w.rain}%</b></div>
+    <div class="row"><span>Wind</span><b><span class="wind" style="transform:rotate(${(w.wd+180)%360}deg)">↑</span> ${r0(w.ws)} km/h${wn?` <span class="muted" style="font-weight:500">· ${esc(wn)}</span>`:""}</b></div>
+    ${w.uv>3?`<div class="row"><span>UV</span><b class="${w.uv>6?"bad":"amb"}">${r1(w.uv)}</b></div>`:""}`:""}
+    ${S?`<div class="row"><span>Sunrise · sunset</span><b>${S.riseS} · ${S.setS}</b></div>`:""}
+    <div class="row"><span>Best start</span>${b?`<button class="btn sm" data-act="hour" data-h="${b.h}" style="color:var(--good);border-color:rgba(53,208,127,.4)">${hLbl(b.h)}</button>`:"<b class='muted'>–</b>"}</div>
+    <div class="row"><span>Light</span><b class="${isDark()?"amb":""}">${isDark()?"Dark · lit roads preferred":"Daylight"}</b></div>
+  </div>${poiPanel()}`}
+function poiPanel(){const rt=A.sel,c=t=>rt?(rt.pois||[]).filter(p=>p.t===t).length:"–";
+  return`<div class="pad" style="border-top:1px solid var(--line);padding-top:14px"><span class="ey" style="display:block;margin-bottom:8px">On route · within 50 m</span><div class="poichips">${Object.entries(PT).map(([k,[l,col]])=>`<button class="pc" data-act="poi" data-k="${k}" aria-pressed="${!!A.poiOn[k]}"><i style="background:color-mix(in srgb,${col} 18%,transparent);color:${col}">${ICON[k]}</i>${l}<b>${c(k)}</b></button>`).join("")}</div>
+  ${rt&&rt.areaOk===false?`<p class="hint">Couldn't load stops from OpenStreetMap this time.</p>`:""}</div>`}
+function renderBottom(){const el=$("#bottom"),rt=A.sel;
+  if(!rt){el.innerHTML=`<div class="empty">${A.busy?'<span class="spin"></span><span>Building your routes…</span>':`<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M6 32c4-16 12-22 28-22" stroke="#2E8BFF" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 6"/><circle cx="6" cy="32" r="4" fill="#35D07F"/></svg><div><b style="color:var(--fg)">No route yet</b><br><span class="small">${A.mode==="draw"?"Click the map to start drawing.":"Pick a start and a distance, then Build. Or open one of your routes."}</span></div>`}</div>`;return}
+  const d=difficulty(rt),t=estTime(rt),s=sess();
+  el.innerHTML=`<div class="bgrid"><div><input class="rname" value="${esc(rt.name)}" aria-label="Route name" id="rname2"><div class="bstats"><div class="big"><b class="num">${r1(rt.dist/1000)}</b><span class="muted">km</span><span class="badge" style="margin-left:auto;color:${d.col};background:color-mix(in srgb,${d.col} 14%,transparent)" title="${esc(d.parts.map(p=>p[0]+": "+r0(p[1])).join("\n"))}">${d.lbl} · ${d.s}</span></div>
+    <div><span class="ey">Est. time</span><b class="num">${fmtT(t)}</b></div><div><span class="ey">Climb</span><b class="num">${rt.climb??0} m</b></div><div><span class="ey">Signals</span><b class="num">${rt.signals??"–"}</b></div><div><span class="ey">Crossings</span><b class="num">${rt.cross??"–"}</b></div></div></div>
+  <div><div class="tabs">${[["profile","Profile"],["splits","Splits"],["kip","Kip cues"]].map(([k,l])=>`<button data-act="tab" data-v="${k}" aria-pressed="${A.tab===k}">${l}</button>`).join("")}<span class="sp"></span>${s?`<div class="seg" style="grid-template-columns:1fr 1fr;width:220px;padding:3px"><button data-act="colour" data-v="easy" aria-pressed="${A.colour==="easy"}" style="height:24px;font-size:11.5px">Easy run</button><button data-act="colour" data-v="session" aria-pressed="${A.colour==="session"}" style="height:24px;font-size:11.5px">Today's session</button></div>`:""}</div>
+  ${A.tab==="profile"?profSvg(rt):A.tab==="splits"?`<div class="splits">${splits(rt).map(x=>`<div class="split" style="--zc:${ZC[x.z]}"><span>KM ${x.k}${x.len<990?" ("+r1(x.len/1000)+")":""}</span><b class="num">${fmtT(x.t)}</b><span>${x.el>=1?"▲"+r0(x.el)+" m":x.el<=-1?"▼"+r0(-x.el)+" m":"flat"}${x.sg?" · "+x.sg+"🚦":""}</span></div>`).join("")}</div>`
+   :`<div class="cues">${cues(rt).map(c=>`<div class="cue" data-act="cue" data-m="${c.m}"><span class="k">${c.m<0?"Before":"Km "+r1(c.m/1000)}</span><span>${esc(c.t)}</span></div>`).join("")}</div>`}
+  <div class="legend" style="margin-top:6px">${[...new Set(zonesOf(rt).map(z=>z.z))].map(z=>`<span><i style="background:${ZC[z]};box-shadow:0 0 6px ${ZC[z]}"></i>${ZL[z]} ${fmtT(pz()[z])}/km</span>`).join("")}${rt.elev?"":`<span>· elevation unavailable</span>`}</div></div></div>`;
+  const n2=$("#rname2");if(n2)n2.onchange=e=>{rt.name=e.target.value.trim().slice(0,60)||rt.name;if($("#rname"))$("#rname").value=rt.name;if(rt.saved)saveSel();else renderLeft()};
+  const sv=$("#prof");if(sv){sv.onmousemove=e=>{const b=sv.getBoundingClientRect(),m=clamp((e.clientX-b.left-30*b.width/1000)/(b.width*(960/1000)),0,1)*rt.dist;profHover(m)};sv.onmouseleave=()=>profHover(null)}}
+function profSvg(rt){const W=1000,H=118,pl=30,pb=16,E=rt.elev||[{m:0,e:0},{m:rt.dist,e:0}],lo=Math.min(...E.map(x=>x.e)),hi=Math.max(lo+12,...E.map(x=>x.e)),X=m=>pl+m/rt.dist*(W-pl-10),Y=e=>8+(1-(e-lo)/(hi-lo))*(H-pb-14);
+  const line=E.map(x=>`${X(x.m).toFixed(1)},${Y(x.e).toFixed(1)}`).join(" ");const Z=zonesOf(rt);
+  const grads=Z.map((z,i)=>`<clipPath id="zc${i}"><rect x="${X(z.a)}" y="0" width="${X(z.b)-X(z.a)}" height="${H}"/></clipPath>`).join("");
+  const fills=Z.map((z,i)=>`<polygon clip-path="url(#zc${i})" points="${X(0)},${H-pb} ${line} ${X(rt.dist)},${H-pb}" fill="${ZC[z.z]}" fill-opacity=".22"/><polyline clip-path="url(#zc${i})" points="${line}" fill="none" stroke="${ZC[z.z]}" stroke-width="2.2"/>`).join("");
+  const kms=[];for(let k=1;k*1000<rt.dist;k++)kms.push(`<line x1="${X(k*1000)}" x2="${X(k*1000)}" y1="${8}" y2="${H-pb}" stroke="rgba(255,255,255,.05)"/><text x="${X(k*1000)}" y="${H-3}" text-anchor="middle" class="ax">${k}</text>`);
+  const br=(rt.bridges||[]).map(b=>`<text x="${X((b.a+b.b)/2)}" y="16" text-anchor="middle" fill="#FFB020" font-size="11" font-family="IBM Plex Mono">flyover</text>`).join("");
+  const sg=(rt.pois||[]).filter(p=>p.t==="signal").map(p=>`<circle cx="${X(p.m)}" cy="${H-pb-3}" r="2.6" fill="#FF5C5F"/>`).join("");
+  return`<svg id="prof" class="prof" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Elevation profile"><style>.ax{fill:#5C677A;font:10px "IBM Plex Mono"}</style><defs>${grads}</defs>${kms.join("")}<text x="${pl-6}" y="${Y(hi)+4}" text-anchor="end" class="ax">${r0(hi)}m</text><text x="${pl-6}" y="${Y(lo)}" text-anchor="end" class="ax">${r0(lo)}m</text>${fills}${br}${sg}<line id="phl" x1="0" x2="0" y1="8" y2="${H-pb}" stroke="#fff" stroke-opacity=".6" visibility="hidden"/></svg>`}
+function profHover(m){const ln=$("#phl"),rt=A.sel;if(hoverMk){hoverMk.remove();hoverMk=null}if(m==null||!rt){ln&&ln.setAttribute("visibility","hidden");return}const x=30+m/rt.dist*960;ln.setAttribute("x1",x);ln.setAttribute("x2",x);ln.setAttribute("visibility","visible");
+  hoverMk=L.marker(ptAt(rt.coords,rt.cum,m),{interactive:false,icon:L.divIcon({className:"",html:'<div class="hover-dot"></div>',iconSize:[14,14],iconAnchor:[7,7]})}).addTo(map).bindTooltip("km "+r1(m/1000),{permanent:true,className:"tt",direction:"top",offset:[0,-10]})}
+function renderAll(){renderLeft();renderRight();renderBottom()}
+
+/* ================= actions ================= */
+function setMode(m,quiet){A.mode=m;A.options=[];if(m==="draw"){A.draw=A.start?[A.start]:[];A.drawClosed="";A.sel=null;clearRoute();drawRebuild()}else{L_draw.clearLayers();if(startMk)startMk.setOpacity(1);A.sel=null;clearRoute()}if(!quiet)renderAll()}
+function locate(){if(!navigator.geolocation){toast("Location isn't available in this browser.",true);return}status("Finding you…");navigator.geolocation.getCurrentPosition(p=>{status("");const c=[p.coords.latitude,p.coords.longitude];map.setView(c,16);setStart(c,false);toast("Start set to your location.")},()=>{status("");toast("Location blocked. Click the map to set a start, or allow location for this site.",true)},{enableHighAccuracy:true,timeout:9000,maximumAge:60000})}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(!t)return;const a=t.dataset.act;
+  const H={mode:()=>setMode(t.dataset.v),locate,build,
+    buildToday:()=>{const s=sess();if(!s)return;const rec=A.pace?.rec;A.km=clamp(Math.round((rec!=null&&rec<34?s.km*.8:s.km)*2)/2,1,21);A.colour=rec!=null&&rec<34?"easy":"session";if(A.mode==="draw")setMode("loop",true);if(painNow()>=3){A.prefs.flat=true;A.prefs.scenic=true}build()},
+    pref:()=>{const k=t.dataset.k;A.prefs[k]=!A.prefs[k];LS.set("prefs",A.prefs);if(A.options.length){A.options.forEach(o=>o.sc=score(o,A.km*1000));A.options.sort((a,b)=>b.sc-a.sc)}renderLeft()},
+    opt:()=>selectRoute(A.options[+t.dataset.i]),
+    fav:()=>{if(e.target.closest(".x"))return;const f=A.favs[+t.dataset.i];map.setView(f.p,16);setStart(f.p,false);toast("Start: "+f.name)},
+    favdel:()=>{e.stopPropagation();A.favs.splice(+t.dataset.i,1);LS.set("favs",A.favs);renderLeft()},
+    favadd:()=>{openName("Name this start","Home, Marine Drive, school…","",nm=>{A.favs.push({name:nm,p:A.start});LS.set("favs",A.favs);renderLeft();toast("Saved start: "+nm)})},
+    save:saveSel,open:()=>{if(e.target.closest(".del"))return;openSaved(t.dataset.id)},
+    del:()=>{e.stopPropagation();const r=A.routes.find(x=>x.id===t.dataset.id);if(!r)return;if(!confirmDel(r))return;A.routes=A.routes.filter(x=>x.id!==r.id);LS.set("routes",A.routes);renderLeft();toast("Deleted "+r.name)},
+    undo:()=>{A.draw.pop();A.drawClosed="";drawRebuild()},dclear:()=>{A.draw=A.start?[A.start]:[];A.drawClosed="";drawRebuild()},
+    dloop:()=>{A.drawClosed=A.drawClosed==="loop"?"":"loop";drawRebuild()},dob:()=>{A.drawClosed=A.drawClosed==="ob"?"":"ob";drawRebuild()},
+    day:()=>{A.day=+t.dataset.d;const b=bestSlot();A.hour=b?b.h:A.hour;renderAll();if(A.sel)drawRoute()},hour:()=>{A.hour=+t.dataset.h;renderAll()},
+    poi:()=>{const k=t.dataset.k;A.poiOn[k]=A.poiOn[k]?0:1;LS.set("poiOn",A.poiOn);drawRoute();renderRight()},
+    tab:()=>{A.tab=t.dataset.v;renderBottom()},colour:()=>{A.colour=t.dataset.v;drawRoute();renderBottom()},
+    cue:()=>{const m=+t.dataset.m;if(m>=0&&A.sel){map.setView(ptAt(A.sel.coords,A.sel.cum,m),17);profHover(m);setTimeout(()=>profHover(null),2500)}},
+    heat:()=>{A.heat=!A.heat;$("#heatBtn").classList.toggle("on",A.heat);drawHeat()},send:sendPace,
+    copyagain:()=>{const t2=$("#codeBox");t2.select();navigator.clipboard?.writeText(t2.value).then(()=>toast("Copied"),()=>document.execCommand("copy"))},
+    mclose:()=>$("#modal").innerHTML="","mclose-bg":()=>{if(e.target===t)$("#modal").innerHTML=""},
+    nameok:()=>{const v=$("#nmIn").value.trim();if(!v)return;$("#modal").innerHTML="";nameCb&&nameCb(v.slice(0,40))}};
+  if(H[a]){if(t.tagName==="A")return;H[a]()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("#modal").innerHTML="";if(e.key==="Enter"&&e.target.id==="nmIn")document.querySelector('[data-act="nameok"]').click();if(e.key==="Enter"&&e.target.classList.contains("lib"))e.target.click();if(e.key==="Enter"&&e.target.id==="rname")saveSel()});
+function confirmDel(r){return window.confirm(`Delete “${r.name}”? Runs logged on it in PACE stay.`)}
+let nameCb=null;function openName(title,ph,val,cb){nameCb=cb;$("#modal").innerHTML=`<div class="ov" data-act="mclose-bg"><div class="md" role="dialog" aria-modal="true"><h2>${esc(title)}</h2><input class="inp" id="nmIn" placeholder="${esc(ph)}" value="${esc(val)}" style="margin:12px 0"><div class="ft"><button class="btn" data-act="mclose">Cancel</button><button class="btn p" data-act="nameok">Save</button></div></div></div>`;$("#nmIn").focus()}
+
+/* search (Nominatim) */
+let sT;$("#q").addEventListener("input",e=>{clearTimeout(sT);const v=e.target.value.trim();if(v.length<3){$("#sres").hidden=true;return}sT=setTimeout(()=>search(v),450)});
+$("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){clearTimeout(sT);search(e.target.value.trim())}if(e.key==="Escape")$("#sres").hidden=true});
+async function search(v){if(!v)return;try{const c=map.getCenter(),j=await(await fetchT(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&countrycodes=in&q=${encodeURIComponent(v)}&viewbox=${c.lng-.4},${c.lat+.4},${c.lng+.4},${c.lat-.4}`,8000,{headers:{"Accept-Language":"en"}})).json();
+  const box=$("#sres");box.hidden=false;box.innerHTML=j.length?j.map(r=>`<button data-lat="${r.lat}" data-lon="${r.lon}"><b>${esc(r.name||r.display_name.split(",")[0])}</b><br><span class="small muted">${esc(r.display_name.split(",").slice(1,4).join(","))}</span></button>`).join(""):`<button disabled><span class="muted">No places found</span></button>`;
+  box.querySelectorAll("button[data-lat]").forEach(b=>b.onclick=()=>{const p=[+b.dataset.lat,+b.dataset.lon];box.hidden=true;$("#q").value="";map.setView(p,16);setStart(p,false);toast("Start set. Hit Build.")})}catch(e){toast("Search isn't responding right now.",true)}}
+
+/* ================= boot ================= */
+readHash();initMap();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
+if(!A.start){if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{const c=[p.coords.latitude,p.coords.longitude];map.setView(c,16);setStart(c,false)},()=>{setStart(MUMBAI,false);toast("Using Marine Drive. Allow location or click the map to change the start.")},{timeout:8000,maximumAge:120000});else setStart(MUMBAI,false)}
+else loadWx();
+if(sess())A.km=clamp(Math.round(sess().km*2)/2,1,21),renderLeft();
+</script></body></html>
