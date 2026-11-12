@@ -207,8 +207,8 @@ function initBase(i=0){if(baseOk)return;const B=BASES[i];if(!B){blockedNote();re
   const next=()=>{if(!baseOk)initBase(i+1)};
   if(B.kind==="gl"){if(!window.maplibregl){next();return}
     try{const c=map.getCenter();gl=new maplibregl.Map({container:"gl",style:B.style,center:[c.lng,c.lat],zoom:map.getZoom()-1,interactive:false,attributionControl:false,fadeDuration:0});
-      $("#gl").classList.toggle("inv",B.inv);let t=setTimeout(next,9000);
-      gl.on("load",()=>{clearTimeout(t);baseOk=true;map.attributionControl.addAttribution(B.attr);glSync()});
+      $("#gl").classList.toggle("inv",B.inv);let t=setTimeout(()=>{if(!gl||!gl.isStyleLoaded())next()},12000);
+      gl.on("style.load",()=>{clearTimeout(t);baseOk=true;map.attributionControl.addAttribution(B.attr);glSync()});
       gl.on("error",e=>{if(!baseOk&&/style\.json/.test(String(e?.error?.url||""))){clearTimeout(t);next()}})}catch(e){next()}
     return}
   tiles=L.tileLayer(B.url,{maxZoom:19,maxNativeZoom:B.max,attribution:B.attr}).addTo(map);tiles.getContainer?.()&&map.getPane("tilePane").classList.toggle("inv",B.inv);
