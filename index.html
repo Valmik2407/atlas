@@ -253,14 +253,15 @@ async function osrm(pts){const P=A.prefs,dark=isDark();let err;
     if(j.code==="Ok"&&j.routes?.[0]){const r=j.routes[0];return{coords:r.geometry.coordinates.map(([x,y])=>[y,x]),steps:r.legs.flatMap(l=>l.steps||[]).map(s=>({name:s.name||"",type:s.maneuver?.type,mod:s.maneuver?.modifier,loc:s.maneuver?.location?[s.maneuver.location[1],s.maneuver.location[0]]:null,dist:s.distance||0}))}}err=j.message}catch(e){err=e.message}}
   throw new Error(err||"route")}
 function mkRoute(coords,steps,mode,extra){coords=coords.filter((p,i)=>!i||hav(coords[i-1],p)>.5);const cum=cumd(coords);return{id:uid(),coords,cum,dist:cum[cum.length-1],steps:steps||[],mode,created:Date.now(),...(extra||{})}}
-async function loopAt(S,b,D){let R=D/(2*Math.PI*1.25),best=null;
+const KS={loop:1,long:1,ob:1},learn=(k,D,d)=>{KS[k]=clamp(KS[k]*(0.6+0.4*D/d),.4,2.5)};
+async function loopAt(S,b,D){let R=D/(2*Math.PI*1.25)*KS.loop,best=null;
   for(let k=0;k<2;k++){const C=dest(S,b,R),w=[dest(C,b-90,R),dest(C,b,R),dest(C,b+90,R)];const r=await osrm([S,...w,S]);const c=despur(r.coords),rt=mkRoute(c,r.steps,"loop",{bear:b});
-    if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.06)break;R*=clamp(ratio,.5,1.8)}
+    if(!k)learn("loop",D,rt.dist);if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.14)break;R*=clamp(ratio,.5,1.8)}
   return best}
-async function longAt(S,b,D){let d=D/2.4,best=null;for(let k=0;k<2;k++){const w=[dest(S,b-14,d),dest(S,b+14,d)],r=await osrm([S,...w,S]),rt=mkRoute(despur(r.coords),r.steps,"loop",{bear:b,shape:"long"});
-    if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.08)break;d*=clamp(ratio,.5,1.8)}return best}
-async function obAt(S,b,D){let d=D/2/1.2,best=null;for(let k=0;k<2;k++){const T=dest(S,b,d),r=await osrm([S,T]),go=r.coords,c=[...go,...go.slice(0,-1).reverse()],rt=mkRoute(c,[...r.steps,...r.steps.slice().reverse()],"ob",{bear:b,turn:go[go.length-1]});
-    if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.05)break;d*=clamp(ratio,.5,1.8)}return best}
+async function longAt(S,b,D){let d=D/2.4*KS.long,best=null;for(let k=0;k<2;k++){const w=[dest(S,b-14,d),dest(S,b+14,d)],r=await osrm([S,...w,S]),rt=mkRoute(despur(r.coords),r.steps,"loop",{bear:b,shape:"long"});
+    if(!k)learn("long",D,rt.dist);if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.14)break;d*=clamp(ratio,.5,1.8)}return best}
+async function obAt(S,b,D){let d=D/2/1.2*KS.ob,best=null;for(let k=0;k<2;k++){const T=dest(S,b,d),r=await osrm([S,T]),go=r.coords,c=[...go,...go.slice(0,-1).reverse()],rt=mkRoute(c,[...r.steps,...r.steps.slice().reverse()],"ob",{bear:b,turn:go[go.length-1]});
+    if(!k)learn("ob",D,rt.dist);if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.12)break;d*=clamp(ratio,.5,1.8)}return best}
 
 /* ================= area data: OpenStreetMap vector tiles (VersaTiles), Overpass as a bonus ================= */
 const OVERPASS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter","https://overpass.private.coffee/api/interpreter"];
@@ -395,7 +396,7 @@ function cues(rt){const P=pz(),Z=zonesOf(rt),w=hourWx(),o=[],km=m=>r1(m/1000),pa
 /* ================= build ================= */
 async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: My location, a favourite, or click the map.",true);return}
   const D=A.km*1000,S=A.start;A.busy=true;A.options=[];A.sel=null;A.cmp=[];clearRoute();renderLeft();renderBottom();status("Reading the area: paths, parks, signals…");
-  const areaP=loadArea(S,clamp(D/2.6,900,4500)),N=16,bears=[...Array(N)].map((_,i)=>(i*360/N+Math.random()*10-5+360)%360);
+  const areaP=loadArea(S,clamp(D/2.6,900,4500)),N=12,bears=[...Array(N)].map((_,i)=>(i*360/N+Math.random()*10-5+360)%360);
   const jobs=A.mode==="ob"?bears.map(b=>()=>obAt(S,b,D)):[...bears.map(b=>()=>loopAt(S,b,D)),...bears.filter((_,i)=>i%2).map(b=>()=>longAt(S,b,D))];
   let done=0;status(`Scouting routes… 0/${jobs.length}`);
   try{const res=(await Promise.allSettled(jobs.map(f=>f().finally(()=>{done++;status(`Scouting routes… ${done}/${jobs.length}`)})))).filter(r=>r.status==="fulfilled"&&r.value).map(r=>r.value);
