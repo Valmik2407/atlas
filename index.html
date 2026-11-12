@@ -564,9 +564,16 @@ let nameCb=null;function openName(title,ph,val,cb){nameCb=cb;$("#modal").innerHT
 /* search (Nominatim) */
 let sT;$("#q").addEventListener("input",e=>{clearTimeout(sT);const v=e.target.value.trim();if(v.length<3){$("#sres").hidden=true;return}sT=setTimeout(()=>search(v),450)});
 $("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){clearTimeout(sT);search(e.target.value.trim())}if(e.key==="Escape")$("#sres").hidden=true});
-async function search(v){if(!v)return;try{const c=map.getCenter(),j=await(await fetchT(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&countrycodes=in&q=${encodeURIComponent(v)}&viewbox=${c.lng-.4},${c.lat+.4},${c.lng+.4},${c.lat-.4}`,8000,{headers:{"Accept-Language":"en"}})).json();
-  const box=$("#sres");box.hidden=false;box.innerHTML=j.length?j.map(r=>`<button data-lat="${r.lat}" data-lon="${r.lon}"><b>${esc(r.name||r.display_name.split(",")[0])}</b><br><span class="small muted">${esc(r.display_name.split(",").slice(1,4).join(","))}</span></button>`).join(""):`<button disabled><span class="muted">No places found</span></button>`;
-  box.querySelectorAll("button[data-lat]").forEach(b=>b.onclick=()=>{const p=[+b.dataset.lat,+b.dataset.lon];box.hidden=true;$("#q").value="";map.setView(p,16);setStart(p,false);toast("Start set. Hit Build.")})}catch(e){toast("Search isn't responding right now.",true)}}
+async function search(v){if(!v)return;const box=$("#sres"),c=map.getCenter(),my=++search.n;box.hidden=false;box.innerHTML=`<button disabled><span class="muted"><span class="spin" style="display:inline-block;vertical-align:-2px;margin-right:8px"></span>Searching…</span></button>`;
+  const srcs=[async()=>{const j=await(await fetchT(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&countrycodes=in&q=${encodeURIComponent(v)}&viewbox=${c.lng-.4},${c.lat+.4},${c.lng+.4},${c.lat-.4}`,7000,{headers:{"Accept-Language":"en"}})).json();return j.map(r=>({lat:+r.lat,lon:+r.lon,name:r.name||r.display_name.split(",")[0],sub:r.display_name.split(",").slice(1,4).join(",")}))},
+    async()=>{const j=await(await fetchT(`https://photon.komoot.io/api/?q=${encodeURIComponent(v)}&limit=6&lat=${c.lat}&lon=${c.lng}&lang=en`,7000)).json();return(j.features||[]).map(f=>({lat:f.geometry.coordinates[1],lon:f.geometry.coordinates[0],name:f.properties.name||v,sub:[f.properties.street,f.properties.district||f.properties.locality,f.properties.city].filter(Boolean).join(", ")}))},
+    async()=>{const j=await(await fetchT(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=6&language=en&countryCode=IN`,7000)).json();return(j.results||[]).map(r=>({lat:r.latitude,lon:r.longitude,name:r.name,sub:[r.admin2,r.admin1].filter(Boolean).join(", ")}))}];
+  let res=null,fail=0;for(const f of srcs){try{const r=await f();if(r&&r.length){res=r;break}if(r)res=res||[]}catch(e){fail++}}if(my!==search.n)return;
+  if(!res){box.innerHTML=`<button disabled><span class="muted">Search can't reach the map servers. If you're on a VPN, turn it off for this site, or click the map to set a start.</span></button>`;return}
+  box.innerHTML=res.length?res.map(r=>`<button data-lat="${r.lat}" data-lon="${r.lon}"><b>${esc(r.name)}</b><br><span class="small muted">${esc(r.sub)}</span></button>`).join(""):`<button disabled><span class="muted">No places found for “${esc(v)}”. Try a landmark or area name.</span></button>`;
+  box.querySelectorAll("button[data-lat]").forEach(b=>b.onclick=()=>{const p=[+b.dataset.lat,+b.dataset.lon];box.hidden=true;$("#q").value="";map.setView(p,16);setStart(p,false);toast("Start set. Hit Build.")})}
+search.n=0;
+document.addEventListener("click",e=>{if(!e.target.closest(".search"))$("#sres").hidden=true});
 
 /* ================= boot ================= */
 readHash();initMap();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
