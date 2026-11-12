@@ -72,7 +72,7 @@ button,input,select{font:inherit;color:inherit}
 .inp{width:100%;height:38px;border-radius:11px;border:1px solid var(--line2);background:rgba(0,0,0,.25);padding:0 12px;outline:none}.inp:focus{border-color:rgba(46,139,255,.6)}
 .row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;gap:10px}.row:last-child{border:0}.row>span:first-child{color:var(--mute)}
 .wxhead{padding:16px 16px 6px}.wxbig{display:flex;align-items:baseline;gap:10px;margin:4px 0 2px}.wxbig b{font-size:46px;line-height:1}
-.daypick{display:flex;gap:4px;margin-top:8px}.daypick button{flex:1;height:28px;border-radius:8px;border:1px solid var(--line);background:none;cursor:pointer;font-size:11.5px;color:var(--mute)}.daypick button[aria-pressed=true]{color:#fff;background:rgba(255,255,255,.08);border-color:var(--line2)}
+.daypick{display:flex;gap:4px;margin-top:8px}.daypick button{flex:1;min-width:0;height:36px;padding:0;border-radius:8px;border:1px solid var(--line);background:none;cursor:pointer;font-size:10.5px;line-height:1.1;color:var(--mute);display:flex;flex-direction:column;align-items:center;justify-content:center}.daypick button small{font:700 12px "Chakra Petch";color:inherit}.daypick button[aria-pressed=true]{color:#fff;background:rgba(255,255,255,.08);border-color:var(--line2)}
 .hours{display:flex;align-items:flex-end;gap:2px;height:64px;margin:10px 0 2px;padding:0 16px}
 .hours button{flex:1;border:0;padding:0;border-radius:3px 3px 1px 1px;cursor:pointer;opacity:.55;transition:.12s;min-width:0}
 .hours button:hover{opacity:.9}.hours button[aria-pressed=true]{opacity:1;box-shadow:0 0 12px currentColor}
@@ -348,11 +348,11 @@ function planZones(L){const s=sess(),ty=rType();if(ty==="easy"||ty==="long"||(ty
   const out=[];let pos=0;const push=(len,z)=>{if(len<=0||pos>=L)return;out.push({a:pos,b:Math.min(L,pos+len),z});pos+=len};push(warm,"easy");blocks.forEach(([l,z])=>push(l,z));if(pos<L)push(L-pos,"easy");return out}
 
 /* ================= weather / air ================= */
-async function loadWx(){const p=A.start||MUMBAI,key=p.map(v=>v.toFixed(2)).join(),c=LS.get("wx",null);
+async function loadWx(){const p=A.start||MUMBAI,key=p.map(v=>v.toFixed(2)).join(),c=LS.get("wx7",null);
   if(c&&c.key===key&&Date.now()-c.at<30*60e3){A.wx=c.wx;A.aq=c.aq;pickDefaultHour();renderRight();return}
-  try{const[w,q]=await Promise.all([fetchT(`https://api.open-meteo.com/v1/forecast?latitude=${p[0].toFixed(3)}&longitude=${p[1].toFixed(3)}&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,wind_speed_10m,wind_direction_10m,uv_index&daily=sunrise,sunset&timezone=auto&forecast_days=3`,9000).then(r=>r.json()),
-    fetchT(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${p[0].toFixed(3)}&longitude=${p[1].toFixed(3)}&hourly=us_aqi,pm2_5&timezone=auto&forecast_days=3`,9000).then(r=>r.json()).catch(()=>null)]);
-    if(!w.hourly)throw 0;A.wx=w;A.aq=q;LS.set("wx",{key,at:Date.now(),wx:w,aq:q})}catch(e){A.wx=null}pickDefaultHour();renderRight();renderBottom()}
+  try{const[w,q]=await Promise.all([fetchT(`https://api.open-meteo.com/v1/forecast?latitude=${p[0].toFixed(3)}&longitude=${p[1].toFixed(3)}&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,wind_speed_10m,wind_direction_10m,uv_index&daily=sunrise,sunset&timezone=auto&forecast_days=7`,9000).then(r=>r.json()),
+    fetchT(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${p[0].toFixed(3)}&longitude=${p[1].toFixed(3)}&hourly=us_aqi,pm2_5&timezone=auto&forecast_days=7`,9000).then(r=>r.json()).catch(()=>null)]);
+    if(!w.hourly)throw 0;A.wx=w;A.aq=q;LS.set("wx7",{key,at:Date.now(),wx:w,aq:q})}catch(e){A.wx=null}pickDefaultHour();renderRight();renderBottom()}
 function dayKey(i){return A.wx?.daily?.time?.[i]}
 function hourIdx(day,h){const k=dayKey(day);if(!k)return-1;return A.wx.hourly.time.indexOf(`${k}T${String(h).padStart(2,"0")}:00`)}
 function hourWx(day=A.day,h=A.hour){if(!A.wx||h==null)return null;const i=hourIdx(day,h);if(i<0)return null;const H=A.wx.hourly,qi=A.aq?.hourly?.time?.indexOf(H.time[i])??-1;
@@ -458,7 +458,7 @@ function syncHTML(){const p=A.pace;if(!p)return`<span class="dot"></span>Not lin
 function renderLeft(){$("#sync").innerHTML=syncHTML();const s=sess(),P=A.prefs,rec=A.pace?.rec,pain=painNow(),k0=kipx();if(!A.kmTouched&&!A.busy){if(s&&rType()==="session")A.km=clamp(Math.round(s.km*2)/2,1,21);else if(!s&&A.runType==="auto"&&k0)A.km=clamp(k0.km,1,21)}
   const kip=[];if(s){if(rec!=null&&rec<34)kip.push(`Recovery ${rec}. Kip says cut it to ${r1(s.km*.8)} km and keep it all easy.`);if(pain>=3)kip.push(`Shin/knee at ${pain}/10. I'll favour flat promenades and paths.`);if(!kip.length)kip.push(rec!=null&&rec>=67?`Recovery ${rec}. Green light, go get it.`:`Build it, check the day panel, go.`)}
   const dw=dayWord(),k=kipx(),ty=rType();
-  const days=`<div class="daypick" style="margin:0 0 10px">${[0,1,2].map(i=>{const kk=dayKey(i);if(!kk&&i)return"";const d=kk?new Date(kk+"T12:00"):new Date();return`<button data-act="day" data-d="${i}" aria-pressed="${A.day===i}">${i===0?"Today":i===1?"Tomorrow":DN[d.getDay()]}</button>`}).join("")}</div>`;
+  const days=`<div class="daypick" style="margin:0 0 10px">${[0,1,2,3,4,5,6].map(i=>{const kk=dayKey(i);if(!kk&&i)return"";const d=kk?new Date(kk+"T12:00"):new Date();return`<button data-act="day" data-d="${i}" aria-pressed="${A.day===i}">${i===0?"Today":DN[d.getDay()]}<small>${d.getDate()}</small></button>`}).join("")}</div>`;
   const types=`<div class="seg seg4" style="margin-top:10px">${Object.entries(TL).map(([v,l])=>`<button data-act="rtype" data-v="${v}" aria-pressed="${ty===v}">${l}</button>`).join("")}</div>`;
   const kipBox=t=>`<div class="kip"><div class="kipav">K</div><div>${t}</div></div>`;
   const today=!A.pace?`<div class="today"><span class="ey" style="color:#9cc6ff">Not linked yet</span><h3>Open Atlas from PACE</h3><p class="small muted">PACE → Runs → Open Atlas sends your sessions, paces and recovery here.</p></div>`
@@ -487,7 +487,7 @@ function renderRight(){const el=$("#right");if(!A.wx){el.innerHTML=`<div class="
   const hs=[];for(let h=4;h<=22;h++){const x=hourWx(A.day,h);if(!x)continue;const ht=clamp((x.t-18)/18,.12,1)*100;hs.push(`<button style="height:${ht}%;background:${penCol(x.pen)};color:${penCol(x.pen)}" class="${b&&b.h===h?"best":""}" aria-pressed="${A.hour===h}" data-act="hour" data-h="${h}" title="${hLbl(h)} · ${r0(x.t)}° · heat +${x.pen}%${x.aqi!=null?" · AQI "+x.aqi:""}"></button>`)}
   const wn=rt?windNote(rt):"";
   el.innerHTML=`<div class="wxhead"><span class="ey">${DN[dd.getDay()]} ${dd.getDate()} ${MN[dd.getMonth()]} · ${hLbl(A.hour)}</span>
-    <div class="daypick">${[0,1,2].map(i=>{const k=dayKey(i);if(!k)return"";const d=new Date(k+"T12:00");return`<button data-act="day" data-d="${i}" aria-pressed="${A.day===i}">${i===0?"Today":i===1?"Tomorrow":DN[d.getDay()]}</button>`}).join("")}</div>
+    <div class="daypick">${[0,1,2,3,4,5,6].map(i=>{const k=dayKey(i);if(!k)return"";const d=new Date(k+"T12:00");return`<button data-act="day" data-d="${i}" aria-pressed="${A.day===i}">${i===0?"Today":DN[d.getDay()]}<small>${d.getDate()}</small></button>`}).join("")}</div>
     ${w?`<div class="wxbig"><b class="num">${r0(w.t)}°</b><span class="muted">feels ${r0(w.feels)}° · ${w.rh}%</span></div>`:""}</div>
   <div class="hours" role="group" aria-label="Pick a start hour">${hs.join("")}</div><div class="hlab"><span>4 am</span><span>noon</span><span>10 pm</span></div>
   <div class="pad">${w?`<div class="row"><span>Heat cost</span><b style="color:${penCol(w.pen)}">${w.pen?"+"+w.pen+"% slower":"None"}</b></div>
