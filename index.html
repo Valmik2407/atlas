@@ -240,9 +240,16 @@ function setStart(p,user){A.start=p;LS.set("start",p);if(A.mode==="draw"){if(!A.
 function clearRoute(){L_route.clearLayers();L_alts.clearLayers();L_poi.clearLayers();L_marks.clearLayers()}
 
 /* ================= routing ================= */
-const ROUTERS=["https://routing.openstreetmap.de/routed-foot/route/v1/foot/","https://router.project-osrm.org/route/v1/foot/"];
-async function osrm(pts){const c=pts.map(p=>p[1].toFixed(6)+","+p[0].toFixed(6)).join(";");let err;
-  for(const base of ROUTERS){try{const j=await lim(async()=>(await fetchT(base+c+"?overview=full&geometries=geojson&steps=true",12000)).json());
+const ROUTERS=["https://routing.openstreetmap.de/routed-foot/route/v1/foot/"];
+let qB=0;const qBW=[];async function lim2(fn){while(qB>=4)await new Promise(r=>qBW.push(r));qB++;try{return await fn()}finally{qB--;const n=qBW.shift();n&&n()}}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function dec6(s){const o=[];let i=0,la=0,lo=0;while(i<s.length){for(const k of[0,1]){let r=0,sh=0,b;do{b=s.charCodeAt(i++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);const d=r&1?~(r>>1):r>>1;k?lo+=d:la+=d}o.push([la/1e6,lo/1e6])}return o}
+async function osrm(pts){const P=A.prefs,dark=isDark();let err;
+  const body={locations:pts.map(p=>({lat:+p[0].toFixed(6),lon:+p[1].toFixed(6),type:"break"})),costing:"pedestrian",costing_options:{pedestrian:{walkway_factor:P.scenic?0.6:1,alley_factor:3,driveway_factor:5,use_hills:P.flat?0:0.5,use_lit:dark?1:0,step_penalty:30,service_factor:1.2}},directions_options:{units:"kilometers"}};
+  for(let a=0;a<2;a++){try{const r=await lim2(()=>fetchT("https://valhalla1.openstreetmap.de/route?json="+encodeURIComponent(JSON.stringify(body)),15000));if(r.status===429){await sleep(1200);continue}const j=await r.json();
+    if(j.trip){const coords=[],steps=[];for(const leg of j.trip.legs){const c=dec6(leg.shape);for(const m of leg.maneuvers||[])steps.push({name:(m.street_names||[])[0]||"",type:m.type,dist:(m.length||0)*1000,loc:c[m.begin_shape_index]||null});if(coords.length)c.shift();coords.push(...c)}return{coords,steps}}err=j.error;break}catch(e){err=e.message}}
+  const c=pts.map(p=>p[1].toFixed(6)+","+p[0].toFixed(6)).join(";");
+  for(const base of ROUTERS){try{const j=await lim2(async()=>(await fetchT(base+c+"?overview=full&geometries=geojson&steps=true",15000)).json());
     if(j.code==="Ok"&&j.routes?.[0]){const r=j.routes[0];return{coords:r.geometry.coordinates.map(([x,y])=>[y,x]),steps:r.legs.flatMap(l=>l.steps||[]).map(s=>({name:s.name||"",type:s.maneuver?.type,mod:s.maneuver?.modifier,loc:s.maneuver?.location?[s.maneuver.location[1],s.maneuver.location[0]]:null,dist:s.distance||0}))}}err=j.message}catch(e){err=e.message}}
   throw new Error(err||"route")}
 function mkRoute(coords,steps,mode,extra){coords=coords.filter((p,i)=>!i||hav(coords[i-1],p)>.5);const cum=cumd(coords);return{id:uid(),coords,cum,dist:cum[cum.length-1],steps:steps||[],mode,created:Date.now(),...(extra||{})}}
@@ -280,7 +287,7 @@ async function loadArea(center,radius){const key=center.map(v=>v.toFixed(3)).joi
       if(L.streets)for(let i=0;i<L.streets.length;i++){const f=L.streets.feature(i),p=f.properties,k=p.kind;if(p.tunnel)continue;const gs=conv(L.streets,f);
         if(/^(footway|pedestrian|path|living_street|track)$/.test(k))foot.push(...gs);
         if(p.bridge&&/^(motorway|trunk|primary|secondary|tertiary|residential|unclassified)/.test(k))bridges.push(...gs);
-        if(!p.bridge&&!p.link&&/^(trunk|primary|secondary|tertiary)$/.test(k))out.majors.push(...gs.map(g=>({g,k})))}
+        if(!p.bridge&&!p.link&&/^(trunk|primary|secondary)$/.test(k))out.majors.push(...gs.map(g=>({g,k})))}
       if(L.land)for(let i=0;i<L.land.length;i++){const f=L.land.feature(i),p=f.properties;if(!/^(park|garden|recreation_ground|grass|playground|village_green)$/.test(p.kind))continue;for(const ring of conv(L.land,f)){if(ring.length<4)continue;out.parks.push({ring,name:"",bb:[Math.min(...ring.map(q=>q[0])),Math.min(...ring.map(q=>q[1])),Math.max(...ring.map(q=>q[0])),Math.max(...ring.map(q=>q[1]))]})}}
       if(L.ocean)for(let i=0;i<L.ocean.length;i++){const f=L.ocean.feature(i),ex=L.ocean.extent||4096;for(const ring of f.loadGeometry()){const seg=[];for(let k=0;k<ring.length;k++){const a=ring[k],edge=a.x<=0||a.y<=0||a.x>=ex||a.y>=ex;if(edge){if(seg.length>1)coast.push(seg.splice(0));seg.length=0}else seg.push([y2lat(y+a.y/ex),x2lon(x+a.x/ex)])}if(seg.length>1)coast.push(seg)}}
     }catch(e){}})));
@@ -316,13 +323,13 @@ function analyse(rt,ar){const S=samples(rt.coords,rt.cum,25);let sc=0,lt=0,br=[]
   rt.name=rt.name||nameOf(rt);return rt}
 function nameOf(rt){const w={};for(const s of rt.steps)if(s.name&&!/flyover/i.test(s.name))w[s.name]=(w[s.name]||0)+s.dist;const top=Object.entries(w).sort((a,b)=>b[1]-a[1]).map(x=>x[0].replace(/ Road$/," Rd").replace(/ Marg$/," Marg"));
   const km=r1(rt.dist/1000);if(!top.length)return`${km} km ${rt.mode==="ob"?"out & back":"loop"}`;return rt.mode==="ob"?`${top[0]} out & back`:top[1]?`${top[0]} + ${top[1]}`:`${top[0]} loop`}
-async function addElev(rt){const L=rt.dist,n=clamp(Math.round(L/50),12,100),pts=[...Array(n)].map((_,i)=>({m:L*i/(n-1),p:ptAt(rt.coords,rt.cum,L*i/(n-1))}));
-  const u=`https://api.open-meteo.com/v1/elevation?latitude=${pts.map(x=>x.p[0].toFixed(5)).join(",")}&longitude=${pts.map(x=>x.p[1].toFixed(5)).join(",")}`;let j=null;
-  for(let a=0;a<3&&!j;a++){try{const r=await lim(()=>fetchT(u,9000));if(r.ok){const x=await r.json();if(x.elevation)j=x}else await new Promise(z=>setTimeout(z,900*(a+1)))}catch(e){await new Promise(z=>setTimeout(z,600))}}
-  if(j){let E=pts.map((x,i)=>({m:x.m,e:j.elevation[i]}));const W=Math.max(2,Math.round(150/(L/(n-1))));E=E.map((x,i)=>{let s=0,c=0;for(let k=Math.max(0,i-W);k<=Math.min(E.length-1,i+W);k++){s+=E[k].e;c++}return{m:x.m,e:s/c}});
-    for(const b of rt.bridges||[]){const mid=(b.a+b.b)/2,half=(b.b-b.a)/2;for(const x of E)if(x.m>=b.a&&x.m<=b.b)x.e+=6*(1-Math.abs(x.m-mid)/(half||1))}rt.elev=E}else rt.elev=null;
-  let up=0;if(rt.elev){let ref=rt.elev[0].e;for(const x of rt.elev){if(x.e>ref+2.5){up+=x.e-ref;ref=x.e}else if(x.e<ref-2.5)ref=x.e}}
-  rt.climb=r0(up||(rt.bridges||[]).length*6);return rt}
+async function addElevAll(list){const reqs=[];let cur=[];for(const rt of list){const L=rt.dist,n=clamp(Math.round(L/100),12,60);rt._ep=[...Array(n)].map((_,i)=>({m:L*i/(n-1),p:ptAt(rt.coords,rt.cum,L*i/(n-1)),e:null}));for(const q of rt._ep){cur.push(q);if(cur.length===100){reqs.push(cur);cur=[]}}}if(cur.length)reqs.push(cur);
+  for(const pts of reqs){const u=`https://api.open-meteo.com/v1/elevation?latitude=${pts.map(x=>x.p[0].toFixed(5)).join(",")}&longitude=${pts.map(x=>x.p[1].toFixed(5)).join(",")}`;
+    for(let a=0;a<4;a++){try{const r=await fetchT(u,9000);if(r.status===429){await sleep(1600*(a+1));continue}const j=await r.json();if(j.elevation){pts.forEach((q,i)=>q.e=j.elevation[i]);break}}catch(e){await sleep(700)}}await sleep(250)}
+  for(const rt of list){const ep=rt._ep;delete rt._ep;if(ep.some(q=>q.e==null)){rt.elev=null}else{const L=rt.dist,W=Math.max(2,Math.round(250/(L/(ep.length-1))));let E=ep.map((x,i)=>{let s=0,c=0;for(let k=Math.max(0,i-W);k<=Math.min(ep.length-1,i+W);k++){s+=ep[k].e;c++}return{m:x.m,e:s/c}});
+      for(const b of rt.bridges||[]){const mid=(b.a+b.b)/2,half=(b.b-b.a)/2;for(const x of E)if(x.m>=b.a&&x.m<=b.b)x.e+=6*(1-Math.abs(x.m-mid)/(half||1))}rt.elev=E}
+    let up=0;if(rt.elev){let ref=rt.elev[0].e;for(const x of rt.elev){if(x.e>ref+4){up+=x.e-ref;ref=x.e}else if(x.e<ref-4)ref=x.e}}rt.climb=r0(up||(rt.bridges||[]).length*6)}return list}
+const addElev=rt=>addElevAll([rt]).then(()=>rt);
 function score(rt,D){const km=rt.dist/1000,err=Math.abs(rt.dist-D)/D,P=A.prefs,night=isDark(),stops=rt.signals!=null?rt.signals*1.6+(rt.cross||0)*.5:(rt.cross||0)*1.3;
   let s=100-err*220;if(P.scenic&&rt.scenic!=null)s+=rt.scenic*45;if(P.cross)s-=stops/km*4;if(P.flat)s-=(rt.climb||0)*.5;s-=(rt.flyoverM||0)/100*(P.flat?6:3);if(night&&rt.litF!=null)s+=rt.litF*30;if(painNow()>=3&&rt.scenic!=null)s+=rt.scenic*15;return s}
 function overlap(a,b){const S=samples(a.coords,a.cum,60);let n=0;const B=samples(b.coords,b.cum,20);for(const s of S)if(B.some(x=>hav(x.p,s.p)<35))n++;return n/S.length}
@@ -395,7 +402,7 @@ async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: M
     if(!res.length)throw new Error("none");status("Checking crossings, stops and scenery…");const ar=await areaP;if(!ar.ok)toast("Couldn't load cafes/signals right now. Routes still work.",true);
     const near=res.filter(r=>Math.abs(r.dist-D)/D<=.18),pool=near.length?near:res;pool.forEach(r=>analyse(r,ar));pool.forEach(r=>r.sc=score(r,D));pool.sort((a,b)=>b.sc-a.sc);
     const pick=[];for(const r of pool){if(pick.length>=20)break;if(pick.every(p=>overlap(r,p)<.55&&overlap(p,r)<.55))pick.push(r)}
-    status(`Measuring climbs on ${pick.length} routes…`);await Promise.all(pick.map(addElev));pick.forEach(r=>r.sc=score(r,D));pick.sort((a,b)=>b.sc-a.sc);
+    status(`Measuring climbs on ${pick.length} routes…`);await addElevAll(pick);pick.forEach(r=>r.sc=score(r,D));pick.sort((a,b)=>b.sc-a.sc);
     const hi=pick[0].sc,lo=pick[pick.length-1].sc,seen={};pick.forEach((r,i)=>{r.rank=i+1;r.disp=pick.length>1?r0(60+39*(r.sc-lo)/((hi-lo)||1)):99;if(seen[r.name])r.name+=` · ${dirWord(r.bear||0)}`;seen[r.name]=1});
     A.options=pick;A.sort="best";A.busy=false;status("");selectRoute(pick[0]);toast(`${pick.length} different route${pick.length>1?"s":""} found. #1 is selected.`)
   }catch(e){A.busy=false;status("");toast("Couldn't reach the route service. Check your internet and try again.",true);renderLeft()}}
