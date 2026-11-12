@@ -61,7 +61,9 @@ button,input,select{font:inherit;color:inherit}
 .sw::after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.2s}.sw[aria-pressed=true]{background:var(--accent)}.sw[aria-pressed=true]::after{left:19px}
 .opt{display:block;width:100%;text-align:left;padding:11px 12px;border-radius:13px;border:1px solid var(--line);background:rgba(255,255,255,.03);cursor:pointer;margin-top:7px;transition:.15s}
 .opt:hover{border-color:var(--line2)}.opt[aria-pressed=true]{border-color:rgba(46,139,255,.6);background:rgba(46,139,255,.13);box-shadow:0 0 22px rgba(46,139,255,.15)}
-.opt .t{display:flex;justify-content:space-between;gap:8px;font-weight:600}.opt .m{font-size:12px;color:var(--mute);margin-top:3px}
+.opt .t{display:flex;justify-content:space-between;gap:8px;font-weight:600}.opt .rk{color:var(--accent2);font-family:"Chakra Petch"}.opt .sc{font-size:18px;color:var(--good)}.opt .m2{display:flex;align-items:center;gap:8px;margin-top:6px}.opt .m2 .small{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmpb{width:28px;height:24px;border-radius:7px;border:1px solid var(--line2);background:none;cursor:pointer;color:var(--mute);flex:none}.cmpb[aria-pressed=true]{color:#fff;background:rgba(183,108,255,.25);border-color:#B76CFF}.seg4{grid-template-columns:repeat(4,1fr)}.linkb{display:block;margin:8px auto 0;border:0;background:none;color:var(--mute);font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}.linkb:hover{color:#fff}.tlab{font:600 10.5px "IBM Plex Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);padding:5px 9px;border-radius:7px;background:rgba(25,211,255,.08);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.cmph{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.cmpg{display:grid;grid-template-columns:minmax(150px,1.6fr) repeat(11,minmax(0,1fr));gap:6px 10px;align-items:center}.cmpg .ey{font-size:9.5px;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmpg b{font-size:15px;color:var(--mute)}.cmpg b.win{color:var(--good);text-shadow:0 0 10px rgba(53,208,127,.5)}
+.cmpn{display:flex;align-items:center;gap:7px;border:0;background:none;cursor:pointer;text-align:left;font-weight:600;font-size:12.5px;min-width:0}.cmpn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmpn i{width:10px;height:10px;border-radius:50%;flex:none;box-shadow:0 0 8px currentColor}.opt .m{font-size:12px;color:var(--mute);margin-top:3px}
 .badge{font:700 10.5px "IBM Plex Mono",monospace;letter-spacing:.06em;padding:3px 7px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
 .lib{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}.lib:last-child{border:0}
 .lib .mini{width:42px;height:42px;flex:none;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
@@ -160,7 +162,7 @@ function decPoly(s){const o=[];let i=0,la=0,lo=0;while(i<s.length){for(const k o
 const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 const b64d=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,"+").replace(/_/g,"/")))));
 function fetchT(url,ms,opt){const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);return fetch(url,{...(opt||{}),signal:c.signal}).finally(()=>clearTimeout(t))}
-let qA=0;const qW=[];async function lim(fn){while(qA>=2)await new Promise(r=>qW.push(r));qA++;try{return await fn()}finally{qA--;const n=qW.shift();n&&n()}}
+let qA=0;const qW=[];async function lim(fn){while(qA>=3)await new Promise(r=>qW.push(r));qA++;try{return await fn()}finally{qA--;const n=qW.shift();n&&n()}}
 const uid=()=>Math.random().toString(36).slice(2,9);
 function heatPenalty(T,RH){const a=17.62,b=243.12,g=Math.log(clamp(RH,1,100)/100)+a*T/(b+T),td=b*g/(a-g),comb=(T*9/5+32)+(td*9/5+32);const p=comb<=100?0:comb<=110?.25:comb<=120?.75:comb<=130?1.5:comb<=140?2.5:comb<=150?3.75:comb<=160?5:6.5;return{comb:r0(comb),p}}
 const DN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -180,15 +182,25 @@ const ICON={cafe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
  sight:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 9 9H4l4 4-2 7 6-4 6 4-2-7 4-4h-5z"/></svg>'};
 const MUMBAI=[18.9432,72.8236];
 const A={pace:LS.get("pace",null),start:LS.get("start",null),mode:"loop",km:5,prefs:LS.get("prefs",{scenic:true,cross:true,flat:true}),options:[],sel:null,draw:[],drawClosed:"",
-  poiOn:LS.get("poiOn",{cafe:1,water:1,shop:1,toilet:1,bench:0,signal:1,sight:1}),wx:null,aq:null,day:0,hour:null,routes:LS.get("routes",[]),favs:LS.get("favs",[]),heat:false,colour:"easy",tab:"profile",busy:false,area:null,hoverM:null};
+  poiOn:LS.get("poiOn",{cafe:1,water:1,shop:1,toilet:1,bench:0,signal:1,sight:1}),wx:null,aq:null,day:0,hour:null,routes:LS.get("routes",[]),favs:LS.get("favs",[]),heat:false,colour:"easy",runType:"auto",sort:"best",cmp:[],kmTouched:false,tab:"profile",busy:false,area:null,hoverM:null};
 function pz(){const p=A.pace?.paces;if(p&&p.easySlow)return{easy:(p.easySlow+p.easyFast)/2,steady:p.easyFast*.97,tempo:p.tempo,int:p.int,race:p.race};return{easy:400,steady:375,tempo:345,int:318,race:360}}
-const sess=()=>{const s=A.pace?.session;return s&&s.date===todayISO()?s:null};
+const selDate=()=>(A.wx?.daily?.time?.[A.day])||todayISO();
+const sess=()=>{const d=selDate(),Ls=A.pace?.sessions;if(Array.isArray(Ls))return Ls.find(x=>x.date===d)||null;const s=A.pace?.session;return s&&s.date===d?s:null};
+const kipx=()=>A.pace?.kipx?.[selDate()]||null;
+const TL={easy:"Easy",steady:"Steady",tempo:"Tempo",long:"Long"};
+function rType(){if(A.runType!=="auto"&&!(A.runType==="session"&&!sess()))return A.runType;if(sess())return"session";return kipx()?.type||"easy"}
+function dayWord(){return A.day===0?"Today":A.day===1?"Tomorrow":DN[new Date(selDate()+"T12:00").getDay()]}
+function typeLabel(){const t=rType(),s=sess();return t==="session"&&s?s.title:TL[t]+" run"}
+const cnt=(o,t)=>(o.pois||[]).filter(p=>p.t===t).length;
+const SORTS=[["best","Best"],["scenic","Scenic"],["stops","Fewest stops"],["flat","Flattest"],["close","Closest km"],["fuel","Most water/cafes"]];
+function sortedOpts(){const D=A.km*1000,f={best:o=>-o.sc,scenic:o=>-(o.scenic||0),stops:o=>(o.signals||0)+(o.cross||0)*.5,flat:o=>o.climb||0,close:o=>Math.abs(o.dist-D),fuel:o=>-(cnt(o,"water")+cnt(o,"shop")+cnt(o,"cafe"))}[A.sort]||(o=>-o.sc);return[...A.options].sort((a,b)=>f(a)-f(b)||b.sc-a.sc)}
+const DIRW=["north","north-east","east","south-east","south","south-west","west","north-west"],dirWord=b=>DIRW[Math.round(((b%360)+360)%360/45)%8];
 function todayISO(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 
 /* ================= PACE link (incoming) ================= */
 function readHash(){const m=location.hash.match(/[#&]p=([^&]+)/);if(!m)return;try{const d=b64d(m[1]);if(d&&d.v===1){A.pace={...d,got:Date.now()};LS.set("pace",A.pace);
   if(Array.isArray(d.routes)){const byId=Object.fromEntries(A.routes.map(r=>[r.id,r]));for(const pr of d.routes){if(byId[pr.id]){byId[pr.id].ran=pr.ran||[];byId[pr.id].name=pr.name||byId[pr.id].name}else if(pr.poly)A.routes.push({id:pr.id,name:pr.name,poly:pr.poly,km:pr.km,climb:pr.climb||0,signals:pr.cross||0,mode:pr.mode||"loop",created:pr.created||Date.now(),ran:pr.ran||[]})}LS.set("routes",A.routes)}
-  toast("Synced from PACE: "+(sess()?sess().title:"no run planned today"));if(d.focus)A.focus=d.focus}}catch(e){toast("That PACE link looks broken. Open Atlas from PACE again.",true)}
+  toast("Synced from PACE: "+(sess()?sess().title:"no run planned today"));if(d.focus)A.focus=d.focus;if(d.day)A.wantDay=d.day}}catch(e){toast("That PACE link looks broken. Open Atlas from PACE again.",true)}
   history.replaceState(null,"",location.pathname+location.search)}
 
 /* ================= map ================= */
@@ -235,10 +247,12 @@ async function osrm(pts){const c=pts.map(p=>p[1].toFixed(6)+","+p[0].toFixed(6))
   throw new Error(err||"route")}
 function mkRoute(coords,steps,mode,extra){coords=coords.filter((p,i)=>!i||hav(coords[i-1],p)>.5);const cum=cumd(coords);return{id:uid(),coords,cum,dist:cum[cum.length-1],steps:steps||[],mode,created:Date.now(),...(extra||{})}}
 async function loopAt(S,b,D){let R=D/(2*Math.PI*1.25),best=null;
-  for(let k=0;k<3;k++){const C=dest(S,b,R),w=[dest(C,b-90,R),dest(C,b,R),dest(C,b+90,R)];const r=await osrm([S,...w,S]);const c=despur(r.coords),rt=mkRoute(c,r.steps,"loop",{bear:b});
+  for(let k=0;k<2;k++){const C=dest(S,b,R),w=[dest(C,b-90,R),dest(C,b,R),dest(C,b+90,R)];const r=await osrm([S,...w,S]);const c=despur(r.coords),rt=mkRoute(c,r.steps,"loop",{bear:b});
     if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.06)break;R*=clamp(ratio,.5,1.8)}
   return best}
-async function obAt(S,b,D){let d=D/2/1.2,best=null;for(let k=0;k<3;k++){const T=dest(S,b,d),r=await osrm([S,T]),go=r.coords,c=[...go,...go.slice(0,-1).reverse()],rt=mkRoute(c,[...r.steps,...r.steps.slice().reverse()],"ob",{bear:b,turn:go[go.length-1]});
+async function longAt(S,b,D){let d=D/2.4,best=null;for(let k=0;k<2;k++){const w=[dest(S,b-14,d),dest(S,b+14,d)],r=await osrm([S,...w,S]),rt=mkRoute(despur(r.coords),r.steps,"loop",{bear:b,shape:"long"});
+    if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.08)break;d*=clamp(ratio,.5,1.8)}return best}
+async function obAt(S,b,D){let d=D/2/1.2,best=null;for(let k=0;k<2;k++){const T=dest(S,b,d),r=await osrm([S,T]),go=r.coords,c=[...go,...go.slice(0,-1).reverse()],rt=mkRoute(c,[...r.steps,...r.steps.slice().reverse()],"ob",{bear:b,turn:go[go.length-1]});
     if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=D/rt.dist;if(Math.abs(ratio-1)<.05)break;d*=clamp(ratio,.5,1.8)}return best}
 
 /* ================= area data (OpenStreetMap via Overpass) ================= */
@@ -298,8 +312,8 @@ function score(rt,D){const km=rt.dist/1000,err=Math.abs(rt.dist-D)/D,P=A.prefs,n
 function overlap(a,b){const S=samples(a.coords,a.cum,60);let n=0;const B=samples(b.coords,b.cum,20);for(const s of S)if(B.some(x=>hav(x.p,s.p)<35))n++;return n/S.length}
 
 /* ================= session zones ================= */
-function planZones(L){const s=sess();if(A.colour!=="session"||!s)return[{a:0,b:L,z:A.colour==="session"?"easy":"easy"}];
-  const P=pz(),d=(s.detail||"")+" "+(s.title||""),zOf=t=>/\{int\}|interval|repeat|800|fast/i.test(t)?"int":/\{race|race/i.test(t)?"race":/\{tempo\}|tempo/i.test(t)?"tempo":/\{steady\}|steady/i.test(t)?"steady":"easy";
+function planZones(L){const s=sess(),ty=rType();if(ty==="easy"||ty==="long"||(ty==="session"&&!s))return[{a:0,b:L,z:"easy"}];if(ty==="steady")return[{a:0,b:L,z:"steady"}];
+  const P=pz(),d=ty==="tempo"?"10 min easy at {easy}, then 20 min at {tempo}, then 5 min easy.":(s.detail||"")+" "+(s.title||""),zOf=t=>/\{int\}|interval|repeat|800|fast/i.test(t)?"int":/\{race|race/i.test(t)?"race":/\{tempo\}|tempo/i.test(t)?"tempo":/\{steady\}|steady/i.test(t)?"steady":"easy";
   const blocks=[],ZM={tempo:"tempo",int:"int",race:"race",racePace:"race",steady:"steady"};let m;const wm=d.match(/^\s*(\d+)\s*min\s*easy/i);
   if(m=d.match(/(\d+)\s*[×x]\s*(\d+(?:\.\d+)?)\s*(min|km|m)\b([^/,]*)(?:[^\d]*?(\d+(?:\.\d+)?)\s*min\s*(?:easy|jog))?/i)){const n=+m[1],v=+m[2],u=m[3],z=zOf(m[4]||d),rest=m[5]?+m[5]:2,len=u==="min"?v*60/P[z]*1000:u==="km"?v*1000:v;for(let i=0;i<n;i++){blocks.push([len,z]);if(i<n-1)blocks.push([rest*60/P.easy*1000,"easy"])}}
   else{for(const q of d.matchAll(/(\d+)\s*min\s*(?:continuous\s*|steady\s*)?at\s*\{(\w+)\}/gi)){const z=ZM[q[2]];if(z){blocks.push([+q[1]*60/P[z]*1000,z]);break}}
@@ -323,7 +337,7 @@ function sunTimes(day=A.day){const D=A.wx?.daily;if(!D)return null;const f=s=>{c
 function isDark(day=A.day,h=A.hour){const s=sunTimes(day);if(!s||h==null){const H=h??new Date().getHours();return H<6||H>=19}return h+.5<s.rise||h>=s.set}
 function slotScore(w,day,h){if(!w)return 99;let s=w.pen*10+w.rain/12;if(w.aqi!=null)s+=Math.max(0,w.aqi-80)/12;if(isDark(day,h))s+=3;if(w.uv>5)s+=w.uv-5;return s}
 function bestSlot(day=A.day){if(!A.wx)return null;const now=new Date(),cand=[];for(let h=5;h<=21;h++){if(h>10&&h<16)continue;if(day===0&&h<=now.getHours())continue;const w=hourWx(day,h);if(w)cand.push({h,s:slotScore(w,day,h)})}cand.sort((a,b)=>a.s-b.s);return cand[0]||null}
-function pickDefaultHour(){if(A.hour!=null)return;if(!A.wx){A.hour=new Date().getHours();return}let b=bestSlot(0);if(!b){A.day=1;b=bestSlot(1)}A.hour=b?b.h:6}
+function pickDefaultHour(){if(A.wantDay&&A.wx?.daily){const i=A.wx.daily.time.indexOf(A.wantDay);if(i>=0){A.day=i;A.hour=null;A.runType="auto";A.kmTouched=false}A.wantDay=null}if(A.hour!=null)return;if(!A.wx){A.hour=new Date().getHours();return}let b=bestSlot(0);if(!b){A.day=1;b=bestSlot(1)}A.hour=b?b.h:6}
 const aqiCol=v=>v==null?"#5C677A":v<=50?"#35D07F":v<=100?"#F2C94C":v<=150?"#FF9F43":v<=200?"#FF5C5F":"#B76CFF";
 const aqiLbl=v=>v==null?"n/a":v<=50?"good":v<=100?"moderate":v<=150?"poor for training":v<=200?"unhealthy":"very unhealthy";
 const penCol=p=>p<=0?"#35D07F":p<=.75?"#9BE15D":p<=1.5?"#F2C94C":p<=2.5?"#FF9F43":"#FF5C5F";
@@ -357,12 +371,17 @@ function cues(rt){const P=pz(),Z=zonesOf(rt),w=hourWx(),o=[],km=m=>r1(m/1000),pa
 
 /* ================= build ================= */
 async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: My location, a favourite, or click the map.",true);return}
-  const D=A.km*1000,S=A.start;A.busy=true;A.options=[];A.sel=null;clearRoute();renderLeft();renderBottom();status("Reading the area: paths, parks, signals…");
-  const areaP=loadArea(S,clamp(D/2.6,900,4500));const bears=[0,60,120,180,240,300].map(b=>(b+(Math.random()*20-10)+360)%360);
-  try{status(`Scouting ${bears.length} directions…`);const fn=A.mode==="ob"?obAt:loopAt;const res=(await Promise.allSettled(bears.map(b=>fn(S,b,D)))).filter(r=>r.status==="fulfilled"&&r.value).map(r=>r.value);
-    if(!res.length)throw new Error("none");status("Checking crossings, shade and stops…");const ar=await areaP;if(!ar.ok)toast("Couldn't load cafes/signals right now. Routes still work.",true);
-    res.forEach(r=>analyse(r,ar));res.forEach(r=>r.sc=score(r,D));res.sort((a,b)=>b.sc-a.sc);const pick=[];for(const r of res){if(pick.length>=3)break;if(pick.every(p=>overlap(r,p)<.6))pick.push(r)}
-    status("Measuring climbs…");await Promise.all(pick.map(addElev));pick.forEach(r=>r.sc=score(r,D));pick.sort((a,b)=>b.sc-a.sc);A.options=pick;A.busy=false;status("");selectRoute(pick[0]);
+  const D=A.km*1000,S=A.start;A.busy=true;A.options=[];A.sel=null;A.cmp=[];clearRoute();renderLeft();renderBottom();status("Reading the area: paths, parks, signals…");
+  const areaP=loadArea(S,clamp(D/2.6,900,4500)),N=16,bears=[...Array(N)].map((_,i)=>(i*360/N+Math.random()*10-5+360)%360);
+  const jobs=A.mode==="ob"?bears.map(b=>()=>obAt(S,b,D)):[...bears.map(b=>()=>loopAt(S,b,D)),...bears.filter((_,i)=>i%2).map(b=>()=>longAt(S,b,D))];
+  let done=0;status(`Scouting routes… 0/${jobs.length}`);
+  try{const res=(await Promise.allSettled(jobs.map(f=>f().finally(()=>{done++;status(`Scouting routes… ${done}/${jobs.length}`)})))).filter(r=>r.status==="fulfilled"&&r.value).map(r=>r.value);
+    if(!res.length)throw new Error("none");status("Checking crossings, stops and scenery…");const ar=await areaP;if(!ar.ok)toast("Couldn't load cafes/signals right now. Routes still work.",true);
+    const near=res.filter(r=>Math.abs(r.dist-D)/D<=.18),pool=near.length?near:res;pool.forEach(r=>analyse(r,ar));pool.forEach(r=>r.sc=score(r,D));pool.sort((a,b)=>b.sc-a.sc);
+    const pick=[];for(const r of pool){if(pick.length>=20)break;if(pick.every(p=>overlap(r,p)<.55&&overlap(p,r)<.55))pick.push(r)}
+    status(`Measuring climbs on ${pick.length} routes…`);await Promise.all(pick.map(addElev));pick.forEach(r=>r.sc=score(r,D));pick.sort((a,b)=>b.sc-a.sc);
+    const hi=pick[0].sc,lo=pick[pick.length-1].sc,seen={};pick.forEach((r,i)=>{r.rank=i+1;r.disp=pick.length>1?r0(60+39*(r.sc-lo)/((hi-lo)||1)):99;if(seen[r.name])r.name+=` · ${dirWord(r.bear||0)}`;seen[r.name]=1});
+    A.options=pick;A.sort="best";A.busy=false;status("");selectRoute(pick[0]);toast(`${pick.length} different route${pick.length>1?"s":""} found. #1 is selected.`)
   }catch(e){A.busy=false;status("");toast("Couldn't reach the route service. Check your internet and try again.",true);renderLeft()}}
 async function finishRoute(rt){const ar=A.start?await loadArea(rt.coords[0],clamp(rt.dist/2.6,900,4500)):null;analyse(rt,ar);await addElev(rt);return rt}
 function selectRoute(rt){A.sel=rt;drawRoute();renderAll();if(rt&&rt.coords.length>1)map.fitBounds(L.latLngBounds(rt.coords),{paddingTopLeft:[360,80],paddingBottomRight:[340,230],maxZoom:16})}
@@ -381,7 +400,7 @@ function drawRebuild(){L_draw.clearLayers();A.draw.forEach((p,i)=>{const m=L.mar
 /* ================= map drawing ================= */
 const ptIcon=(t,small)=>L.divIcon({className:"",html:`<div class="poi ${small?"sm":""}" style="--pc:${PT[t][1]}">${ICON[t]}</div>`,iconSize:small?[16,16]:[26,26],iconAnchor:small?[8,8]:[13,13]});
 function drawRoute(){clearRoute();const rt=A.sel;
-  for(const o of A.options)if(o!==rt){const pl=L.polyline(o.coords,{color:"#8A97AB",weight:4,opacity:.4,dashArray:"2 7",className:"rt-alt"}).addTo(L_alts);pl.on("click",ev=>{L.DomEvent.stop(ev);selectRoute(o)});pl.bindTooltip(esc(o.name)+" · "+r1(o.dist/1000)+" km",{className:"tt",sticky:true})}
+  for(const o of A.options)if(o!==rt){const isC=A.cmp.length===2&&A.cmp.includes(o.id),pl=L.polyline(o.coords,isC?{color:"#B76CFF",weight:5,opacity:.9,className:"rt rt-alt"}:{color:"#8A97AB",weight:4,opacity:.35,dashArray:"2 7",className:"rt-alt"}).addTo(L_alts);if(isC)pl.getElement()?.style.setProperty("--c","#B76CFF");pl.on("click",ev=>{L.DomEvent.stop(ev);selectRoute(o)});pl.bindTooltip(esc(o.name)+" · "+r1(o.dist/1000)+" km",{className:"tt",sticky:true})}
   if(!rt){setStartMarker();return}
   L.polyline(rt.coords,{weight:11,className:"rt-case",lineCap:"round",lineJoin:"round"}).addTo(L_route);
   for(const z of zonesOf(rt)){const seg=slice(rt.coords,rt.cum,z.a,z.b);L.polyline(seg,{color:ZC[z.z],weight:5.5,opacity:1,lineCap:"round",lineJoin:"round",className:"rt"}).addTo(L_route).getElement()?.style.setProperty("--c",ZC[z.z])}
@@ -405,21 +424,28 @@ function miniSvg(poly){const c=decPoly(poly);if(c.length<2)return"";const la=c.m
 function sendPace(){const hrs=[];if(A.wx){const H=A.wx.hourly,now=new Date(),k0=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0")+"T"+String(now.getHours()).padStart(2,"0");
   const i0=Math.max(0,H.time.findIndex(t=>t.slice(0,13)>=k0));for(let i=i0;i<Math.min(H.time.length,i0+48);i++){const qi=A.aq?.hourly?.time?.indexOf(H.time[i])??-1;hrs.push([H.time[i],r1(H.temperature_2m[i]),H.relative_humidity_2m[i],r1(H.apparent_temperature[i]),qi>=0?A.aq.hourly.us_aqi[qi]:null,H.precipitation_probability?.[i]??0,r0(H.wind_speed_10m[i])])}}
   const sel=A.sel?toSaved(A.sel):null;const routes=A.routes.map(r=>({...r}));if(sel&&!routes.some(r=>r.id===sel.id))routes.unshift({...sel,unsaved:true});
-  const S=sunTimes(0);const payload={v:1,app:"atlas",at:Date.now(),routes,sel:sel?.id||null,plan:A.sel?{route:sel.id,date:dayKey(A.day)||todayISO(),hour:A.hour,est:r0(estTime(A.sel))}:null,wx:hrs.length?{at:Date.now(),loc:(A.start||MUMBAI).map(v=>+v.toFixed(3)),sun:S?[S.riseS,S.setS]:null,hours:hrs}:null};
-  const code="ATLAS1."+b64e(payload);const done=ok=>{$("#modal").innerHTML=`<div class="ov" data-act="mclose-bg"><div class="md" role="dialog" aria-modal="true"><h2>${ok?"Copied. Now paste in PACE":"Copy this into PACE"}</h2><p class="muted small">${routes.length} route${routes.length===1?"":"s"}${hrs.length?" + 48 h of real weather and air quality":""}${sel?" + today's pick: "+esc(sel.name):""}.</p>
+  const S=sunTimes(0);const payload={v:1,app:"atlas",at:Date.now(),routes,sel:sel?.id||null,plan:A.sel?{route:sel.id,date:selDate(),hour:A.hour,est:r0(estTime(A.sel)),type:rType(),km:r1(A.sel.dist/1000),extra:!sess()||rType()!=="session"}:null,wx:hrs.length?{at:Date.now(),loc:(A.start||MUMBAI).map(v=>+v.toFixed(3)),sun:S?[S.riseS,S.setS]:null,hours:hrs}:null};
+  const code="ATLAS1."+b64e(payload);const done=ok=>{$("#modal").innerHTML=`<div class="ov" data-act="mclose-bg"><div class="md" role="dialog" aria-modal="true"><h2>${ok?"Copied. Now paste in PACE":"Copy this into PACE"}</h2><p class="muted small">${routes.length} route${routes.length===1?"":"s"}${hrs.length?" + 48 h of real weather and air quality":""}${sel?` + ${dayWord().toLowerCase()}'s run: ${esc(sel.name)}${!sess()?" (lands in your plan as an extra run)":""}`:""}.</p>
     <ol class="small"><li>Open PACE (button below)</li><li>Runs → <b>Paste from Atlas</b></li><li>Paste (Ctrl+V) and hit Import</li></ol><textarea readonly id="codeBox">${esc(code)}</textarea><div class="ft"><button class="btn" data-act="copyagain">Copy again</button><a class="btn p" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">Open PACE ↗</a><button class="btn" data-act="mclose">Done</button></div></div></div>`;if(!ok){const t=$("#codeBox");t.focus();t.select()}};
   navigator.clipboard?.writeText(code).then(()=>done(true),()=>done(false))??done(false)}
 
 /* ================= render ================= */
 function syncHTML(){const p=A.pace;if(!p)return`<span class="dot"></span>Not linked`;const h=(Date.now()-(p.got||p.at||0))/36e5;return`<span class="dot ${h<20?"on":""}"></span>PACE ${h<1?"just now":h<24?r0(h)+"h ago":r0(h/24)+"d ago"}`}
-function renderLeft(){$("#sync").innerHTML=syncHTML();const s=sess(),P=A.prefs,rec=A.pace?.rec,pain=painNow();
+function renderLeft(){$("#sync").innerHTML=syncHTML();const s=sess(),P=A.prefs,rec=A.pace?.rec,pain=painNow(),k0=kipx();if(!A.kmTouched&&!A.busy){if(s&&rType()==="session")A.km=clamp(Math.round(s.km*2)/2,1,21);else if(!s&&A.runType==="auto"&&k0)A.km=clamp(k0.km,1,21)}
   const kip=[];if(s){if(rec!=null&&rec<34)kip.push(`Recovery ${rec}. Kip says cut it to ${r1(s.km*.8)} km and keep it all easy.`);if(pain>=3)kip.push(`Shin/knee at ${pain}/10. I'll favour flat promenades and paths.`);if(!kip.length)kip.push(rec!=null&&rec>=67?`Recovery ${rec}. Green light, go get it.`:`Build it, check the day panel, go.`)}
-  const today=s?`<div class="today"><span class="ey" style="color:#9cc6ff">Today from PACE</span><h3>${esc(s.title)}</h3><p class="small muted">${esc((s.detailText||s.detail||"").slice(0,150))}</p><p class="num" style="font-size:20px;margin-top:6px">${s.km} km</p>
-    <div class="kip"><div class="kipav">K</div><div>${esc(kip.join(" "))}</div></div><button class="btn p w" style="margin-top:10px" data-act="buildToday" ${A.busy?"disabled":""}>Build for today</button></div>`
-    :A.pace?`<div class="today"><span class="ey" style="color:#9cc6ff">Today from PACE</span><h3>No run planned</h3><p class="small muted">Rest day, or build an easy one for fun.</p></div>`
-    :`<div class="today"><span class="ey" style="color:#9cc6ff">Not linked yet</span><h3>Open Atlas from PACE</h3><p class="small muted">PACE → Runs → Open Atlas sends today's session, your paces and recovery here.</p></div>`;
+  const dw=dayWord(),k=kipx(),ty=rType();
+  const days=`<div class="daypick" style="margin:0 0 10px">${[0,1,2].map(i=>{const kk=dayKey(i);if(!kk&&i)return"";const d=kk?new Date(kk+"T12:00"):new Date();return`<button data-act="day" data-d="${i}" aria-pressed="${A.day===i}">${i===0?"Today":i===1?"Tomorrow":DN[d.getDay()]}</button>`}).join("")}</div>`;
+  const types=`<div class="seg seg4" style="margin-top:10px">${Object.entries(TL).map(([v,l])=>`<button data-act="rtype" data-v="${v}" aria-pressed="${ty===v}">${l}</button>`).join("")}</div>`;
+  const kipBox=t=>`<div class="kip"><div class="kipav">K</div><div>${t}</div></div>`;
+  const today=!A.pace?`<div class="today"><span class="ey" style="color:#9cc6ff">Not linked yet</span><h3>Open Atlas from PACE</h3><p class="small muted">PACE → Runs → Open Atlas sends your sessions, paces and recovery here.</p></div>`
+    :s?`<div class="today">${days}<span class="ey" style="color:#9cc6ff">${dw} from PACE${s.extra?" · extra run":""}</span><h3>${esc(ty==="session"?s.title:TL[ty]+" run instead")}</h3>${ty==="session"?`<p class="small muted">${esc((s.detailText||s.detail||"").slice(0,150))}</p>`:""}<p class="num" style="font-size:20px;margin-top:6px">${ty==="session"?s.km:A.km} km</p>
+      ${kipBox(esc(kip.join(" ")))}${ty!=="session"?types:""}<button class="btn p w" style="margin-top:10px" data-act="buildToday" ${A.busy?"disabled":""}>Build for ${dw.toLowerCase()}</button>
+      <button class="linkb" data-act="rtype" data-v="${ty==="session"?"easy":"session"}">${ty==="session"?"Run something else":"Back to the planned session"}</button></div>`
+    :`<div class="today">${days}<span class="ey" style="color:#c9a6ff">${dw} · not planned</span><h3>Unplanned run</h3>${k?kipBox(`<b>Kip suggests ${TL[k.type]} · ${k.km} km.</b> ${esc(k.why)}.${k.risk?`<br><span class="amb">${esc(k.risk)}</span>`:""}`):""}
+      ${types}<button class="btn p w" style="margin-top:10px" data-act="build" ${A.busy?"disabled":""}>Build ${TL[ty].toLowerCase()} ${A.km} km</button><p class="hint">Send to PACE adds it to ${dw.toLowerCase()}'s plan as an extra run. Kip checks the load.</p></div>`;
   const favs=A.favs.map((f,i)=>`<button class="chip" data-act="fav" data-i="${i}" aria-pressed="${A.start&&hav(A.start,f.p)<30}">${esc(f.name)}<span class="x" data-act="favdel" data-i="${i}" title="Remove">×</span></button>`).join("");
-  const opts=A.options.map((o,i)=>{const d=difficulty(o);return`<button class="opt" data-act="opt" data-i="${i}" aria-pressed="${o===A.sel}"><div class="t"><span>${"ABC"[i]} · ${esc(o.name)}</span><span class="badge" style="color:${d.col};background:color-mix(in srgb,${d.col} 14%,transparent)">${d.lbl}</span></div><div class="m">${r1(o.dist/1000)} km · ${o.signals??"?"} signals · ${o.climb??0} m climb${o.scenic!=null?" · "+r0(o.scenic*100)+"% paths/sea/parks":""}</div></button>`}).join("");
+  const opts=sortedOpts().map(o=>{const i=A.options.indexOf(o),d=difficulty(o);return`<div class="opt" data-act="opt" data-i="${i}" role="button" tabindex="0" aria-pressed="${o===A.sel}"><div class="t"><span><b class="rk">#${o.rank}</b> ${esc(o.name)}</span><span class="sc num" title="Score vs the other routes">${o.disp}</span></div><div class="m">${r1(o.dist/1000)} km · ${o.signals??"?"} signals · ${o.climb??0} m climb${o.scenic!=null?" · "+r0(o.scenic*100)+"% scenic":""}</div><div class="m2"><span class="badge" style="color:${d.col};background:color-mix(in srgb,${d.col} 14%,transparent)">${d.lbl}</span><span class="small muted">${cnt(o,"cafe")} cafes · ${cnt(o,"water")+cnt(o,"shop")} water/shops · ${cnt(o,"toilet")} WC</span><button class="cmpb" data-act="cmp" data-i="${i}" aria-pressed="${A.cmp.includes(o.id)}" title="Compare">⇄</button></div></div>`}).join("");
+  const sortBar=A.options.length>1?`<div class="chips" style="margin-bottom:4px">${SORTS.map(([k2,l])=>`<button class="chip" data-act="sort" data-v="${k2}" aria-pressed="${A.sort===k2}">${l}</button>`).join("")}</div>`:"";
   const draw=A.mode==="draw"?`<div class="sec"><span class="ey">Draw</span><p class="small muted" style="margin:0 0 8px">Click the map to add points. It snaps to real paths. Drag to adjust, right-click a point to remove.</p><div class="chips"><button class="chip" data-act="undo" ${A.draw.length?"":"disabled"}>Undo</button><button class="chip" data-act="dclear">Clear</button><button class="chip" data-act="dloop" aria-pressed="${A.drawClosed==="loop"}">Close loop</button><button class="chip" data-act="dob" aria-pressed="${A.drawClosed==="ob"}">Run it back</button></div></div>`:"";
   const lib=A.routes.length?A.routes.map(r=>{const ran=r.ran||[],pr=ran.length?Math.min(...ran.map(x=>x.secs)):null;return`<div class="lib" data-act="open" data-id="${r.id}" role="button" tabindex="0">${miniSvg(r.poly)}<div class="i"><b>${esc(r.name)}</b><span>${r.km} km${ran.length?` · ran ${ran.length}× · PR ${fmtT(pr)}`:" · not run yet"}</span></div><button class="del" data-act="del" data-id="${r.id}" title="Delete" aria-label="Delete ${esc(r.name)}">×</button></div>`}).join(""):`<p class="small muted" style="margin:0">Saved routes land here. Name them, run them, chase PRs on them.</p>`;
   $("#L").innerHTML=`${today}
@@ -428,10 +454,10 @@ function renderLeft(){$("#sync").innerHTML=syncHTML();const s=sess(),P=A.prefs,r
   ${A.mode!=="draw"?`<div class="sec"><span class="ey">Distance</span><div class="dist"><input type="range" min="1" max="21" step="0.5" value="${A.km}" id="kmR" aria-label="Distance in km"><div class="val"><b class="num" id="kmV">${A.km}</b> <span class="muted">km</span></div></div></div>
   <div class="sec"><span class="ey">Prefer</span><div class="tog"><span>Promenades, parks & paths</span><button class="sw" data-act="pref" data-k="scenic" aria-pressed="${P.scenic}" aria-label="Prefer promenades"></button></div><div class="tog"><span>Fewest crossings</span><button class="sw" data-act="pref" data-k="cross" aria-pressed="${P.cross}" aria-label="Fewest crossings"></button></div><div class="tog"><span>Flat</span><button class="sw" data-act="pref" data-k="flat" aria-pressed="${P.flat}" aria-label="Flat"></button></div><div class="tog"><span>Well-lit roads</span><span class="small ${isDark()?"amb":"muted"}">${isDark()?"On (after sunset)":"Auto after sunset"}</span></div></div>
   <button class="btn p w" style="margin-top:14px;height:44px" data-act="build" ${A.busy?"disabled":""}>${A.busy?'<span class="spin"></span> Building…':"Build "+(A.mode==="ob"?"out & back":"loops")}</button>`:draw}
-  ${opts?`<div class="sec"><span class="ey">${A.options.length} options · best first</span>${opts}</div>`:""}
+  ${opts?`<div class="sec"><span class="ey">${A.options.length} routes · tap ⇄ on two to compare</span>${sortBar}${opts}</div>`:""}
   ${A.sel?`<div class="sec"><span class="ey">Save</span><div style="display:flex;gap:6px"><input class="inp" id="rname" value="${esc(A.sel.name)}" aria-label="Route name"><button class="btn" data-act="save">${A.sel.saved?"Update":"Save"}</button></div></div>`:""}
   <div class="sec"><span class="ey">Your routes · ${A.routes.length}</span>${lib}</div>`;
-  const r=$("#kmR");if(r)r.oninput=e=>{A.km=+e.target.value;$("#kmV").textContent=A.km}}
+  const r=$("#kmR");if(r)r.oninput=e=>{A.km=+e.target.value;A.kmTouched=true;$("#kmV").textContent=A.km}}
 function renderRight(){const el=$("#right");if(!A.wx){el.innerHTML=`<div class="wxhead"><span class="ey">The day</span><p class="muted small" style="margin:10px 0 16px">${A.start?"Loading the forecast…":"Set a start to see the weather there."}</p></div>${poiPanel()}`;return}
   const w=hourWx(),S=sunTimes(),b=bestSlot(),dk=dayKey(A.day),dd=new Date(dk+"T12:00"),rt=A.sel;
   const hs=[];for(let h=4;h<=22;h++){const x=hourWx(A.day,h);if(!x)continue;const ht=clamp((x.t-18)/18,.12,1)*100;hs.push(`<button style="height:${ht}%;background:${penCol(x.pen)};color:${penCol(x.pen)}" class="${b&&b.h===h?"best":""}" aria-pressed="${A.hour===h}" data-act="hour" data-h="${h}" title="${hLbl(h)} · ${r0(x.t)}° · heat +${x.pen}%${x.aqi!=null?" · AQI "+x.aqi:""}"></button>`)}
@@ -452,17 +478,21 @@ function renderRight(){const el=$("#right");if(!A.wx){el.innerHTML=`<div class="
 function poiPanel(){const rt=A.sel,c=t=>rt?(rt.pois||[]).filter(p=>p.t===t).length:"–";
   return`<div class="pad" style="border-top:1px solid var(--line);padding-top:14px"><span class="ey" style="display:block;margin-bottom:8px">On route · within 50 m</span><div class="poichips">${Object.entries(PT).map(([k,[l,col]])=>`<button class="pc" data-act="poi" data-k="${k}" aria-pressed="${!!A.poiOn[k]}"><i style="background:color-mix(in srgb,${col} 18%,transparent);color:${col}">${ICON[k]}</i>${l}<b>${c(k)}</b></button>`).join("")}</div>
   ${rt&&rt.areaOk===false?`<p class="hint">Couldn't load stops from OpenStreetMap this time.</p>`:""}</div>`}
-function renderBottom(){const el=$("#bottom"),rt=A.sel;
+function renderBottom(){const el=$("#bottom"),rt=A.sel;if(A.cmp.length===2&&renderCompare(el))return;
   if(!rt){el.innerHTML=`<div class="empty">${A.busy?'<span class="spin"></span><span>Building your routes…</span>':`<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M6 32c4-16 12-22 28-22" stroke="#2E8BFF" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 6"/><circle cx="6" cy="32" r="4" fill="#35D07F"/></svg><div><b style="color:var(--fg)">No route yet</b><br><span class="small">${A.mode==="draw"?"Click the map to start drawing.":"Pick a start and a distance, then Build. Or open one of your routes."}</span></div>`}</div>`;return}
   const d=difficulty(rt),t=estTime(rt),s=sess();
   el.innerHTML=`<div class="bgrid"><div><input class="rname" value="${esc(rt.name)}" aria-label="Route name" id="rname2"><div class="bstats"><div class="big"><b class="num">${r1(rt.dist/1000)}</b><span class="muted">km</span><span class="badge" style="margin-left:auto;color:${d.col};background:color-mix(in srgb,${d.col} 14%,transparent)" title="${esc(d.parts.map(p=>p[0]+": "+r0(p[1])).join("\n"))}">${d.lbl} · ${d.s}</span></div>
     <div><span class="ey">Est. time</span><b class="num">${fmtT(t)}</b></div><div><span class="ey">Climb</span><b class="num">${rt.climb??0} m</b></div><div><span class="ey">Signals</span><b class="num">${rt.signals??"–"}</b></div><div><span class="ey">Crossings</span><b class="num">${rt.cross??"–"}</b></div></div></div>
-  <div><div class="tabs">${[["profile","Profile"],["splits","Splits"],["kip","Kip cues"]].map(([k,l])=>`<button data-act="tab" data-v="${k}" aria-pressed="${A.tab===k}">${l}</button>`).join("")}<span class="sp"></span>${s?`<div class="seg" style="grid-template-columns:1fr 1fr;width:220px;padding:3px"><button data-act="colour" data-v="easy" aria-pressed="${A.colour==="easy"}" style="height:24px;font-size:11.5px">Easy run</button><button data-act="colour" data-v="session" aria-pressed="${A.colour==="session"}" style="height:24px;font-size:11.5px">Today's session</button></div>`:""}</div>
+  <div><div class="tabs">${[["profile","Profile"],["splits","Splits"],["kip","Kip cues"]].map(([k,l])=>`<button data-act="tab" data-v="${k}" aria-pressed="${A.tab===k}">${l}</button>`).join("")}<span class="sp"></span><span class="tlab">${esc(typeLabel())} · ${dayWord()}</span></div>
   ${A.tab==="profile"?profSvg(rt):A.tab==="splits"?`<div class="splits">${splits(rt).map(x=>`<div class="split" style="--zc:${ZC[x.z]}"><span>KM ${x.k}${x.len<990?" ("+r1(x.len/1000)+")":""}</span><b class="num">${fmtT(x.t)}</b><span>${x.el>=1?"▲"+r0(x.el)+" m":x.el<=-1?"▼"+r0(-x.el)+" m":"flat"}${x.sg?" · "+x.sg+"🚦":""}</span></div>`).join("")}</div>`
    :`<div class="cues">${cues(rt).map(c=>`<div class="cue" data-act="cue" data-m="${c.m}"><span class="k">${c.m<0?"Before":"Km "+r1(c.m/1000)}</span><span>${esc(c.t)}</span></div>`).join("")}</div>`}
   <div class="legend" style="margin-top:6px">${[...new Set(zonesOf(rt).map(z=>z.z))].map(z=>`<span><i style="background:${ZC[z]};box-shadow:0 0 6px ${ZC[z]}"></i>${ZL[z]} ${fmtT(pz()[z])}/km</span>`).join("")}${rt.elev?"":`<span>· elevation unavailable</span>`}</div></div></div>`;
   const n2=$("#rname2");if(n2)n2.onchange=e=>{rt.name=e.target.value.trim().slice(0,60)||rt.name;if($("#rname"))$("#rname").value=rt.name;if(rt.saved)saveSel();else renderLeft()};
   const sv=$("#prof");if(sv){sv.onmousemove=e=>{const b=sv.getBoundingClientRect(),m=clamp((e.clientX-b.left-30*b.width/1000)/(b.width*(960/1000)),0,1)*rt.dist;profHover(m)};sv.onmouseleave=()=>profHover(null)}}
+function renderCompare(el){const[a,b]=A.cmp.map(id=>A.options.find(o=>o.id===id));if(!a||!b){A.cmp=[];return false}
+  const R=[["Score",o=>o.disp||0,1,v=>v],["Km",o=>o.dist/1000,0,v=>r1(v)],["Time",o=>estTime(o),-1,fmtT],["Difficulty",o=>difficulty(o).s,-1,v=>v],["Climb",o=>o.climb||0,-1,v=>v+" m"],["Signals",o=>o.signals||0,-1,v=>v],["Crossings",o=>o.cross||0,-1,v=>v],["Cafes",o=>cnt(o,"cafe"),1,v=>v],["Water/shops",o=>cnt(o,"water")+cnt(o,"shop"),1,v=>v],["Toilets",o=>cnt(o,"toilet"),1,v=>v],["Scenic",o=>r0((o.scenic||0)*100),1,v=>v+"%"]];
+  const row=(o,j)=>`<button class="cmpn" data-act="opt" data-i="${A.options.indexOf(o)}"><i style="background:${o===A.sel?"#2E8BFF":"#B76CFF"}"></i><span>#${o.rank} ${esc(o.name)}</span></button>${R.map(([l,f,dir,fm])=>{const x=f(a),y=f(b),me=j?y:x,ot=j?x:y,win=dir&&me!==ot&&(dir>0?me>ot:me<ot);return`<b class="num ${win?"win":""}">${fm(me)}</b>`}).join("")}`;
+  el.innerHTML=`<div class="cmph"><span class="ey">Compare · green = better</span><button class="btn sm" data-act="cmpclose">Close compare</button></div><div class="cmpg"><span></span>${R.map(r=>`<span class="ey">${r[0]}</span>`).join("")}${row(a,0)}${row(b,1)}</div>`;return true}
 function profSvg(rt){const W=1000,H=118,pl=30,pb=16,E=rt.elev||[{m:0,e:0},{m:rt.dist,e:0}],lo=Math.min(...E.map(x=>x.e)),hi=Math.max(lo+12,...E.map(x=>x.e)),X=m=>pl+m/rt.dist*(W-pl-10),Y=e=>8+(1-(e-lo)/(hi-lo))*(H-pb-14);
   const line=E.map(x=>`${X(x.m).toFixed(1)},${Y(x.e).toFixed(1)}`).join(" ");const Z=zonesOf(rt);
   const grads=Z.map((z,i)=>`<clipPath id="zc${i}"><rect x="${X(z.a)}" y="0" width="${X(z.b)-X(z.a)}" height="${H}"/></clipPath>`).join("");
@@ -480,7 +510,7 @@ function setMode(m,quiet){A.mode=m;A.options=[];if(m==="draw"){A.draw=A.start?[A
 function locate(){if(!navigator.geolocation){toast("Location isn't available in this browser.",true);return}status("Finding you…");navigator.geolocation.getCurrentPosition(p=>{status("");const c=[p.coords.latitude,p.coords.longitude];map.setView(c,16);setStart(c,false);toast("Start set to your location.")},()=>{status("");toast("Location blocked. Click the map to set a start, or allow location for this site.",true)},{enableHighAccuracy:true,timeout:9000,maximumAge:60000})}
 document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(!t)return;const a=t.dataset.act;
   const H={mode:()=>setMode(t.dataset.v),locate,build,
-    buildToday:()=>{const s=sess();if(!s)return;const rec=A.pace?.rec;A.km=clamp(Math.round((rec!=null&&rec<34?s.km*.8:s.km)*2)/2,1,21);A.colour=rec!=null&&rec<34?"easy":"session";if(A.mode==="draw")setMode("loop",true);if(painNow()>=3){A.prefs.flat=true;A.prefs.scenic=true}build()},
+    buildToday:()=>{const s=sess();if(!s)return;const rec=A.pace?.rec,low=rec!=null&&rec<34&&selDate()===todayISO();if(rType()==="session"){A.km=clamp(Math.round((low?s.km*.8:s.km)*2)/2,1,21);if(low)A.runType="easy"}if(A.mode==="draw")setMode("loop",true);if(painNow()>=3){A.prefs.flat=true;A.prefs.scenic=true}build()},
     pref:()=>{const k=t.dataset.k;A.prefs[k]=!A.prefs[k];LS.set("prefs",A.prefs);if(A.options.length){A.options.forEach(o=>o.sc=score(o,A.km*1000));A.options.sort((a,b)=>b.sc-a.sc)}renderLeft()},
     opt:()=>selectRoute(A.options[+t.dataset.i]),
     fav:()=>{if(e.target.closest(".x"))return;const f=A.favs[+t.dataset.i];map.setView(f.p,16);setStart(f.p,false);toast("Start: "+f.name)},
@@ -490,9 +520,13 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(
     del:()=>{e.stopPropagation();const r=A.routes.find(x=>x.id===t.dataset.id);if(!r)return;if(!confirmDel(r))return;A.routes=A.routes.filter(x=>x.id!==r.id);LS.set("routes",A.routes);renderLeft();toast("Deleted "+r.name)},
     undo:()=>{A.draw.pop();A.drawClosed="";drawRebuild()},dclear:()=>{A.draw=A.start?[A.start]:[];A.drawClosed="";drawRebuild()},
     dloop:()=>{A.drawClosed=A.drawClosed==="loop"?"":"loop";drawRebuild()},dob:()=>{A.drawClosed=A.drawClosed==="ob"?"":"ob";drawRebuild()},
-    day:()=>{A.day=+t.dataset.d;const b=bestSlot();A.hour=b?b.h:A.hour;renderAll();if(A.sel)drawRoute()},hour:()=>{A.hour=+t.dataset.h;renderAll()},
+    day:()=>{A.day=+t.dataset.d;A.runType="auto";A.kmTouched=false;A.cmp=[];const b=bestSlot();A.hour=b?b.h:A.hour;renderAll();if(A.sel)drawRoute()},hour:()=>{A.hour=+t.dataset.h;renderAll()},
     poi:()=>{const k=t.dataset.k;A.poiOn[k]=A.poiOn[k]?0:1;LS.set("poiOn",A.poiOn);drawRoute();renderRight()},
-    tab:()=>{A.tab=t.dataset.v;renderBottom()},colour:()=>{A.colour=t.dataset.v;drawRoute();renderBottom()},
+    tab:()=>{A.tab=t.dataset.v;renderBottom()},
+    rtype:()=>{const v=t.dataset.v,s=sess(),k=kipx();A.runType=v;if(v==="session"&&s)A.km=clamp(Math.round(s.km*2)/2,1,21);else if(!A.kmTouched)A.km=k&&k.type===v?k.km:{easy:5,steady:6,tempo:6,long:Math.max(7,Math.ceil((A.pace?.longest||6)+1))}[v];renderLeft();if(A.sel){drawRoute();renderBottom()}},
+    sort:()=>{A.sort=t.dataset.v;renderLeft()},
+    cmp:()=>{const o=A.options[+t.dataset.i];if(!o)return;const i=A.cmp.indexOf(o.id);if(i>=0)A.cmp.splice(i,1);else{A.cmp.push(o.id);if(A.cmp.length>2)A.cmp.shift()}if(A.cmp.length===2&&!A.cmp.includes(A.sel?.id)){A.sel=A.options.find(x=>x.id===A.cmp[0])}drawRoute();renderAll();if(A.cmp.length===2){const B=L.latLngBounds([...A.options.find(x=>x.id===A.cmp[0]).coords,...A.options.find(x=>x.id===A.cmp[1]).coords]);map.fitBounds(B,{paddingTopLeft:[360,80],paddingBottomRight:[340,230],maxZoom:16})}},
+    cmpclose:()=>{A.cmp=[];drawRoute();renderAll()},colour:()=>{A.colour=t.dataset.v;drawRoute();renderBottom()},
     cue:()=>{const m=+t.dataset.m;if(m>=0&&A.sel){map.setView(ptAt(A.sel.coords,A.sel.cum,m),17);profHover(m);setTimeout(()=>profHover(null),2500)}},
     heat:()=>{A.heat=!A.heat;$("#heatBtn").classList.toggle("on",A.heat);drawHeat()},send:sendPace,
     copyagain:()=>{const t2=$("#codeBox");t2.select();navigator.clipboard?.writeText(t2.value).then(()=>toast("Copied"),()=>document.execCommand("copy"))},
@@ -514,5 +548,5 @@ async function search(v){if(!v)return;try{const c=map.getCenter(),j=await(await 
 readHash();initMap();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
 if(!A.start){if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{const c=[p.coords.latitude,p.coords.longitude];map.setView(c,16);setStart(c,false)},()=>{setStart(MUMBAI,false);toast("Using Marine Drive. Allow location or click the map to change the start.")},{timeout:8000,maximumAge:120000});else setStart(MUMBAI,false)}
 else loadWx();
-if(sess())A.km=clamp(Math.round(sess().km*2)/2,1,21),renderLeft();
+renderLeft();
 </script></body></html>
