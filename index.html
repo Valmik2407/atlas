@@ -667,7 +667,7 @@ function panel(w){if(w==="l")A.lc=!A.lc;else A.rc=!A.rc;LS.set("lc",A.lc);LS.set
 /* ---- area air quality ---- */
 async function toggleAqi(){A.aqiOn=!A.aqiOn;$("#aqiBtn").classList.toggle("on",A.aqiOn);if(!A.aqiOn){L_aqi.clearLayers();$("#aqiLeg").hidden=true;return}
   const c=A.start||[map.getCenter().lat,map.getCenter().lng],key=c.map(v=>v.toFixed(2)).join();
-  if(!A.aqiData||A.aqiData.key!==key||Date.now()-A.aqiData.at>45*60e3){status("Loading the air-quality map…");const pts=[];const n=5,step=3500;
+  if(!A.aqiData||A.aqiData.key!==key||Date.now()-A.aqiData.at>45*60e3){status("Loading the air-quality map…");const pts=[];const n=5,step=6000;
     for(let i=0;i<n;i++)for(let j=0;j<n;j++)pts.push(dest(dest(c,0,(i-(n-1)/2)*step),90,(j-(n-1)/2)*step));
     try{const j=await(await fetchT(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${pts.map(p=>p[0].toFixed(4)).join(",")}&longitude=${pts.map(p=>p[1].toFixed(4)).join(",")}&hourly=us_aqi,pm2_5&timezone=auto&forecast_days=7`,12000)).json();
       const arr=Array.isArray(j)?j:[j];if(!arr[0]?.hourly)throw 0;A.aqiData={key,at:Date.now(),step,pts:pts.map((p,i)=>({p,h:arr[i]?.hourly||arr[0].hourly}))}}
@@ -679,12 +679,12 @@ function drawAqi(){if(!A.aqiData||!L_aqi)return;L_aqi.clearLayers();const k=dayK
     L.marker(x.p,{interactive:true,icon:L.divIcon({className:"",html:`<div class="aqin" style="--c:${aqiCol(v)}">${r0(v)}</div>`,iconSize:[34,20],iconAnchor:[17,10]})}).bindTooltip(`AQI ${r0(v)} · ${aqiLbl(v)}${x.h.pm2_5?.[i]!=null?` · PM2.5 ${r0(x.h.pm2_5[i])}`:""}`,{className:"tt",direction:"top"}).addTo(L_aqi)}
   if(!vals.length)return;const lo=Math.min(...vals),hi=Math.max(...vals),avg=vals.reduce((a,b)=>a+b,0)/vals.length,lg=$("#aqiLeg");lg.hidden=false;
   lg.innerHTML=`<div class="aqh"><span class="ey" style="margin:0">Air · ${dayWord()} ${hLbl(hh)}</span><button class="x" data-act="aqi" title="Hide">×</button></div><div class="aqbar"><i style="background:#35D07F"></i><i style="background:#F2C94C"></i><i style="background:#FF9F43"></i><i style="background:#FF5C5F"></i><i style="background:#B76CFF"></i></div><div class="aqk"><span>Good</span><span>Moderate</span><span>Poor</span><span>Bad</span></div>
-  <p class="small"><b style="color:${aqiCol(avg)}">${r0(lo)}–${r0(hi)}</b> across the area · ${aqiLbl(avg)}${hi-lo>=15?`. Cleaner air to the ${cleanSide()}.`:"."}</p><p class="small muted">Forecast model, roughly neighbourhood-scale. Busy junctions can be worse than shown.</p>`}
+  <p class="small"><b style="color:${aqiCol(avg)}">${r0(lo)}–${r0(hi)}</b> across the area · ${aqiLbl(avg)}${hi-lo>=15?`. Cleaner air to the ${cleanSide()}.`:"."}</p><p class="small muted">${hi-lo<5?"The air model is the same across your whole area right now, so there's no cleaner side to pick. Timing matters more: check the hour bars on the right.":"From a forecast model that works at district scale (about 10 km), not street by street. Busy junctions are worse than shown."}</p>`}
 function cleanSide(){const P=A.aqiData.pts,k=dayKey(A.day),hh=A.hour??new Date().getHours(),T=k?`${k}T${String(hh).padStart(2,"0")}:00`:null,c=A.start||P[12].p;let best=null;for(const x of P){const i=Math.max(0,T?x.h.time.indexOf(T):0),v=x.h.us_aqi[i];if(v!=null&&(!best||v<best.v))best={v,p:x.p}}return best&&hav(c,best.p)>500?dirWord(brg(c,best.p)):"centre"}
 
 /* ---- 3D ---- */
 const D3H=["dragPan","scrollZoom","dragRotate","touchZoomRotate","doubleClickZoom","keyboard"];
-function toggle3D(){if(!gl||!baseOk||!gl.isStyleLoaded?.()){toast("3D needs the vector map, which isn't loaded right now.",true);return}if(A.d3x)return;A.d3=!A.d3;$("#d3Btn").classList.toggle("on",A.d3);$("#d3bar").hidden=!A.d3;if(A.d3)document.body.classList.add("d3");
+function toggle3D(){let okS=false;try{okS=!!gl?.getStyle()?.layers?.length}catch(e){}if(!gl||!baseOk||!okS){toast("3D needs the vector map, which isn't loaded right now.",true);return}if(A.d3x)return;A.d3=!A.d3;$("#d3Btn").classList.toggle("on",A.d3);$("#d3bar").hidden=!A.d3;if(A.d3)document.body.classList.add("d3");
   if(A.d3){D3H.forEach(h=>{try{gl[h]?.enable()}catch(e){}});d3Layers();d3Route();const c=map.getCenter();gl.jumpTo({center:[c.lng,c.lat],zoom:map.getZoom()-1});gl.easeTo({pitch:58,bearing:-18,zoom:Math.max(14.2,map.getZoom()-1),duration:1100})}
   else{D3H.forEach(h=>{try{gl[h]?.disable()}catch(e){}});A.d3x=true;const z=Math.round(gl.getZoom()+1);gl.easeTo({pitch:0,bearing:0,zoom:z-1,duration:600});setTimeout(()=>{A.d3x=false;const c=gl.getCenter();document.body.classList.remove("d3");map.invalidateSize();map.setView([c.lat,c.lng],z,{animate:false});glSync()},640)}}
 function d3Layers(){const st=gl.getStyle(),src=Object.entries(st.sources).find(([k,v])=>v.type==="vector")?.[0];if(!gl.getLayer("a3d-bld")&&src){
