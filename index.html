@@ -126,13 +126,59 @@ button,input,select{font:inherit;color:inherit}
 .hint{font-size:12px;color:var(--mute);margin-top:8px;display:flex;gap:6px;align-items:flex-start}
 @media (max-width:1100px){#right{width:260px}#bottom{left:340px;right:290px}.bgrid{grid-template-columns:1fr}}
 @media (max-width:820px){#left{width:auto;right:18px;bottom:auto;max-height:46vh}#right{display:none}#bottom{left:18px;right:18px}#top{left:18px;top:auto;bottom:240px}.leaflet-control-zoom{margin:0 18px 260px 0!important}}
+
+/* ===== Atlas 2 ===== */
+#left,#right,#bottom,#top,.ptab{transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .3s,left .42s cubic-bezier(.2,.8,.2,1),right .42s cubic-bezier(.2,.8,.2,1)}
+body.lc #left{transform:translateX(calc(-100% - 30px));opacity:0;pointer-events:none}
+body.rc #right{transform:translateX(calc(100% + 30px));opacity:0;pointer-events:none}
+body.lc #bottom{left:18px}body.rc #bottom{right:18px}body.lc #top{left:84px}
+.pcol{margin-left:6px;width:28px;height:28px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--mute);cursor:pointer;font-size:18px;line-height:1;display:grid;place-items:center;transition:.15s}
+.pcol:hover{color:var(--fg);background:rgba(255,255,255,.06)}
+.ptab{position:fixed;z-index:520;top:50%;height:96px;width:34px;margin-top:-48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--fg);cursor:pointer;font-size:16px;opacity:0;pointer-events:none;padding:0}
+.ptab span{writing-mode:vertical-rl;font:600 9.5px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+#lTab{left:12px;border-radius:0 14px 14px 0;transform:translateX(-60px)}#rTab{right:12px;border-radius:14px 0 0 14px;transform:translateX(60px)}
+body.lc #lTab,body.rc #rTab{opacity:1;pointer-events:auto;transform:none}
+.ptab:hover{border-color:rgba(46,139,255,.5);box-shadow:0 0 24px rgba(46,139,255,.2)}
+.tgroup{display:flex;padding:3px;border-radius:13px;gap:2px;position:static;pointer-events:auto}
+.tb{height:34px;padding:0 13px;border-radius:10px;border:0;background:transparent;color:var(--mute);font-weight:600;font-size:12.5px;cursor:pointer;transition:.15s}
+.tb:hover{color:var(--fg);background:rgba(255,255,255,.06)}
+.tb.on{color:#fff;background:linear-gradient(135deg,rgba(46,139,255,.35),rgba(25,211,255,.22));box-shadow:inset 0 0 0 1px rgba(46,139,255,.55)}
+#heatBtn.on{background:linear-gradient(135deg,rgba(255,122,26,.35),rgba(255,176,32,.2));box-shadow:inset 0 0 0 1px rgba(255,122,26,.55)}
+.foldh{all:unset;display:flex;align-items:center;gap:8px;width:100%;cursor:pointer;font:600 10.5px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+.foldh span{letter-spacing:.04em;text-transform:none;color:var(--dim);font-size:10.5px;margin-left:auto;margin-right:6px}
+.foldh::after{content:"";display:inline-block;flex:none;width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .25s}
+.fold.shut .foldh::after{transform:rotate(-45deg)}
+.foldb{overflow:hidden}.fold.shut .foldb{opacity:0}
+.fold .foldb{display:block;max-height:900px;transition:max-height .35s ease,opacity .25s}.fold.shut .foldb{max-height:0}
+.chip.via{gap:6px;border-color:rgba(183,108,255,.45)}.chip.via i{font-style:normal;width:16px;height:16px;border-radius:50%;background:#B76CFF;color:#fff;font-size:10px;display:grid;place-items:center;font-weight:700}
+.chip.picking{border-color:rgba(183,108,255,.8);color:#e2ccff;box-shadow:0 0 18px rgba(183,108,255,.3);animation:pk 1.4s ease-in-out infinite}
+@keyframes pk{50%{box-shadow:0 0 4px rgba(183,108,255,.15)}}
+body.picking #map{cursor:crosshair}body.picking .leaflet-container{cursor:crosshair}
+.viapin{width:24px;height:24px;border-radius:50%;background:#B76CFF;border:2.5px solid #fff;color:#fff;font:700 11px/19px Inter,system-ui,sans-serif;text-align:center;box-shadow:0 0 0 6px rgba(183,108,255,.22),0 4px 14px rgba(0,0,0,.5)}
+.scout{animation:scf .5s ease-out}@keyframes scf{from{opacity:0}}
+.aqipane{filter:blur(26px) saturate(1.2);mix-blend-mode:screen}
+.aqin{min-width:34px;height:20px;padding:0 6px;border-radius:10px;background:rgba(6,9,14,.82);border:1px solid color-mix(in srgb,var(--c) 70%,transparent);color:var(--c);font:700 11px/18px "IBM Plex Mono",ui-monospace,monospace;text-align:center;box-shadow:0 0 12px color-mix(in srgb,var(--c) 30%,transparent)}
+#aqiLeg{left:352px;top:76px;width:260px;padding:12px 14px;transition:left .42s cubic-bezier(.2,.8,.2,1)}body.lc #aqiLeg{left:84px}
+#aqiLeg p{margin:6px 0 0}.aqh{display:flex;align-items:center;justify-content:space-between}.aqh .x{all:unset;cursor:pointer;color:var(--mute);font-size:16px;padding:0 4px}
+.aqbar{display:flex;height:6px;border-radius:3px;overflow:hidden;margin:10px 0 4px}.aqbar i{flex:1}
+.aqk{display:flex;justify-content:space-between;font-size:10px;color:var(--dim)}
+#d3bar{left:50%;top:80px;transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:8px 8px 8px 16px;border-radius:14px;white-space:nowrap}
+body.d3 #map{visibility:hidden}body.d3 #gl{cursor:grab}body.d3 #gl:active{cursor:grabbing}
+body.d3 #bottom,body.d3 #left,body.d3 #right{opacity:.25;transition:opacity .3s}body.d3 #bottom:hover,body.d3 #left:hover,body.d3 #right:hover{opacity:1}
+#left,#right,#bottom{animation:pin .6s cubic-bezier(.2,.8,.2,1) both}#right{animation-delay:.08s}#bottom{animation-delay:.14s}
+@keyframes pin{from{opacity:0;transform:translateY(10px)}}
+body.lc #left,body.rc #right{animation:none}
+.opt{transition:transform .18s,border-color .18s,background .18s}.opt:hover{transform:translateY(-1px)}
+@media (max-width:820px){.ptab,.pcol,#aqiLeg{display:none}}
+body.d3 #aqiLeg{display:none}
 </style></head><body>
 <div id="gl" aria-hidden="true"></div><div id="map" role="application" aria-label="Map"></div>
 <div id="top"><div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Search a place to run from…" autocomplete="off" aria-label="Search a place"><div class="sres" id="sres" hidden></div></div>
 <div class="status" id="status" hidden></div>
-<div class="tbtns"><button class="btn g" data-act="heat" id="heatBtn" title="Glow where you've run">Heatmap</button><button class="btn p" data-act="send">Send to PACE</button><a class="btn g" id="paceLink" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">Open PACE ↗</a></div></div>
-<aside id="left" class="glass" aria-label="Build a route"><div class="brand"><svg width="26" height="26" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0a1222"/><path d="M8 23 C10 12 16 8 24 9" stroke="#2E8BFF" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="8" cy="23" r="3" fill="#35D07F"/><circle cx="24" cy="9" r="2.4" fill="#19D3FF"/></svg><b>ATLAS</b><span class="sync" id="sync"></span></div><div class="scroll" id="L"></div></aside>
-<aside id="right" class="glass" aria-label="The day"></aside>
+<div class="tbtns"><div class="tgroup glass"><button class="tb" data-act="aqi" id="aqiBtn" title="Air quality around you">Air</button><button class="tb" data-act="d3" id="d3Btn" title="Tilt the map, 3D buildings">3D</button><button class="tb" data-act="heat" id="heatBtn" title="Glow where you've run">Heatmap</button></div><button class="btn p" data-act="send">Send to PACE</button><a class="btn g" id="paceLink" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">Open PACE ↗</a></div></div>
+<aside id="left" class="glass" aria-label="Build a route"><div class="brand"><svg width="26" height="26" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0a1222"/><path d="M8 23 C10 12 16 8 24 9" stroke="#2E8BFF" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="8" cy="23" r="3" fill="#35D07F"/><circle cx="24" cy="9" r="2.4" fill="#19D3FF"/></svg><b>ATLAS</b><span class="sync" id="sync"></span><button class="pcol" data-act="lc" title="Hide panel  [" aria-label="Hide panel">‹</button></div><div class="scroll" id="L"></div></aside>
+<aside id="right" class="glass" aria-label="The day"></aside><button class="ptab glass" id="lTab" data-act="lc" title="Show panel  [">›<span>Build</span></button><button class="ptab glass" id="rTab" data-act="rc" title="Show the day  ]"><span>Day</span>‹</button>
+<div id="aqiLeg" class="glass" hidden></div><div id="d3bar" class="glass" hidden><b>3D view</b><span class="muted small">Drag to move · right-drag or Ctrl-drag to tilt and turn · scroll to zoom</span><button class="btn" data-act="d3">Back to 2D</button></div>
 <section id="bottom" class="glass" aria-label="Route stats"></section>
 <div id="toast" role="status" aria-live="polite"></div><div id="modal"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
@@ -182,7 +228,7 @@ const ICON={cafe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
  sight:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 9 9H4l4 4-2 7 6-4 6 4-2-7 4-4h-5z"/></svg>'};
 const MUMBAI=[18.9432,72.8236];
 const A={pace:LS.get("pace",null),start:LS.get("start",null),mode:"loop",km:5,prefs:LS.get("prefs",{scenic:true,cross:true,flat:true}),options:[],sel:null,draw:[],drawClosed:"",
-  poiOn:LS.get("poiOn",{cafe:1,water:1,shop:1,toilet:1,bench:0,signal:1,sight:1}),wx:null,aq:null,day:0,hour:null,routes:LS.get("routes",[]),favs:LS.get("favs",[]),heat:false,colour:"easy",runType:"auto",sort:"best",cmp:[],kmTouched:false,tab:"profile",busy:false,area:null,hoverM:null};
+  poiOn:LS.get("poiOn",{cafe:1,water:1,shop:1,toilet:1,bench:0,signal:1,sight:1}),wx:null,aq:null,day:0,hour:null,routes:LS.get("routes",[]),favs:LS.get("favs",[]),heat:false,colour:"easy",runType:"auto",sort:"best",cmp:[],kmTouched:false,tab:"profile",busy:false,area:null,hoverM:null,via:[],viaPick:false,aqiOn:false,aqiData:null,d3:false,fold:LS.get("fold",{prefer:false,lib:false}),lc:LS.get("lc",false),rc:LS.get("rc",false)};
 function pz(){const p=A.pace?.paces;if(p&&p.easySlow)return{easy:(p.easySlow+p.easyFast)/2,steady:p.easyFast*.97,tempo:p.tempo,int:p.int,race:p.race};return{easy:400,steady:375,tempo:345,int:318,race:360}}
 const selDate=()=>(A.wx?.daily?.time?.[A.day])||todayISO();
 const sess=()=>{const d=selDate(),Ls=A.pace?.sessions;if(Array.isArray(Ls))return Ls.find(x=>x.date===d)||null;const s=A.pace?.session;return s&&s.date===d?s:null};
@@ -204,7 +250,7 @@ function readHash(){const m=location.hash.match(/[#&]p=([^&]+)/);if(!m)return;tr
   history.replaceState(null,"",location.pathname+location.search)}
 
 /* ================= map ================= */
-let map,tiles=null,L_route,L_alts,L_poi,L_marks,L_heat,L_draw,hoverMk;
+let map,tiles=null,L_route,L_alts,L_poi,L_marks,L_heat,L_draw,hoverMk,L_via,L_aqi;
 
 /* ===== base map: VersaTiles vector (dark) → raster fallbacks ===== */
 let gl=null,baseOk=false;
@@ -213,7 +259,7 @@ const BASES=[
   {kind:"gl",style:"https://tiles.versatiles.org/assets/styles/colorful/style.json",inv:true,attr:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://versatiles.org">VersaTiles</a>'},
   {kind:"raster",url:"https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",max:16,inv:false,attr:"Tiles &copy; Esri"},
   {kind:"raster",url:"https://tile.openstreetmap.org/{z}/{x}/{y}.png",max:19,inv:true,attr:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}];
-function glSync(){if(!gl)return;const c=map.getCenter();gl.jumpTo({center:[c.lng,c.lat],zoom:map.getZoom()-1})}
+function glSync(){if(!gl||A.d3||A.d3x)return;const c=map.getCenter();gl.jumpTo({center:[c.lng,c.lat],zoom:map.getZoom()-1})}
 function initBase(i=0){if(baseOk)return;const B=BASES[i];if(!B){blockedNote();return}
   if(gl){try{gl.remove()}catch(e){}gl=null}if(tiles){tiles.remove();tiles=null}map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
   const next=()=>{if(!baseOk)initBase(i+1)};
@@ -232,20 +278,21 @@ function initMap(){map=L.map("map",{zoomControl:false,attributionControl:true,pr
   map.createPane("heat").style.zIndex=350;map.getPane("heat").classList.add("heat");
   L_heat=L.layerGroup().addTo(map);L_alts=L.layerGroup().addTo(map);L_route=L.layerGroup().addTo(map);L_poi=L.layerGroup().addTo(map);L_marks=L.layerGroup().addTo(map);L_draw=L.layerGroup().addTo(map);
   map.on("move zoom viewreset resize",glSync);map.on("resize",()=>gl&&gl.resize());
-  map.on("click",e=>{const p=[e.latlng.lat,e.latlng.lng];if(A.mode==="draw")addWp(p);else{setStart(p,true)}});
+  map.on("click",e=>{const p=[e.latlng.lat,e.latlng.lng];if(A.mode==="draw")addWp(p);else if(A.viaPick){addVia(p)}else{setStart(p,true)}});
+  L_via=L.layerGroup().addTo(map);map.createPane("aqi").style.zIndex=340;map.getPane("aqi").classList.add("aqipane");L_aqi=L.layerGroup().addTo(map);
   setStartMarker()}
 let startMk;function setStartMarker(){if(startMk)startMk.remove();if(!A.start)return;startMk=L.marker(A.start,{draggable:true,icon:L.divIcon({className:"",html:`<div class="startpin ${A.sel?"":"pulse"}"></div>`,iconSize:[20,20],iconAnchor:[10,10]}),zIndexOffset:1000}).addTo(map).bindTooltip("Start",{className:"tt",direction:"top",offset:[0,-10]});
   startMk.on("dragend",e=>{const l=e.target.getLatLng();setStart([l.lat,l.lng],true)})}
-function setStart(p,user){A.start=p;LS.set("start",p);if(A.mode==="draw"){if(!A.draw.length)A.draw=[p]}else{A.options=[];A.sel=null;clearRoute()}setStartMarker();loadWx();if(user)toast("Start set. Hit Build when you're ready.");renderAll()}
+function setStart(p,user){if(A.via.length&&A.start&&hav(A.start,p)>3000){A.via=[];drawVia()}A.start=p;LS.set("start",p);if(A.mode==="draw"){if(!A.draw.length)A.draw=[p]}else{A.options=[];A.sel=null;clearRoute()}setStartMarker();loadWx();if(user)toast("Start set. Hit Build when you're ready.");renderAll()}
 function clearRoute(){L_route.clearLayers();L_alts.clearLayers();L_poi.clearLayers();L_marks.clearLayers()}
 
 /* ================= routing ================= */
 const ROUTERS=["https://routing.openstreetmap.de/routed-foot/route/v1/foot/"];
-let qB=0;const qBW=[];async function lim2(fn){while(qB>=4)await new Promise(r=>qBW.push(r));qB++;try{return await fn()}finally{qB--;const n=qBW.shift();n&&n()}}
+let qB=0;const qBW=[];async function lim2(fn){while(qB>=6)await new Promise(r=>qBW.push(r));qB++;try{return await fn()}finally{qB--;const n=qBW.shift();n&&n()}}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function dec6(s){const o=[];let i=0,la=0,lo=0;while(i<s.length){for(const k of[0,1]){let r=0,sh=0,b;do{b=s.charCodeAt(i++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);const d=r&1?~(r>>1):r>>1;k?lo+=d:la+=d}o.push([la/1e6,lo/1e6])}return o}
 async function osrm(pts){const P=A.prefs,dark=isDark();let err;
-  const body={locations:pts.map(p=>({lat:+p[0].toFixed(6),lon:+p[1].toFixed(6),type:"break"})),costing:"pedestrian",costing_options:{pedestrian:{walkway_factor:P.scenic?0.6:1,alley_factor:3,driveway_factor:5,use_hills:P.flat?0:0.5,use_lit:dark?1:0,step_penalty:30,service_factor:1.2}},directions_options:{units:"kilometers"}};
+  const body={locations:pts.map(p=>({lat:+p[0].toFixed(6),lon:+p[1].toFixed(6),type:"break"})),costing:"pedestrian",costing_options:{pedestrian:{walkway_factor:P.scenic?0.7:1,sidewalk_factor:0.9,alley_factor:8,driveway_factor:10,use_living_streets:0.1,use_tracks:0.1,service_penalty:40,service_factor:3,use_hills:P.flat?0:0.5,use_lit:dark?1:0,step_penalty:40}},directions_options:{units:"kilometers"}};
   for(let a=0;a<2;a++){try{const r=await lim2(()=>fetchT("https://valhalla1.openstreetmap.de/route?json="+encodeURIComponent(JSON.stringify(body)),15000));if(r.status===429){await sleep(1200);continue}const j=await r.json();
     if(j.trip){const coords=[],steps=[];for(const leg of j.trip.legs){const c=dec6(leg.shape);for(const m of leg.maneuvers||[])steps.push({name:(m.street_names||[])[0]||"",type:m.type,dist:(m.length||0)*1000,loc:c[m.begin_shape_index]||null});if(coords.length)c.shift();coords.push(...c)}return{coords,steps}}err=j.error;break}catch(e){err=e.message}}
   const c=pts.map(p=>p[1].toFixed(6)+","+p[0].toFixed(6)).join(";");
@@ -278,21 +325,22 @@ const POIMAP=p=>{const a=p.amenity,s=p.shop,t=p.tourism;if(/^(cafe|fast_food|ice
   if(/^(convenience|supermarket|beverages|kiosk|bakery|chemist)$/.test(s)||a==="pharmacy")return"shop";if(/^(attraction|viewpoint|artwork|museum)$/.test(t)||p.historic||p.leisure==="park"||p.leisure==="garden")return"sight";return null};
 async function loadArea(center,radius){const key=center.map(v=>v.toFixed(3)).join()+":"+Math.ceil(radius/600);if(AREAS[key])return AREAS[key];
   const s=dest(center,180,radius)[0],n=dest(center,0,radius)[0],w=dest(center,270,radius)[1],e=dest(center,90,radius)[1];
-  const out={ok:false,src:[],pois:[],parks:[],bridges:[],majors:[],foot:new Set(),lit:null,coast:new Set(),bridgeG:new Set(),hasSignals:false};
+  const out={ok:false,src:[],pois:[],parks:[],bridges:[],majors:[],foot:new Set(),lit:null,coast:new Set(),bridgeG:new Set(),hasSignals:false,minorG:null,goodG:null,mkt:null};
   const tilesP=(async()=>{try{const{VectorTile,Pbf}=await vtLib(),x0=Math.floor(t2x(w)),x1=Math.floor(t2x(e)),y0=Math.floor(t2y(n)),y1=Math.floor(t2y(s)),jobs=[];
-    for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++)jobs.push([x,y]);let got=0;const foot=[],coast=[],bridges=[];
+    for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++)jobs.push([x,y]);let got=0;const foot=[],coast=[],bridges=[],minor=[],good=[],mkt=new Map();
     await Promise.all(jobs.map(([x,y])=>lim(async()=>{try{const r=await fetchT(VT_URL.replace("{z}",VT_Z).replace("{x}",x).replace("{y}",y),12000);if(!r.ok)return;const t=new VectorTile(new Pbf(await r.arrayBuffer()));got++;
       const conv=(L,f)=>{const ex=L.extent||4096;return f.loadGeometry().map(ring=>ring.map(pt=>[y2lat(y+pt.y/ex),x2lon(x+pt.x/ex)]))};
       const L=t.layers;
-      if(L.pois)for(let i=0;i<L.pois.length;i++){const f=L.pois.feature(i),p=f.properties,ty=POIMAP(p);if(!ty)continue;const g=conv(L.pois,f)[0]?.[0];if(g)out.pois.push({t:ty,name:p.name_en||p.name||"",p:g,sub:p.amenity||p.shop||p.tourism||p.leisure||p.historic||""})}
+      if(L.pois)for(let i=0;i<L.pois.length;i++){const f=L.pois.feature(i),p=f.properties;if(p.shop||p.amenity==="marketplace"){const g0=conv(L.pois,f)[0]?.[0];if(g0){const[a,b]=cell(g0),k=gk(a,b);mkt.set(k,(mkt.get(k)||0)+(p.amenity==="marketplace"?6:1))}}const ty=POIMAP(p);if(!ty)continue;const g=conv(L.pois,f)[0]?.[0];if(g)out.pois.push({t:ty,name:p.name_en||p.name||"",p:g,sub:p.amenity||p.shop||p.tourism||p.leisure||p.historic||""})}
       if(L.streets)for(let i=0;i<L.streets.length;i++){const f=L.streets.feature(i),p=f.properties,k=p.kind;if(p.tunnel)continue;const gs=conv(L.streets,f);
-        if(/^(footway|pedestrian|path|living_street|track)$/.test(k))foot.push(...gs);
+        if(k==="pedestrian")foot.push(...gs);else if(/^(footway|path|cycleway)$/.test(k)){for(const g of gs){let L2=0;for(let q=1;q<g.length;q++)L2+=hav(g[q-1],g[q]);if(L2>=220)foot.push(g)}}
+        if(/^(service|living_street|track|alley)$/.test(k)||p.service==="alley")minor.push(...gs);else if(/^(primary|secondary|tertiary|trunk)$/.test(k))good.push(...gs);
         if(p.bridge&&/^(motorway|trunk|primary|secondary|tertiary|residential|unclassified)/.test(k))bridges.push(...gs);
         if(!p.bridge&&!p.link&&/^(trunk|primary|secondary)$/.test(k))out.majors.push(...gs.map(g=>({g,k})))}
       if(L.land)for(let i=0;i<L.land.length;i++){const f=L.land.feature(i),p=f.properties;if(!/^(park|garden|recreation_ground|grass|playground|village_green)$/.test(p.kind))continue;for(const ring of conv(L.land,f)){if(ring.length<4)continue;out.parks.push({ring,name:"",bb:[Math.min(...ring.map(q=>q[0])),Math.min(...ring.map(q=>q[1])),Math.max(...ring.map(q=>q[0])),Math.max(...ring.map(q=>q[1]))]})}}
       if(L.ocean)for(let i=0;i<L.ocean.length;i++){const f=L.ocean.feature(i),ex=L.ocean.extent||4096;for(const ring of f.loadGeometry()){const seg=[];for(let k=0;k<ring.length;k++){const a=ring[k],edge=a.x<=0||a.y<=0||a.x>=ex||a.y>=ex;if(edge){if(seg.length>1)coast.push(seg.splice(0));seg.length=0}else seg.push([y2lat(y+a.y/ex),x2lon(x+a.x/ex)])}if(seg.length>1)coast.push(seg)}}
     }catch(e){}})));
-    if(got){out.ok=true;out.src.push("tiles");gridOf(foot,15,out.foot);gridOf(coast,25,out.coast);gridOf(bridges,8,out.bridgeG);out.bridges=bridges}}catch(e){}})();
+    if(got){out.ok=true;out.src.push("tiles");gridOf(foot,15,out.foot);gridOf(coast,25,out.coast);gridOf(bridges,8,out.bridgeG);out.bridges=bridges;out.minorG=gridOf(minor,12);out.goodG=gridOf(good,12);out.mkt=mkt}}catch(e){}})();
   const opP=(async()=>{const bb=`${s.toFixed(5)},${w.toFixed(5)},${n.toFixed(5)},${e.toFixed(5)}`,q=`[out:json][timeout:20];(node["highway"~"^(traffic_signals|crossing)$"](${bb});node["amenity"~"^(drinking_water|bench|toilets)$"](${bb});way["lit"="yes"](${bb}););out geom qt;`;
     for(const u of OVERPASS){try{const r=await fetchT(u,15000,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"data="+encodeURIComponent(q)});if(!r.ok)continue;return await r.json()}catch(e){}}return null})();
   await tilesP;const j=await Promise.race([opP,new Promise(r=>setTimeout(()=>r(null),8000))]);
@@ -312,7 +360,9 @@ function distSeg(p,a,b){const k=Math.cos(rad(p[0])),ax=a[1]*k,ay=a[0],bx=b[1]*k,
 function analyse(rt,ar){const S=samples(rt.coords,rt.cum,25);let sc=0,lt=0,br=[];
   if(ar?.ok){for(const s of S){const scen=nearG(ar.foot,s.p,1)||nearG(ar.coast,s.p,4)||inPark(ar,s.p);if(scen)sc++;if(ar.lit&&nearG(ar.lit,s.p,1))lt++}
     let cur=null;for(const s of samples(rt.coords,rt.cum,10)){const on=nearG(ar.bridgeG,s.p,0);if(on){if(!cur)cur={a:s.m,b:s.m};cur.b=s.m}else if(cur){if(cur.b-cur.a>=80)br.push(cur);cur=null}}if(cur&&cur.b-cur.a>=80)br.push(cur)}
-  rt.scenic=ar?.ok?sc/S.length:null;rt.litF=ar?.lit?lt/S.length:null;rt.bridges=br;
+  rt.scenic=ar?.ok?sc/S.length:null;
+  if(ar?.minorG){let mi=0,go=0,mk=0;for(const s of S){const gd=nearG(ar.goodG,s.p,0);if(gd)go++;else if(nearG(ar.minorG,s.p,0)&&!nearG(ar.foot,s.p,0)&&!nearG(ar.coast,s.p,3))mi++;const[a,b]=cell(s.p);let n=0;for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++)n+=ar.mkt.get(gk(a+i,b+j))||0;if(n>=5)mk++}rt.minorF=mi/S.length;rt.goodF=go/S.length;rt.mktF=mk/S.length}else{rt.minorF=rt.goodF=rt.mktF=null}
+  {const T=(rt.steps||[]).filter(s=>typeof s.type==="number"?(s.type>=9&&s.type<=16):/^(turn|end of road|fork)$/.test(s.type||"")).length;rt.turnsKm=T/Math.max(.5,rt.dist/1000)}rt.litF=ar?.lit?lt/S.length:null;rt.bridges=br;
   const RG=new Map();for(const s of samples(rt.coords,rt.cum,10)){const[a,b]=cell(s.p),k=gk(a,b);(RG.get(k)||RG.set(k,[]).get(k)).push(s)}
   const hits=[];if(ar?.ok)for(const q of ar.pois){const[a,b]=cell(q.p);let best=null;for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++){for(const s of RG.get(gk(a+i,b+j))||[]){const d=hav(s.p,q.p);if(!best||d<best.d)best={d,m:s.m}}}
     if(!best)continue;const lim_=q.t==="signal"||q.t==="cross"?15:q.t==="sight"&&q.sub==="park"?120:50;if(best.d<=lim_)hits.push({...q,m:best.m,d:best.d})}
@@ -332,7 +382,8 @@ async function addElevAll(list){const reqs=[];let cur=[];for(const rt of list){c
     let up=0;if(rt.elev){let ref=rt.elev[0].e;for(const x of rt.elev){if(x.e>ref+4){up+=x.e-ref;ref=x.e}else if(x.e<ref-4)ref=x.e}}rt.climb=r0(up||(rt.bridges||[]).length*6)}return list}
 const addElev=rt=>addElevAll([rt]).then(()=>rt);
 function score(rt,D){const km=rt.dist/1000,err=Math.abs(rt.dist-D)/D,P=A.prefs,night=isDark(),stops=rt.signals!=null?rt.signals*1.6+(rt.cross||0)*.5:(rt.cross||0)*1.3;
-  let s=100-err*220;if(P.scenic&&rt.scenic!=null)s+=rt.scenic*45;if(P.cross)s-=stops/km*4;if(P.flat)s-=(rt.climb||0)*.5;s-=(rt.flyoverM||0)/100*(P.flat?6:3);if(night&&rt.litF!=null)s+=rt.litF*30;if(painNow()>=3&&rt.scenic!=null)s+=rt.scenic*15;return s}
+  let s=100-err*220;if(P.scenic&&rt.scenic!=null)s+=rt.scenic*45;if(P.cross)s-=stops/km*4;if(P.flat)s-=(rt.climb||0)*.5;s-=(rt.flyoverM||0)/100*(P.flat?6:3);if(night&&rt.litF!=null)s+=rt.litF*30;if(painNow()>=3&&rt.scenic!=null)s+=rt.scenic*15;
+  if(rt.minorF!=null){s-=rt.minorF*50;s-=rt.mktF*40;s+=rt.goodF*14}s-=Math.max(0,(rt.turnsKm||0)-4)*2.5;return s}
 function overlap(a,b){const S=samples(a.coords,a.cum,60);let n=0;const B=samples(b.coords,b.cum,20);for(const s of S)if(B.some(x=>hav(x.p,s.p)<35))n++;return n/S.length}
 
 /* ================= session zones ================= */
@@ -396,19 +447,19 @@ function cues(rt){const P=pz(),Z=zonesOf(rt),w=hourWx(),o=[],km=m=>r1(m/1000),pa
 /* ================= build ================= */
 async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: My location, a favourite, or click the map.",true);return}
   const D=A.km*1000,S=A.start;A.busy=true;A.options=[];A.sel=null;A.cmp=[];clearRoute();renderLeft();renderBottom();status("Reading the area: paths, parks, signals…");
-  const areaP=loadArea(S,clamp(D/2.6,900,4500)),N=12,bears=[...Array(N)].map((_,i)=>(i*360/N+Math.random()*10-5+360)%360);
-  const jobs=A.mode==="ob"?bears.map(b=>()=>obAt(S,b,D)):[...bears.map(b=>()=>loopAt(S,b,D)),...bears.filter((_,i)=>i%2).map(b=>()=>longAt(S,b,D))];
+  const areaP=loadArea(S,clamp(D/2.6,900,4500)),N=9,bears=[...Array(N)].map((_,i)=>(i*360/N+Math.random()*10-5+360)%360);const t0=performance.now();
+  const jobs=A.via.length?viaJobs(S,D):A.mode==="ob"?bears.map(b=>()=>obAt(S,b,D)):[...bears.map(b=>()=>loopAt(S,b,D)),...bears.filter((_,i)=>i%3===1).map(b=>()=>longAt(S,b,D))];
   let done=0;status(`Scouting routes… 0/${jobs.length}`);
-  try{const res=(await Promise.allSettled(jobs.map(f=>f().finally(()=>{done++;status(`Scouting routes… ${done}/${jobs.length}`)})))).filter(r=>r.status==="fulfilled"&&r.value).map(r=>r.value);
+  try{const res=(await Promise.allSettled(jobs.map(f=>f().then(v=>{if(v&&v.coords?.length>1&&A.busy)L.polyline(v.coords,{color:"#7fb4ff",weight:2.5,opacity:.35,interactive:false,className:"scout"}).addTo(L_alts);return v}).finally(()=>{done++;status(`Scouting routes… ${done}/${jobs.length}`)})))).filter(r=>r.status==="fulfilled"&&r.value).map(r=>r.value);
     if(!res.length)throw new Error("none");status("Checking crossings, stops and scenery…");const ar=await areaP;if(!ar.ok)toast("Couldn't load cafes/signals right now. Routes still work.",true);
     const near=res.filter(r=>Math.abs(r.dist-D)/D<=.18),pool=near.length?near:res;pool.forEach(r=>analyse(r,ar));pool.forEach(r=>r.sc=score(r,D));pool.sort((a,b)=>b.sc-a.sc);
-    const pick=[];for(const r of pool){if(pick.length>=20)break;if(pick.every(p=>overlap(r,p)<.55&&overlap(p,r)<.55))pick.push(r)}
+    const pick=[];for(const r of pool){if(pick.length>=12)break;if(pick.every(p=>overlap(r,p)<.55&&overlap(p,r)<.55))pick.push(r)}
     status(`Measuring climbs on ${pick.length} routes…`);await addElevAll(pick);pick.forEach(r=>r.sc=score(r,D));pick.sort((a,b)=>b.sc-a.sc);
     const hi=pick[0].sc,lo=pick[pick.length-1].sc,seen={};pick.forEach((r,i)=>{r.rank=i+1;r.disp=pick.length>1?r0(60+39*(r.sc-lo)/((hi-lo)||1)):99;if(seen[r.name])r.name+=` · ${dirWord(r.bear||0)}`;seen[r.name]=1});
-    A.options=pick;A.sort="best";A.busy=false;status("");selectRoute(pick[0]);toast(`${pick.length} different route${pick.length>1?"s":""} found. #1 is selected.`)
+    A.options=pick;A.sort="best";A.busy=false;status("");selectRoute(pick[0]);toast(`${pick.length} different route${pick.length>1?"s":""} in ${r0((performance.now()-t0)/1000)} s. #1 is selected.`)
   }catch(e){A.busy=false;status("");toast("Couldn't reach the route service. Check your internet and try again.",true);renderLeft()}}
 async function finishRoute(rt){const ar=A.start?await loadArea(rt.coords[0],clamp(rt.dist/2.6,900,4500)):null;analyse(rt,ar);await addElev(rt);return rt}
-function selectRoute(rt){A.sel=rt;drawRoute();renderAll();if(rt&&rt.coords.length>1)map.fitBounds(L.latLngBounds(rt.coords),{paddingTopLeft:[360,80],paddingBottomRight:[340,230],maxZoom:16})}
+function selectRoute(rt){A.sel=rt;drawRoute();renderAll();if(rt&&rt.coords.length>1)map.fitBounds(L.latLngBounds(rt.coords),{...PADS(),maxZoom:16})}
 
 /* ================= draw mode ================= */
 let drawT=null;
@@ -424,7 +475,7 @@ function drawRebuild(){L_draw.clearLayers();A.draw.forEach((p,i)=>{const m=L.mar
 /* ================= map drawing ================= */
 const ptIcon=(t,small)=>L.divIcon({className:"",html:`<div class="poi ${small?"sm":""}" style="--pc:${PT[t][1]}">${ICON[t]}</div>`,iconSize:small?[16,16]:[26,26],iconAnchor:small?[8,8]:[13,13]});
 function drawRoute(){clearRoute();const rt=A.sel;
-  for(const o of A.options)if(o!==rt){const isC=A.cmp.length===2&&A.cmp.includes(o.id),pl=L.polyline(o.coords,isC?{color:"#B76CFF",weight:5,opacity:.9,className:"rt rt-alt"}:{color:"#8A97AB",weight:4,opacity:.35,dashArray:"2 7",className:"rt-alt"}).addTo(L_alts);if(isC)pl.getElement()?.style.setProperty("--c","#B76CFF");pl.on("click",ev=>{L.DomEvent.stop(ev);selectRoute(o)});pl.bindTooltip(esc(o.name)+" · "+r1(o.dist/1000)+" km",{className:"tt",sticky:true})}
+  for(const o of A.options)if(o!==rt){const isC=A.cmp.length===2&&A.cmp.includes(o.id),pl=L.polyline(o.coords,isC?{color:"#B76CFF",weight:5,opacity:.9,className:"rt rt-alt"}:{color:"#8A97AB",weight:4,opacity:.35,dashArray:"2 7",className:"rt-alt"}).addTo(L_alts);if(isC)pl.getElement()?.style.setProperty("--c","#B76CFF");pl.on("click",ev=>{L.DomEvent.stop(ev);if(A.viaPick){addVia([ev.latlng.lat,ev.latlng.lng]);return}selectRoute(o)});pl.bindTooltip(esc(o.name)+" · "+r1(o.dist/1000)+" km",{className:"tt",sticky:true})}
   if(!rt){setStartMarker();return}
   L.polyline(rt.coords,{weight:11,className:"rt-case",lineCap:"round",lineJoin:"round"}).addTo(L_route);
   for(const z of zonesOf(rt)){const seg=slice(rt.coords,rt.cum,z.a,z.b);L.polyline(seg,{color:ZC[z.z],weight:5.5,opacity:1,lineCap:"round",lineJoin:"round",className:"rt"}).addTo(L_route).getElement()?.style.setProperty("--c",ZC[z.z])}
@@ -468,19 +519,20 @@ function renderLeft(){$("#sync").innerHTML=syncHTML();const s=sess(),P=A.prefs,r
     :`<div class="today">${days}<span class="ey" style="color:#c9a6ff">${dw} · not planned</span><h3>Unplanned run</h3>${k?kipBox(`<b>Kip suggests ${TL[k.type]} · ${k.km} km.</b> ${esc(k.why)}.${k.risk?`<br><span class="amb">${esc(k.risk)}</span>`:""}`):""}
       ${types}<button class="btn p w" style="margin-top:10px" data-act="build" ${A.busy?"disabled":""}>Build ${TL[ty].toLowerCase()} ${A.km} km</button><p class="hint">Send to PACE adds it to ${dw.toLowerCase()}'s plan as an extra run. Kip checks the load.</p></div>`;
   const favs=A.favs.map((f,i)=>`<button class="chip" data-act="fav" data-i="${i}" aria-pressed="${A.start&&hav(A.start,f.p)<30}">${esc(f.name)}<span class="x" data-act="favdel" data-i="${i}" title="Remove">×</span></button>`).join("");
-  const opts=sortedOpts().map(o=>{const i=A.options.indexOf(o),d=difficulty(o);return`<div class="opt" data-act="opt" data-i="${i}" role="button" tabindex="0" aria-pressed="${o===A.sel}"><div class="t"><span><b class="rk">#${o.rank}</b> ${esc(o.name)}</span><span class="sc num" title="Score vs the other routes">${o.disp}</span></div><div class="m">${r1(o.dist/1000)} km · ${o.signals??"?"} signals · ${o.climb??0} m climb${o.scenic!=null?" · "+r0(o.scenic*100)+"% scenic":""}</div><div class="m2"><span class="badge" style="color:${d.col};background:color-mix(in srgb,${d.col} 14%,transparent)">${d.lbl}</span><span class="small muted">${cnt(o,"cafe")} cafes · ${cnt(o,"water")+cnt(o,"shop")} water/shops · ${cnt(o,"toilet")} WC</span><button class="cmpb" data-act="cmp" data-i="${i}" aria-pressed="${A.cmp.includes(o.id)}" title="Compare">⇄</button></div></div>`}).join("");
+  const opts=sortedOpts().map(o=>{const i=A.options.indexOf(o),d=difficulty(o);return`<div class="opt" data-act="opt" data-i="${i}" role="button" tabindex="0" aria-pressed="${o===A.sel}"><div class="t"><span><b class="rk">#${o.rank}</b> ${esc(o.name)}</span><span class="sc num" title="Score vs the other routes">${o.disp}</span></div><div class="m">${r1(o.dist/1000)} km · ${o.signals??"?"} signals · ${o.climb??0} m climb${o.scenic!=null?" · "+r0(o.scenic*100)+"% scenic":""}</div><div class="m2"><span class="badge" style="color:${d.col};background:color-mix(in srgb,${d.col} 14%,transparent)">${d.lbl}</span>${roadTag(o)}<span class="small muted">${cnt(o,"cafe")} cafes · ${cnt(o,"water")+cnt(o,"shop")} water/shops</span><button class="cmpb" data-act="cmp" data-i="${i}" aria-pressed="${A.cmp.includes(o.id)}" title="Compare">⇄</button></div></div>`}).join("");
   const sortBar=A.options.length>1?`<div class="chips" style="margin-bottom:4px">${SORTS.map(([k2,l])=>`<button class="chip" data-act="sort" data-v="${k2}" aria-pressed="${A.sort===k2}">${l}</button>`).join("")}</div>`:"";
   const draw=A.mode==="draw"?`<div class="sec"><span class="ey">Draw</span><p class="small muted" style="margin:0 0 8px">Click the map to add points. It snaps to real paths. Drag to adjust, right-click a point to remove.</p><div class="chips"><button class="chip" data-act="undo" ${A.draw.length?"":"disabled"}>Undo</button><button class="chip" data-act="dclear">Clear</button><button class="chip" data-act="dloop" aria-pressed="${A.drawClosed==="loop"}">Close loop</button><button class="chip" data-act="dob" aria-pressed="${A.drawClosed==="ob"}">Run it back</button></div></div>`:"";
   const lib=A.routes.length?A.routes.map(r=>{const ran=r.ran||[],pr=ran.length?Math.min(...ran.map(x=>x.secs)):null;return`<div class="lib" data-act="open" data-id="${r.id}" role="button" tabindex="0">${miniSvg(r.poly)}<div class="i"><b>${esc(r.name)}</b><span>${r.km} km${ran.length?` · ran ${ran.length}× · PR ${fmtT(pr)}`:" · not run yet"}</span></div><button class="del" data-act="del" data-id="${r.id}" title="Delete" aria-label="Delete ${esc(r.name)}">×</button></div>`}).join(""):`<p class="small muted" style="margin:0">Saved routes land here. Name them, run them, chase PRs on them.</p>`;
   $("#L").innerHTML=`${today}
   <div class="sec"><span class="ey">Mode</span><div class="seg">${[["loop","Auto loop"],["ob","Out & back"],["draw","Draw"]].map(([k,l])=>`<button data-act="mode" data-v="${k}" aria-pressed="${A.mode===k}">${l}</button>`).join("")}</div></div>
   <div class="sec"><span class="ey">Start</span><div class="chips"><button class="chip" data-act="locate">◎ My location</button>${favs}<button class="chip" data-act="favadd" ${A.start?"":"disabled"}>＋ Save start</button></div><p class="hint">Or click anywhere on the map${A.mode==="draw"?" (in Draw, clicks add points)":""}.</p></div>
+  ${A.mode!=="draw"?`<div class="sec"><span class="ey">Via · pass through these</span><div class="chips">${A.via.map((v,i)=>`<button class="chip via" data-act="viadel" data-i="${i}" title="Remove"><i>${i+1}</i>${esc(v.name||"Point "+(i+1))}<span class="x">×</span></button>`).join("")}${A.via.length<3?`<button class="chip ${A.viaPick?"picking":""}" data-act="viaadd" ${A.start?"":"disabled"}>${A.viaPick?"Click the map…":"＋ Add via point"}</button>`:""}</div>${A.via.length?`<p class="hint">Routes will pass through ${A.via.length>1?"these in order":"this point"}${A.mode==="loop"?" and come back":""}. Drag the numbered pins to move them.</p>`:""}</div>`:""}
   ${A.mode!=="draw"?`<div class="sec"><span class="ey">Distance</span><div class="dist"><input type="range" min="1" max="21" step="0.5" value="${A.km}" id="kmR" aria-label="Distance in km"><div class="val"><b class="num" id="kmV">${A.km}</b> <span class="muted">km</span></div></div></div>
-  <div class="sec"><span class="ey">Prefer</span><div class="tog"><span>Promenades, parks & paths</span><button class="sw" data-act="pref" data-k="scenic" aria-pressed="${P.scenic}" aria-label="Prefer promenades"></button></div><div class="tog"><span>Fewest crossings</span><button class="sw" data-act="pref" data-k="cross" aria-pressed="${P.cross}" aria-label="Fewest crossings"></button></div><div class="tog"><span>Flat</span><button class="sw" data-act="pref" data-k="flat" aria-pressed="${P.flat}" aria-label="Flat"></button></div><div class="tog"><span>Well-lit roads</span><span class="small ${isDark()?"amb":"muted"}">${isDark()?"On (after sunset)":"Auto after sunset"}</span></div></div>
+  <div class="sec fold ${A.fold.prefer?"shut":""}"><button class="ey foldh" data-act="fold" data-k="prefer">Prefer <span>${[P.scenic&&"scenic",P.cross&&"few stops",P.flat&&"flat"].filter(Boolean).join(" · ")}</span></button><div class="foldb"><div class="tog"><span>Proper roads, no lanes or markets</span><span class="small good">Always on</span></div><div class="tog"><span>Promenades, parks & paths</span><button class="sw" data-act="pref" data-k="scenic" aria-pressed="${P.scenic}" aria-label="Prefer promenades"></button></div><div class="tog"><span>Fewest crossings</span><button class="sw" data-act="pref" data-k="cross" aria-pressed="${P.cross}" aria-label="Fewest crossings"></button></div><div class="tog"><span>Flat</span><button class="sw" data-act="pref" data-k="flat" aria-pressed="${P.flat}" aria-label="Flat"></button></div><div class="tog"><span>Well-lit roads</span><span class="small ${isDark()?"amb":"muted"}">${isDark()?"On (after sunset)":"Auto after sunset"}</span></div></div></div>
   <button class="btn p w" style="margin-top:14px;height:44px" data-act="build" ${A.busy?"disabled":""}>${A.busy?'<span class="spin"></span> Building…':"Build "+(A.mode==="ob"?"out & back":"loops")}</button>`:draw}
   ${opts?`<div class="sec"><span class="ey">${A.options.length} routes · tap ⇄ on two to compare</span>${sortBar}${opts}</div>`:""}
   ${A.sel?`<div class="sec"><span class="ey">Save</span><div style="display:flex;gap:6px"><input class="inp" id="rname" value="${esc(A.sel.name)}" aria-label="Route name"><button class="btn" data-act="save">${A.sel.saved?"Update":"Save"}</button></div></div>`:""}
-  <div class="sec"><span class="ey">Your routes · ${A.routes.length}</span>${lib}</div>`;
+  <div class="sec fold ${A.fold.lib?"shut":""}"><button class="ey foldh" data-act="fold" data-k="lib">Your routes · ${A.routes.length}</button><div class="foldb">${lib}</div></div>`;
   const r=$("#kmR");if(r)r.oninput=e=>{A.km=+e.target.value;A.kmTouched=true;$("#kmV").textContent=A.km}}
 function renderRight(){const el=$("#right");if(!A.wx){el.innerHTML=`<div class="wxhead"><span class="ey">The day</span><p class="muted small" style="margin:10px 0 16px">${A.start?"Loading the forecast…":"Set a start to see the weather there."}</p></div>${poiPanel()}`;return}
   const w=hourWx(),S=sunTimes(),b=bestSlot(),dk=dayKey(A.day),dd=new Date(dk+"T12:00"),rt=A.sel;
@@ -527,7 +579,7 @@ function profSvg(rt){const W=1000,H=118,pl=30,pb=16,E=rt.elev||[{m:0,e:0},{m:rt.
   return`<svg id="prof" class="prof" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Elevation profile"><style>.ax{fill:#5C677A;font:10px "IBM Plex Mono"}</style><defs>${grads}</defs>${kms.join("")}<text x="${pl-6}" y="${Y(hi)+4}" text-anchor="end" class="ax">${r0(hi)}m</text><text x="${pl-6}" y="${Y(lo)}" text-anchor="end" class="ax">${r0(lo)}m</text>${fills}${br}${sg}<line id="phl" x1="0" x2="0" y1="8" y2="${H-pb}" stroke="#fff" stroke-opacity=".6" visibility="hidden"/></svg>`}
 function profHover(m){const ln=$("#phl"),rt=A.sel;if(hoverMk){hoverMk.remove();hoverMk=null}if(m==null||!rt){ln&&ln.setAttribute("visibility","hidden");return}const x=30+m/rt.dist*960;ln.setAttribute("x1",x);ln.setAttribute("x2",x);ln.setAttribute("visibility","visible");
   hoverMk=L.marker(ptAt(rt.coords,rt.cum,m),{interactive:false,icon:L.divIcon({className:"",html:'<div class="hover-dot"></div>',iconSize:[14,14],iconAnchor:[7,7]})}).addTo(map).bindTooltip("km "+r1(m/1000),{permanent:true,className:"tt",direction:"top",offset:[0,-10]})}
-function renderAll(){renderLeft();renderRight();renderBottom()}
+function renderAll(){renderLeft();renderRight();renderBottom();if(A.aqiOn)drawAqi();if(A.d3)d3Route()}
 
 /* ================= actions ================= */
 function setMode(m,quiet){A.mode=m;A.options=[];if(m==="draw"){A.draw=A.start?[A.start]:[];A.drawClosed="";A.sel=null;clearRoute();drawRebuild()}else{L_draw.clearLayers();if(startMk)startMk.setOpacity(1);A.sel=null;clearRoute()}if(!quiet)renderAll()}
@@ -549,15 +601,19 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(
     tab:()=>{A.tab=t.dataset.v;renderBottom()},
     rtype:()=>{const v=t.dataset.v,s=sess(),k=kipx();A.runType=v;if(v==="session"&&s)A.km=clamp(Math.round(s.km*2)/2,1,21);else if(!A.kmTouched)A.km=k&&k.type===v?k.km:{easy:5,steady:6,tempo:6,long:Math.max(7,Math.ceil((A.pace?.longest||6)+1))}[v];renderLeft();if(A.sel){drawRoute();renderBottom()}},
     sort:()=>{A.sort=t.dataset.v;renderLeft()},
-    cmp:()=>{const o=A.options[+t.dataset.i];if(!o)return;const i=A.cmp.indexOf(o.id);if(i>=0)A.cmp.splice(i,1);else{A.cmp.push(o.id);if(A.cmp.length>2)A.cmp.shift()}if(A.cmp.length===2&&!A.cmp.includes(A.sel?.id)){A.sel=A.options.find(x=>x.id===A.cmp[0])}drawRoute();renderAll();if(A.cmp.length===2){const B=L.latLngBounds([...A.options.find(x=>x.id===A.cmp[0]).coords,...A.options.find(x=>x.id===A.cmp[1]).coords]);map.fitBounds(B,{paddingTopLeft:[360,80],paddingBottomRight:[340,230],maxZoom:16})}},
+    cmp:()=>{const o=A.options[+t.dataset.i];if(!o)return;const i=A.cmp.indexOf(o.id);if(i>=0)A.cmp.splice(i,1);else{A.cmp.push(o.id);if(A.cmp.length>2)A.cmp.shift()}if(A.cmp.length===2&&!A.cmp.includes(A.sel?.id)){A.sel=A.options.find(x=>x.id===A.cmp[0])}drawRoute();renderAll();if(A.cmp.length===2){const B=L.latLngBounds([...A.options.find(x=>x.id===A.cmp[0]).coords,...A.options.find(x=>x.id===A.cmp[1]).coords]);map.fitBounds(B,{...PADS(),maxZoom:16})}},
     cmpclose:()=>{A.cmp=[];drawRoute();renderAll()},colour:()=>{A.colour=t.dataset.v;drawRoute();renderBottom()},
     cue:()=>{const m=+t.dataset.m;if(m>=0&&A.sel){map.setView(ptAt(A.sel.coords,A.sel.cum,m),17);profHover(m);setTimeout(()=>profHover(null),2500)}},
     heat:()=>{A.heat=!A.heat;$("#heatBtn").classList.toggle("on",A.heat);drawHeat()},send:sendPace,
+    viaadd:()=>{A.viaPick=!A.viaPick;document.body.classList.toggle("picking",A.viaPick);renderLeft();if(A.viaPick)toast("Click the map where the run should pass through.")},
+    viadel:()=>{A.via.splice(+t.dataset.i,1);drawVia();A.options=[];renderLeft()},
+    fold:()=>{const k=t.dataset.k;A.fold[k]=!A.fold[k];LS.set("fold",A.fold);t.closest(".fold").classList.toggle("shut",A.fold[k])},
+    lc:()=>panel("l"),rc:()=>panel("r"),aqi:toggleAqi,d3:toggle3D,
     copyagain:()=>{const t2=$("#codeBox");t2.select();navigator.clipboard?.writeText(t2.value).then(()=>toast("Copied"),()=>document.execCommand("copy"))},
     mclose:()=>$("#modal").innerHTML="","mclose-bg":()=>{if(e.target===t)$("#modal").innerHTML=""},
     nameok:()=>{const v=$("#nmIn").value.trim();if(!v)return;$("#modal").innerHTML="";nameCb&&nameCb(v.slice(0,40))}};
   if(H[a]){if(t.tagName==="A")return;H[a]()}});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")$("#modal").innerHTML="";if(e.key==="Enter"&&e.target.id==="nmIn")document.querySelector('[data-act="nameok"]').click();if(e.key==="Enter"&&e.target.classList.contains("lib"))e.target.click();if(e.key==="Enter"&&e.target.id==="rname")saveSel()});
+document.addEventListener("keydown",e=>{if(!/INPUT|TEXTAREA/.test(e.target.tagName)){if(e.key==="[")panel("l");if(e.key==="]")panel("r")}if(e.key==="Escape"&&A.viaPick){A.viaPick=false;document.body.classList.remove("picking");renderLeft()}if(e.key==="Escape")$("#modal").innerHTML="";if(e.key==="Enter"&&e.target.id==="nmIn")document.querySelector('[data-act="nameok"]').click();if(e.key==="Enter"&&e.target.classList.contains("lib"))e.target.click();if(e.key==="Enter"&&e.target.id==="rname")saveSel()});
 function confirmDel(r){return window.confirm(`Delete “${r.name}”? Runs logged on it in PACE stay.`)}
 let nameCb=null;function openName(title,ph,val,cb){nameCb=cb;$("#modal").innerHTML=`<div class="ov" data-act="mclose-bg"><div class="md" role="dialog" aria-modal="true"><h2>${esc(title)}</h2><input class="inp" id="nmIn" placeholder="${esc(ph)}" value="${esc(val)}" style="margin:12px 0"><div class="ft"><button class="btn" data-act="mclose">Cancel</button><button class="btn p" data-act="nameok">Save</button></div></div></div>`;$("#nmIn").focus()}
 
@@ -584,8 +640,66 @@ async function search(v){if(!v)return;const box=$("#sres"),c=map.getCenter(),C=[
 search.n=0;
 document.addEventListener("click",e=>{if(!e.target.closest(".search"))$("#sres").hidden=true});
 
+/* ================= Atlas 2: road quality, via points, air map, panels, 3D ================= */
+function roadTag(o){if(o.minorF==null)return"";const lanes=o.minorF>.12||o.mktF>.1,main=o.goodF>=.35;const t=lanes?["Some lanes","var(--warn)"]:main?["Main roads","var(--good)"]:["Clean roads","#9cc6ff"];
+  return`<span class="badge" title="${r0(o.goodF*100)}% main roads · ${r0(o.minorF*100)}% lanes/service roads · ${r0(o.mktF*100)}% market stretches · ${r1(o.turnsKm||0)} turns/km" style="color:${t[1]};background:color-mix(in srgb,${t[1]} 14%,transparent)">${t[0]}</span>`}
+
+/* ---- via points ---- */
+function addVia(p){if(A.via.length>=3)return;const v={p,name:""};A.via.push(v);A.viaPick=false;document.body.classList.remove("picking");A.options=[];drawVia();renderLeft();toast(`Via ${A.via.length} added. Build when ready.`);
+  fetchT(`https://nominatim.openstreetmap.org/reverse?format=json&zoom=17&lat=${p[0]}&lon=${p[1]}`,6000).then(r=>r.json()).then(j=>{const a=j.address||{};v.name=(a.road||a.pedestrian||a.footway||a.neighbourhood||a.suburb||"").slice(0,24);renderLeft()}).catch(()=>{})}
+function drawVia(){if(!L_via)return;L_via.clearLayers();A.via.forEach((v,i)=>{const m=L.marker(v.p,{draggable:true,zIndexOffset:900,icon:L.divIcon({className:"",html:`<div class="viapin">${i+1}</div>`,iconSize:[24,24],iconAnchor:[12,12]})}).addTo(L_via);
+  m.on("dragend",e=>{const l=e.target.getLatLng();v.p=[l.lat,l.lng];v.name="";A.options=[];renderLeft()});m.bindTooltip("Via "+(i+1)+" · drag to move",{className:"tt",direction:"top",offset:[0,-12]})})}
+function viaJobs(S,D){const V=A.via.map(v=>v.p),ob=A.mode==="ob",far=V.reduce((a,p)=>hav(S,p)>hav(S,a)?p:a,V[0]),fi=V.indexOf(far),jobs=[];
+  let baseP=null;const getBase=()=>baseP||(baseP=osrm(ob?[S,...V]:[S,...V,S]).catch(()=>null));
+  const mk=async(pts,extra,raw)=>{const r=raw||await osrm(pts);let c=despur(r.coords),st=r.steps;if(ob){c=[...c,...c.slice(0,-1).reverse()];st=[...st,...st.slice().reverse()]}return mkRoute(c,st,ob?"ob":"loop",{bear:brg(S,far),...(extra||{}),turn:ob?r.coords[r.coords.length-1]:null})};
+  const seq=ob?[S,...V]:[S,...V,S];
+  jobs.push(async()=>{const r=await getBase();if(!r)throw new Error("via");return mk(seq,null,r)});if(!ob&&V.length>1)jobs.push(()=>mk([S,...V.slice().reverse(),S]));
+  const out=brg(S,far),bs=ob?[out,out-40,out+40,out-80,out+80]:[out,out-60,out+60,out-120,out+120,out+180];
+  for(const b of bs)jobs.push(async()=>{const base=await getBase();const bd=base?(ob?2*cumd(base.coords).pop():cumd(base.coords).pop()):hav(S,far)*2.6;const gap=D-bd;if(gap<D*.08)return null;
+    let d=ob?gap/2/1.25:gap/2.6,best=null;for(let k=0;k<2;k++){const E=dest(far,b,d),pts=ob?[S,...V,E]:[S,...V.slice(0,fi+1),E,...V.slice(fi+1),S];const rt=await mk(pts);if(!best||Math.abs(rt.dist-D)<Math.abs(best.dist-D))best=rt;const ratio=(D-bd)/Math.max(50,rt.dist-bd);if(Math.abs(rt.dist-D)/D<.1)break;d*=clamp(ratio,.4,2)}return best});
+  return jobs}
+
+/* ---- panels ---- */
+function PADS(){const l=A.lc?40:360,r=A.rc?40:340;return{paddingTopLeft:[l,80],paddingBottomRight:[r,230]}}
+function applyPanels(){document.body.classList.toggle("lc",!!A.lc);document.body.classList.toggle("rc",!!A.rc)}
+function panel(w){if(w==="l")A.lc=!A.lc;else A.rc=!A.rc;LS.set("lc",A.lc);LS.set("rc",A.rc);applyPanels();setTimeout(()=>{map.invalidateSize();gl&&gl.resize()},380)}
+
+/* ---- area air quality ---- */
+async function toggleAqi(){A.aqiOn=!A.aqiOn;$("#aqiBtn").classList.toggle("on",A.aqiOn);if(!A.aqiOn){L_aqi.clearLayers();$("#aqiLeg").hidden=true;return}
+  const c=A.start||[map.getCenter().lat,map.getCenter().lng],key=c.map(v=>v.toFixed(2)).join();
+  if(!A.aqiData||A.aqiData.key!==key||Date.now()-A.aqiData.at>45*60e3){status("Loading the air-quality map…");const pts=[];const n=5,step=3500;
+    for(let i=0;i<n;i++)for(let j=0;j<n;j++)pts.push(dest(dest(c,0,(i-(n-1)/2)*step),90,(j-(n-1)/2)*step));
+    try{const j=await(await fetchT(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${pts.map(p=>p[0].toFixed(4)).join(",")}&longitude=${pts.map(p=>p[1].toFixed(4)).join(",")}&hourly=us_aqi,pm2_5&timezone=auto&forecast_days=7`,12000)).json();
+      const arr=Array.isArray(j)?j:[j];if(!arr[0]?.hourly)throw 0;A.aqiData={key,at:Date.now(),step,pts:pts.map((p,i)=>({p,h:arr[i]?.hourly||arr[0].hourly}))}}
+    catch(e){status("");A.aqiOn=false;$("#aqiBtn").classList.remove("on");toast("Couldn't load air quality right now.",true);return}status("")}
+  drawAqi();const b=L.latLngBounds(A.aqiData.pts.map(x=>x.p));if(!map.getBounds().intersects(b))map.fitBounds(b)}
+function drawAqi(){if(!A.aqiData||!L_aqi)return;L_aqi.clearLayers();const k=dayKey(A.day),hh=A.hour??new Date().getHours(),T=k?`${k}T${String(hh).padStart(2,"0")}:00`:null;let vals=[];
+  for(const x of A.aqiData.pts){let i=T?x.h.time.indexOf(T):-1;if(i<0){const now=new Date();i=x.h.time.findIndex(t=>new Date(t)>=now);if(i<0)i=0}const v=x.h.us_aqi[i];if(v==null)continue;vals.push(v);
+    L.circle(x.p,{radius:A.aqiData.step*.78,pane:"aqi",stroke:false,fillColor:aqiCol(v),fillOpacity:.32,interactive:false}).addTo(L_aqi);
+    L.marker(x.p,{interactive:true,icon:L.divIcon({className:"",html:`<div class="aqin" style="--c:${aqiCol(v)}">${r0(v)}</div>`,iconSize:[34,20],iconAnchor:[17,10]})}).bindTooltip(`AQI ${r0(v)} · ${aqiLbl(v)}${x.h.pm2_5?.[i]!=null?` · PM2.5 ${r0(x.h.pm2_5[i])}`:""}`,{className:"tt",direction:"top"}).addTo(L_aqi)}
+  if(!vals.length)return;const lo=Math.min(...vals),hi=Math.max(...vals),avg=vals.reduce((a,b)=>a+b,0)/vals.length,lg=$("#aqiLeg");lg.hidden=false;
+  lg.innerHTML=`<div class="aqh"><span class="ey" style="margin:0">Air · ${dayWord()} ${hLbl(hh)}</span><button class="x" data-act="aqi" title="Hide">×</button></div><div class="aqbar"><i style="background:#35D07F"></i><i style="background:#F2C94C"></i><i style="background:#FF9F43"></i><i style="background:#FF5C5F"></i><i style="background:#B76CFF"></i></div><div class="aqk"><span>Good</span><span>Moderate</span><span>Poor</span><span>Bad</span></div>
+  <p class="small"><b style="color:${aqiCol(avg)}">${r0(lo)}–${r0(hi)}</b> across the area · ${aqiLbl(avg)}${hi-lo>=15?`. Cleaner air to the ${cleanSide()}.`:"."}</p><p class="small muted">Forecast model, roughly neighbourhood-scale. Busy junctions can be worse than shown.</p>`}
+function cleanSide(){const P=A.aqiData.pts,k=dayKey(A.day),hh=A.hour??new Date().getHours(),T=k?`${k}T${String(hh).padStart(2,"0")}:00`:null,c=A.start||P[12].p;let best=null;for(const x of P){const i=Math.max(0,T?x.h.time.indexOf(T):0),v=x.h.us_aqi[i];if(v!=null&&(!best||v<best.v))best={v,p:x.p}}return best&&hav(c,best.p)>500?dirWord(brg(c,best.p)):"centre"}
+
+/* ---- 3D ---- */
+const D3H=["dragPan","scrollZoom","dragRotate","touchZoomRotate","doubleClickZoom","keyboard"];
+function toggle3D(){if(!gl||!baseOk||!gl.isStyleLoaded?.()){toast("3D needs the vector map, which isn't loaded right now.",true);return}if(A.d3x)return;A.d3=!A.d3;$("#d3Btn").classList.toggle("on",A.d3);$("#d3bar").hidden=!A.d3;if(A.d3)document.body.classList.add("d3");
+  if(A.d3){D3H.forEach(h=>{try{gl[h]?.enable()}catch(e){}});d3Layers();d3Route();const c=map.getCenter();gl.jumpTo({center:[c.lng,c.lat],zoom:map.getZoom()-1});gl.easeTo({pitch:58,bearing:-18,zoom:Math.max(14.2,map.getZoom()-1),duration:1100})}
+  else{D3H.forEach(h=>{try{gl[h]?.disable()}catch(e){}});A.d3x=true;const z=Math.round(gl.getZoom()+1);gl.easeTo({pitch:0,bearing:0,zoom:z-1,duration:600});setTimeout(()=>{A.d3x=false;const c=gl.getCenter();document.body.classList.remove("d3");map.invalidateSize();map.setView([c.lat,c.lng],z,{animate:false});glSync()},640)}}
+function d3Layers(){const st=gl.getStyle(),src=Object.entries(st.sources).find(([k,v])=>v.type==="vector")?.[0];if(!gl.getLayer("a3d-bld")&&src){
+    const before=st.layers.find(l=>l.type==="symbol")?.id;try{gl.addLayer({id:"a3d-bld",type:"fill-extrusion",source:src,"source-layer":"buildings",minzoom:13,paint:{"fill-extrusion-color":["interpolate",["linear"],["zoom"],13,"#121a28",17,"#1d2a40"],"fill-extrusion-height":["interpolate",["linear"],["zoom"],13,0,14.5,["+",7,["*",5,["%",["coalesce",["id"],3],6]]]],"fill-extrusion-opacity":.88}},before)}catch(e){}}
+  if(!gl.getSource("a3d-rt")){gl.addSource("a3d-rt",{type:"geojson",data:{type:"FeatureCollection",features:[]}});
+    gl.addLayer({id:"a3d-glow",type:"line",source:"a3d-rt",filter:["==","$type","LineString"],layout:{"line-cap":"round","line-join":"round"},paint:{"line-color":["get","c"],"line-width":12,"line-blur":8,"line-opacity":.45}});
+    gl.addLayer({id:"a3d-line",type:"line",source:"a3d-rt",filter:["==","$type","LineString"],layout:{"line-cap":"round","line-join":"round"},paint:{"line-color":["get","c"],"line-width":4.5}});
+    gl.addLayer({id:"a3d-pt",type:"circle",source:"a3d-rt",filter:["==","$type","Point"],paint:{"circle-radius":7,"circle-color":["get","c"],"circle-stroke-color":"#fff","circle-stroke-width":2.5}})}}
+function d3Route(){if(!A.d3||!gl?.getSource?.("a3d-rt"))return;const F=[],rt=A.sel;
+  if(rt){const Z=typeof planZones==="function"?planZones(rt.dist):[{a:0,b:rt.dist,z:"easy"}];for(const z of Z){const pts=[];for(let i=0;i<rt.coords.length;i++){const m=rt.cum[i];if(m>=z.a-1&&m<=z.b+1)pts.push([rt.coords[i][1],rt.coords[i][0]])}if(pts.length>1)F.push({type:"Feature",properties:{c:ZC[z.z]||"#2E8BFF"},geometry:{type:"LineString",coordinates:pts}})}}
+  if(A.start)F.push({type:"Feature",properties:{c:"#35D07F"},geometry:{type:"Point",coordinates:[A.start[1],A.start[0]]}});A.via.forEach(v=>F.push({type:"Feature",properties:{c:"#B76CFF"},geometry:{type:"Point",coordinates:[v.p[1],v.p[0]]}}));
+  gl.getSource("a3d-rt").setData({type:"FeatureCollection",features:F})}
+
 /* ================= boot ================= */
-readHash();initMap();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
+readHash();initMap();applyPanels();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
 if(!A.start){if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{const c=[p.coords.latitude,p.coords.longitude];map.setView(c,16);setStart(c,false)},()=>{setStart(MUMBAI,false);toast("Using Marine Drive. Allow location or click the map to change the start.")},{timeout:8000,maximumAge:120000});else setStart(MUMBAI,false)}
 else loadWx();
 renderLeft();
