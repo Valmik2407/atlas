@@ -796,7 +796,8 @@ function d3Route(){if(!A.d3||!gl?.getSource?.("a3d-rt"))return;const F=[],rt=A.s
 /* ================= Atlas 3: single MapLibre engine, map styles, 3D ================= */
 const VT="https://tiles.versatiles.org/assets/styles/",MSTY={dark:"Dark",sat:"Satellite",light:"Light"};let styleCache={};
 async function styleJSON(name){if(styleCache[name])return styleCache[name];const j=await(await fetchT(VT+name+"/style.json",10000)).json();return styleCache[name]=j}
-function tuneLabels(st,mode){const S=JSON.parse(JSON.stringify(st));for(const l of S.layers){if(l.type!=="symbol")continue;l.layout=l.layout||{};const ts=l.layout["text-size"];if(ts!=null)l.layout["text-size"]=typeof ts==="number"?ts*1.15:["*",1.15,ts];
+function scaleSz(ts){const k=1.15;if(typeof ts==="number")return ts*k;if(Array.isArray(ts)&&ts[0]==="interpolate")return ts.map((v,i)=>i>=4&&i%2===0&&typeof v==="number"?v*k:v);if(ts&&ts.stops)return{...ts,stops:ts.stops.map(([z,v])=>[z,typeof v==="number"?v*k:v])};return ts}
+function tuneLabels(st,mode){const S=JSON.parse(JSON.stringify(st));for(const l of S.layers){if(l.type!=="symbol")continue;l.layout=l.layout||{};const ts=l.layout["text-size"];if(ts!=null)l.layout["text-size"]=scaleSz(ts);
     if(mode==="dark"){l.paint=l.paint||{};if(/street|road|label|place/i.test(l.id)){l.paint["text-color"]=/place|city|town|suburb/i.test(l.id)?"#DCE3EE":"#AEB8C7";l.paint["text-halo-color"]="#06080c";l.paint["text-halo-width"]=1.4}}}
   if(mode==="dark")for(const l of S.layers){if(l.type==="line"&&/street|road|motorway|trunk|primary|secondary|tertiary/i.test(l.id)&&!/casing|outline/i.test(l.id)){l.paint=l.paint||{};l.paint["line-color"]=/motorway|trunk|primary/i.test(l.id)?"#3a4556":/secondary|tertiary/i.test(l.id)?"#2c3544":"#222a36"}if(l.type==="background"){l.paint={"background-color":"#0b0e13"}}}
   return S}
