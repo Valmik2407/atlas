@@ -1,20 +1,20 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PACE Atlas</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23050810'/%3E%3Cpath d='M8 23 C10 12 16 8 24 9' stroke='%232E8BFF' stroke-width='3.5' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='23' r='3' fill='%2335D07F'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#04060A;--fg:#EAF0F7;--mute:#8A97AB;--dim:#5C677A;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.16);--glass:rgba(10,14,22,.74);--glass2:rgba(255,255,255,.045);
 --accent:#2E8BFF;--accent2:#19D3FF;--good:#35D07F;--amber:#FFB020;--bad:#FF5C5F;--warn:#FF9F43;--race:#B76CFF;
 --z-easy:#2E8BFF;--z-steady:#19D3FF;--z-tempo:#FFB020;--z-int:#FF5C5F;--z-race:#B76CFF}
-*{box-sizing:border-box}[hidden]{display:none!important}html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:14px/1.45 Archivo,system-ui,sans-serif;overflow:hidden}
+*{box-sizing:border-box}[hidden]{display:none!important}html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:14px/1.45 Inter,system-ui,sans-serif;overflow:hidden}
 button,input,select{font:inherit;color:inherit}
-.num{font-family:"Chakra Petch",ui-monospace,monospace;font-weight:700;letter-spacing:.01em;font-variant-numeric:tabular-nums}
-.ey{font:600 10.5px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.num{font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:700;letter-spacing:.01em;font-variant-numeric:tabular-nums}
+.ey{font:600 10.5px "JetBrains Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
 .small{font-size:12.5px}.muted{color:var(--mute)}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}.amb{color:var(--amber)}
 #gl{position:fixed;inset:0;background:#05070b}#gl canvas{filter:saturate(.5) brightness(.92)}#gl.inv canvas{filter:invert(.93) hue-rotate(180deg) saturate(.55) brightness(.95)}#map{position:fixed;inset:0;background:transparent}
-.leaflet-container{background:transparent;font-family:Archivo,system-ui,sans-serif}
+.leaflet-container{background:transparent;font-family:Inter,system-ui,sans-serif}
 .leaflet-tile-pane.inv{filter:invert(.93) hue-rotate(180deg) saturate(.5) brightness(.9) contrast(1.05)}
 .leaflet-control-attribution{background:rgba(0,0,0,.55)!important;color:#6b778a!important;font-size:10px}.leaflet-control-attribution a{color:#8a97ab!important}
 .leaflet-control-zoom{border:none!important;margin:0 330px 220px 0!important}.leaflet-control-zoom a{background:var(--glass)!important;color:var(--fg)!important;border:1px solid var(--line)!important;backdrop-filter:blur(14px)}
@@ -26,7 +26,7 @@ button,input,select{font:inherit;color:inherit}
 #top>*{pointer-events:auto}
 .scroll{overflow:auto;padding:16px 16px 18px;flex:1}.scroll::-webkit-scrollbar,#right::-webkit-scrollbar{width:6px}.scroll::-webkit-scrollbar-thumb,#right::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:9px}
 .brand{display:flex;align-items:center;gap:10px;padding:16px 16px 12px;border-bottom:1px solid var(--line)}
-.brand b{font:800 15px "Chakra Petch",monospace;letter-spacing:.22em}.brand .sync{margin-left:auto;font-size:11px;display:flex;align-items:center;gap:6px;color:var(--mute)}
+.brand b{font:800 15px "JetBrains Mono",monospace;letter-spacing:.22em}.brand .sync{margin-left:auto;font-size:11px;display:flex;align-items:center;gap:6px;color:var(--mute)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--dim);display:inline-block}.dot.on{background:var(--good);box-shadow:0 0 10px var(--good)}
 .search{flex:1;max-width:420px;position:relative}
 .search input{width:100%;height:44px;padding:0 14px 0 40px;border-radius:14px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(18px);outline:none}
@@ -53,7 +53,7 @@ button,input,select{font:inherit;color:inherit}
 .today{border-radius:16px;padding:14px;background:linear-gradient(140deg,rgba(46,139,255,.16),rgba(25,211,255,.05));border:1px solid rgba(46,139,255,.32);position:relative;overflow:hidden}
 .today h3{margin:4px 0 2px;font-size:17px}.today p{margin:0}
 .today .kip{display:flex;gap:8px;align-items:flex-start;margin-top:10px;padding:9px 10px;border-radius:12px;background:rgba(0,0,0,.25);font-size:12.5px}
-.kipav{width:24px;height:24px;flex:none;border-radius:8px;background:linear-gradient(135deg,#2E8BFF,#19D3FF);display:grid;place-items:center;font:800 11px "Chakra Petch";color:#03101f}
+.kipav{width:24px;height:24px;flex:none;border-radius:8px;background:linear-gradient(135deg,#2E8BFF,#19D3FF);display:grid;place-items:center;font:800 11px "JetBrains Mono";color:#03101f}
 .dist{display:flex;align-items:center;gap:10px}.dist input[type=range]{flex:1;accent-color:var(--accent)}
 .dist .val{min-width:74px;text-align:right}.dist .val b{font-size:26px}
 .tog{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.tog:last-child{border:0}
@@ -61,10 +61,10 @@ button,input,select{font:inherit;color:inherit}
 .sw::after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.2s}.sw[aria-pressed=true]{background:var(--accent)}.sw[aria-pressed=true]::after{left:19px}
 .opt{display:block;width:100%;text-align:left;padding:11px 12px;border-radius:13px;border:1px solid var(--line);background:rgba(255,255,255,.03);cursor:pointer;margin-top:7px;transition:.15s}
 .opt:hover{border-color:var(--line2)}.opt[aria-pressed=true]{border-color:rgba(46,139,255,.6);background:rgba(46,139,255,.13);box-shadow:0 0 22px rgba(46,139,255,.15)}
-.opt .t{display:flex;justify-content:space-between;gap:8px;font-weight:600}.opt .rk{color:var(--accent2);font-family:"Chakra Petch"}.opt .sc{font-size:18px;color:var(--good)}.opt .m2{display:flex;align-items:center;gap:8px;margin-top:6px}.opt .m2 .small{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmpb{width:28px;height:24px;border-radius:7px;border:1px solid var(--line2);background:none;cursor:pointer;color:var(--mute);flex:none}.cmpb[aria-pressed=true]{color:#fff;background:rgba(183,108,255,.25);border-color:#B76CFF}.seg4{grid-template-columns:repeat(4,1fr)}.linkb{display:block;margin:8px auto 0;border:0;background:none;color:var(--mute);font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}.linkb:hover{color:#fff}.tlab{font:600 10.5px "IBM Plex Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);padding:5px 9px;border-radius:7px;background:rgba(25,211,255,.08);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.opt .t{display:flex;justify-content:space-between;gap:8px;font-weight:600}.opt .rk{color:var(--accent2);font-family:"JetBrains Mono"}.opt .sc{font-size:18px;color:var(--good)}.opt .m2{display:flex;align-items:center;gap:8px;margin-top:6px}.opt .m2 .small{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmpb{width:28px;height:24px;border-radius:7px;border:1px solid var(--line2);background:none;cursor:pointer;color:var(--mute);flex:none}.cmpb[aria-pressed=true]{color:#fff;background:rgba(183,108,255,.25);border-color:#B76CFF}.seg4{grid-template-columns:repeat(4,1fr)}.linkb{display:block;margin:8px auto 0;border:0;background:none;color:var(--mute);font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}.linkb:hover{color:#fff}.tlab{font:600 10.5px "JetBrains Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);padding:5px 9px;border-radius:7px;background:rgba(25,211,255,.08);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
 .cmph{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.cmpg{display:grid;grid-template-columns:minmax(150px,1.6fr) repeat(11,minmax(0,1fr));gap:6px 10px;align-items:center}.cmpg .ey{font-size:9.5px;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmpg b{font-size:15px;color:var(--mute)}.cmpg b.win{color:var(--good);text-shadow:0 0 10px rgba(53,208,127,.5)}
 .cmpn{display:flex;align-items:center;gap:7px;border:0;background:none;cursor:pointer;text-align:left;font-weight:600;font-size:12.5px;min-width:0}.cmpn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmpn i{width:10px;height:10px;border-radius:50%;flex:none;box-shadow:0 0 8px currentColor}.opt .m{font-size:12px;color:var(--mute);margin-top:3px}
-.badge{font:700 10.5px "IBM Plex Mono",monospace;letter-spacing:.06em;padding:3px 7px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
+.badge{font:700 10.5px "JetBrains Mono",monospace;letter-spacing:.06em;padding:3px 7px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
 .lib{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}.lib:last-child{border:0}
 .lib .mini{width:42px;height:42px;flex:none;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
 .lib .i{flex:1;min-width:0}.lib .i b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}.lib .i span{font-size:11.5px;color:var(--mute)}
@@ -72,18 +72,18 @@ button,input,select{font:inherit;color:inherit}
 .inp{width:100%;height:38px;border-radius:11px;border:1px solid var(--line2);background:rgba(0,0,0,.25);padding:0 12px;outline:none}.inp:focus{border-color:rgba(46,139,255,.6)}
 .row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;gap:10px}.row:last-child{border:0}.row>span:first-child{color:var(--mute)}
 .wxhead{padding:16px 16px 6px}.wxbig{display:flex;align-items:baseline;gap:10px;margin:4px 0 2px}.wxbig b{font-size:46px;line-height:1}
-.daypick{display:flex;gap:4px;margin-top:8px}.daypick button{flex:1;min-width:0;height:36px;padding:0;border-radius:8px;border:1px solid var(--line);background:none;cursor:pointer;font-size:10.5px;line-height:1.1;color:var(--mute);display:flex;flex-direction:column;align-items:center;justify-content:center}.daypick button small{font:700 12px "Chakra Petch";color:inherit}.daypick button[aria-pressed=true]{color:#fff;background:rgba(255,255,255,.08);border-color:var(--line2)}
+.daypick{display:flex;gap:4px;margin-top:8px}.daypick button{flex:1;min-width:0;height:36px;padding:0;border-radius:8px;border:1px solid var(--line);background:none;cursor:pointer;font-size:10.5px;line-height:1.1;color:var(--mute);display:flex;flex-direction:column;align-items:center;justify-content:center}.daypick button small{font:700 12px "JetBrains Mono";color:inherit}.daypick button[aria-pressed=true]{color:#fff;background:rgba(255,255,255,.08);border-color:var(--line2)}
 .hours{display:flex;align-items:flex-end;gap:2px;height:64px;margin:10px 0 2px;padding:0 16px}
 .hours button{flex:1;border:0;padding:0;border-radius:3px 3px 1px 1px;cursor:pointer;opacity:.55;transition:.12s;min-width:0}
 .hours button:hover{opacity:.9}.hours button[aria-pressed=true]{opacity:1;box-shadow:0 0 12px currentColor}
 .hours button.best{outline:1.5px solid var(--good);outline-offset:1px}
-.hlab{display:flex;justify-content:space-between;padding:0 16px;font:500 10px "IBM Plex Mono";color:var(--dim)}
+.hlab{display:flex;justify-content:space-between;padding:0 16px;font:500 10px "JetBrains Mono";color:var(--dim)}
 .pad{padding:6px 16px 16px}
 .aqi{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
 .wind{display:inline-block;transition:.3s}
 .poichips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .pc{display:flex;align-items:center;gap:8px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.03);cursor:pointer;font-size:12.5px;color:var(--mute)}
-.pc b{margin-left:auto;font-family:"Chakra Petch";color:var(--fg)}.pc[aria-pressed=true]{border-color:var(--line2);color:var(--fg);background:rgba(255,255,255,.06)}
+.pc b{margin-left:auto;font-family:"JetBrains Mono";color:var(--fg)}.pc[aria-pressed=true]{border-color:var(--line2);color:var(--fg);background:rgba(255,255,255,.06)}
 .pc i{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;flex:none}
 .pc i svg,.poi svg{width:12px;height:12px}
 .bgrid{display:grid;grid-template-columns:250px minmax(0,1fr);gap:20px;align-items:stretch}.bgrid>div{min-width:0}.seg button{white-space:nowrap}
@@ -91,37 +91,37 @@ button,input,select{font:inherit;color:inherit}
 .bstats .big{grid-column:span 2;display:flex;align-items:baseline;gap:8px}.bstats .big b{font-size:42px;line-height:1}
 .bstats div>b{font-size:19px;display:block}
 .rname{width:100%;background:none;border:0;border-bottom:1px dashed transparent;font-weight:700;font-size:15px;padding:0 0 2px;outline:none;margin-bottom:6px}.rname:hover,.rname:focus{border-bottom-color:var(--line2)}
-.tabs{display:flex;gap:4px;margin-bottom:8px;align-items:center}.tabs>button{white-space:nowrap;border:0;background:none;color:var(--mute);font:600 10.5px "IBM Plex Mono";letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:7px;cursor:pointer}.tabs>button[aria-pressed=true]{background:rgba(255,255,255,.08);color:#fff}
+.tabs{display:flex;gap:4px;margin-bottom:8px;align-items:center}.tabs>button{white-space:nowrap;border:0;background:none;color:var(--mute);font:600 10.5px "JetBrains Mono";letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:7px;cursor:pointer}.tabs>button[aria-pressed=true]{background:rgba(255,255,255,.08);color:#fff}
 .tabs .sp{flex:1}
 .prof{width:100%;height:118px;display:block;cursor:crosshair}
 .splits{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(64px,1fr);gap:6px;overflow-x:auto;padding-bottom:4px}
 .split{border-radius:11px;padding:8px 9px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-top:3px solid var(--zc)}
-.split span{display:block;font-size:10.5px;color:var(--mute);font-family:"IBM Plex Mono"}.split b{font-size:16px}
+.split span{display:block;font-size:10.5px;color:var(--mute);font-family:"JetBrains Mono"}.split b{font-size:16px}
 .cues{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px;max-height:122px;overflow:auto}
 .cue{display:flex;gap:9px;padding:8px 10px;border-radius:11px;background:rgba(255,255,255,.035);border:1px solid var(--line);font-size:12.5px;cursor:pointer}
-.cue .k{font:700 12px "Chakra Petch";color:var(--accent2);min-width:44px}
+.cue .k{font:700 12px "JetBrains Mono";color:var(--accent2);min-width:44px}
 .empty{display:flex;align-items:center;gap:14px;color:var(--mute)}
 .legend{display:flex;gap:10px;font-size:11px;color:var(--mute)}.legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:5px;vertical-align:middle}
 /* map objects */
 .rt-case{stroke:#000;stroke-opacity:.55}
 .rt{filter:drop-shadow(0 0 6px var(--c)) drop-shadow(0 0 14px var(--c))}
 .rt-alt{cursor:pointer}
-.km{width:22px;height:22px;border-radius:50%;background:#0a0e16;border:2px solid var(--c,#2E8BFF);display:grid;place-items:center;font:700 10.5px "Chakra Petch";color:#fff;box-shadow:0 0 10px rgba(0,0,0,.6)}
+.km{width:22px;height:22px;border-radius:50%;background:#0a0e16;border:2px solid var(--c,#2E8BFF);display:grid;place-items:center;font:700 10.5px "JetBrains Mono";color:#fff;box-shadow:0 0 10px rgba(0,0,0,.6)}
 .startpin{width:20px;height:20px;border-radius:50%;background:var(--good);border:3px solid #04120a;box-shadow:0 0 0 2px var(--good),0 0 22px var(--good)}
 .startpin.pulse{animation:pl 2s infinite}@keyframes pl{0%,100%{box-shadow:0 0 0 2px var(--good),0 0 10px var(--good)}50%{box-shadow:0 0 0 7px rgba(53,208,127,.25),0 0 26px var(--good)}}
-.turnpin{padding:3px 8px;border-radius:8px;background:#0a0e16;border:1.5px solid var(--amber);font:700 10.5px "IBM Plex Mono";color:var(--amber);white-space:nowrap;box-shadow:0 0 14px rgba(255,176,32,.4)}
+.turnpin{padding:3px 8px;border-radius:8px;background:#0a0e16;border:1.5px solid var(--amber);font:700 10.5px "JetBrains Mono";color:var(--amber);white-space:nowrap;box-shadow:0 0 14px rgba(255,176,32,.4)}
 .wp{width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 0 12px var(--accent)}
 .poi{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:#0a0e16;border:1.5px solid var(--pc);color:var(--pc);box-shadow:0 0 14px color-mix(in srgb,var(--pc) 55%,transparent)}
 .poi.sm{width:16px;height:16px;border-radius:50%;border-width:2px}.poi.sm svg{display:none}
 .hover-dot{width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.25),0 0 18px #fff}
-.leaflet-tooltip.tt{background:rgba(10,14,22,.95);border:1px solid var(--line2);color:var(--fg);border-radius:10px;font:12.5px Archivo;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:6px 10px}.leaflet-tooltip.tt::before{display:none}
+.leaflet-tooltip.tt{background:rgba(10,14,22,.95);border:1px solid var(--line2);color:var(--fg);border-radius:10px;font:12.5px Inter;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:6px 10px}.leaflet-tooltip.tt::before{display:none}
 .heat{mix-blend-mode:screen}
 #toast{position:fixed;z-index:900;left:50%;top:76px;transform:translateX(-50%);pointer-events:none}
 #toast div{background:rgba(10,14,22,.96);border:1px solid var(--line2);padding:10px 16px;border-radius:12px;box-shadow:0 14px 40px rgba(0,0,0,.5);animation:tin .25s}#toast div.bad{border-color:rgba(255,92,95,.5)}
 @keyframes tin{from{opacity:0;transform:translateY(-8px)}}
 #modal .ov{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.55);display:grid;place-items:center;backdrop-filter:blur(4px)}
 #modal .md{width:min(520px,92vw);background:#0b0f17;border:1px solid var(--line2);border-radius:20px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
-#modal h2{margin:0 0 6px;font-size:20px}#modal textarea{width:100%;height:110px;margin:12px 0;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid var(--line2);padding:10px;font:11px "IBM Plex Mono";color:var(--mute);resize:none}
+#modal h2{margin:0 0 6px;font-size:20px}#modal textarea{width:100%;height:110px;margin:12px 0;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid var(--line2);padding:10px;font:11px "JetBrains Mono";color:var(--mute);resize:none}
 #modal ol{padding-left:18px;color:var(--mute);margin:8px 0}#modal .ft{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
 .hint{font-size:12px;color:var(--mute);margin-top:8px;display:flex;gap:6px;align-items:flex-start}
 @media (max-width:1100px){#right{width:260px}#bottom{left:340px;right:290px}.bgrid{grid-template-columns:1fr}}
@@ -135,7 +135,7 @@ body.lc #bottom{left:18px}body.rc #bottom{right:18px}body.lc #top{left:84px}
 .pcol{margin-left:6px;width:28px;height:28px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--mute);cursor:pointer;font-size:18px;line-height:1;display:grid;place-items:center;transition:.15s}
 .pcol:hover{color:var(--fg);background:rgba(255,255,255,.06)}
 .ptab{position:fixed;z-index:520;top:50%;height:96px;width:34px;margin-top:-48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--fg);cursor:pointer;font-size:16px;opacity:0;pointer-events:none;padding:0}
-.ptab span{writing-mode:vertical-rl;font:600 9.5px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.ptab span{writing-mode:vertical-rl;font:600 9.5px "JetBrains Mono",ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
 #lTab{left:12px;border-radius:0 14px 14px 0;transform:translateX(-60px)}#rTab{right:12px;border-radius:14px 0 0 14px;transform:translateX(60px)}
 body.lc #lTab,body.rc #rTab{opacity:1;pointer-events:auto;transform:none}
 .ptab:hover{border-color:rgba(46,139,255,.5);box-shadow:0 0 24px rgba(46,139,255,.2)}
@@ -144,7 +144,7 @@ body.lc #lTab,body.rc #rTab{opacity:1;pointer-events:auto;transform:none}
 .tb:hover{color:var(--fg);background:rgba(255,255,255,.06)}
 .tb.on{color:#fff;background:linear-gradient(135deg,rgba(46,139,255,.35),rgba(25,211,255,.22));box-shadow:inset 0 0 0 1px rgba(46,139,255,.55)}
 #heatBtn.on{background:linear-gradient(135deg,rgba(255,122,26,.35),rgba(255,176,32,.2));box-shadow:inset 0 0 0 1px rgba(255,122,26,.55)}
-.foldh{all:unset;display:flex;align-items:center;gap:8px;width:100%;cursor:pointer;font:600 10.5px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+.foldh{all:unset;display:flex;align-items:center;gap:8px;width:100%;cursor:pointer;font:600 10.5px "JetBrains Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
 .foldh span{letter-spacing:.04em;text-transform:none;color:var(--dim);font-size:10.5px;margin-left:auto;margin-right:6px}
 .foldh::after{content:"";display:inline-block;flex:none;width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .25s}
 .fold.shut .foldh::after{transform:rotate(-45deg)}
@@ -157,7 +157,7 @@ body.picking #map{cursor:crosshair}body.picking .leaflet-container{cursor:crossh
 .viapin{width:24px;height:24px;border-radius:50%;background:#B76CFF;border:2.5px solid #fff;color:#fff;font:700 11px/19px Inter,system-ui,sans-serif;text-align:center;box-shadow:0 0 0 6px rgba(183,108,255,.22),0 4px 14px rgba(0,0,0,.5)}
 .scout{animation:scf .5s ease-out}@keyframes scf{from{opacity:0}}
 .aqipane{filter:blur(26px) saturate(1.2);mix-blend-mode:screen}
-.aqin{min-width:34px;height:20px;padding:0 6px;border-radius:10px;background:rgba(6,9,14,.82);border:1px solid color-mix(in srgb,var(--c) 70%,transparent);color:var(--c);font:700 11px/18px "IBM Plex Mono",ui-monospace,monospace;text-align:center;box-shadow:0 0 12px color-mix(in srgb,var(--c) 30%,transparent)}
+.aqin{min-width:34px;height:20px;padding:0 6px;border-radius:10px;background:rgba(6,9,14,.82);border:1px solid color-mix(in srgb,var(--c) 70%,transparent);color:var(--c);font:700 11px/18px "JetBrains Mono",ui-monospace,monospace;text-align:center;box-shadow:0 0 12px color-mix(in srgb,var(--c) 30%,transparent)}
 #aqiLeg{left:352px;top:76px;width:260px;padding:12px 14px;transition:left .42s cubic-bezier(.2,.8,.2,1)}body.lc #aqiLeg{left:84px}
 #aqiLeg p{margin:6px 0 0}.aqh{display:flex;align-items:center;justify-content:space-between}.aqh .x{all:unset;cursor:pointer;color:var(--mute);font-size:16px;padding:0 4px}
 .aqbar{display:flex;height:6px;border-radius:3px;overflow:hidden;margin:10px 0 4px}.aqbar i{flex:1}
@@ -171,19 +171,114 @@ body.lc #left,body.rc #right{animation:none}
 .opt{transition:transform .18s,border-color .18s,background .18s}.opt:hover{transform:translateY(-1px)}
 @media (max-width:820px){.ptab,.pcol,#aqiLeg{display:none}}
 body.d3 #aqiLeg{display:none}
+
+/* ===== Atlas 3 · matches PACE 9 ===== */
+:root{--bg:#07090C;--fg:#E8EDF3;--mute:#8A94A2;--dim:#56606D;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);--glass:rgba(13,16,21,.9);--glass2:rgba(255,255,255,.04);--good:#3DCB7F;--warn:#D9A441;--bad:#E5596A;--amber:#D9A441}
+html,body{letter-spacing:-.005em;-webkit-font-smoothing:antialiased}
+#gl{display:none!important}#map{background:#0b0e13}
+.glass{border-radius:14px!important;backdrop-filter:blur(18px) saturate(1.2)!important;box-shadow:0 18px 50px -12px rgba(0,0,0,.7)!important}
+.num{font-weight:600!important;letter-spacing:-.02em!important}
+.ey{font-family:Inter,system-ui,sans-serif!important;font-weight:600!important;letter-spacing:.11em!important}
+.btn.p{background:var(--fg)!important;color:#07090C!important;border-color:var(--fg)!important;box-shadow:none!important}
+.btn.p:hover{background:#fff!important}
+.gmk{cursor:pointer}
+.gtip{position:fixed;z-index:900;pointer-events:none;opacity:0;transition:opacity .12s;background:rgba(10,13,18,.96);border:1px solid var(--line2);color:var(--fg);border-radius:9px;font:12.5px Inter,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:6px 10px;max-width:280px}
+.maplibregl-ctrl-bottom-right{margin:0 330px 220px 0;transition:margin .42s}body.rc .maplibregl-ctrl-bottom-right{margin-right:4px}
+.maplibregl-ctrl-group{background:var(--glass)!important;border:1px solid var(--line)!important;border-radius:12px!important;overflow:hidden;box-shadow:none!important;backdrop-filter:blur(14px)}
+.maplibregl-ctrl-group button{width:34px!important;height:34px!important}.maplibregl-ctrl-group button+button{border-top:1px solid var(--line)!important}
+.maplibregl-ctrl-icon{filter:invert(1) brightness(.9)}
+.maplibregl-ctrl-attrib{background:rgba(0,0,0,.55)!important;font-size:10px}.maplibregl-ctrl-attrib a{color:#8a94a2!important}.maplibregl-ctrl-attrib-button{filter:invert(1)}
+.maplibregl-canvas{outline:none}
+body.picking .maplibregl-canvas-container{cursor:crosshair}
+.sty .tb{display:inline-flex;align-items:center;gap:6px}.sty .tb i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.sty .tb[data-v=dark] i{background:#1d2532;box-shadow:inset 0 0 0 1px #3a4556}.sty .tb[data-v=sat] i{background:linear-gradient(135deg,#3f5a3a,#7a6f52)}.sty .tb[data-v=light] i{background:#e9e4d9}
+body[data-ms=light] .gtip{background:rgba(10,13,18,.96)}
+/* profile */
+.prof{width:100%;height:auto;max-height:150px;display:block;cursor:crosshair;overflow:visible}
+.prof .pgl{stroke:rgba(255,255,255,.06);stroke-dasharray:2 4}.prof .pal{stroke:rgba(255,255,255,.16)}.prof .ptk{stroke:rgba(255,255,255,.2)}
+.prof .pax{fill:#8A94A2;font:10.5px "JetBrains Mono",monospace}.prof .pun{fill:#56606D;font:600 9.5px Inter,sans-serif;letter-spacing:.08em}
+.prof .pfl{fill:#D9A441;font:10px "JetBrains Mono",monospace}
+.prof .phl{stroke:#fff;stroke-opacity:.55}.prof .phd{fill:#07090C;stroke:#fff;stroke-width:2}
+.prof .phr{fill:rgba(10,13,18,.95);stroke:rgba(255,255,255,.16)}.prof .pht1{fill:#E8EDF3;font:600 11.5px "JetBrains Mono",monospace}.prof .pht2{fill:#8A94A2;font:10.5px Inter,sans-serif}
+.legend i{box-shadow:none!important}
+/* route markers */
+.km{font-family:"JetBrains Mono",monospace!important}
+@media (max-width:1100px){.maplibregl-ctrl-bottom-right{margin:0 290px 220px 0}}
+@media (max-width:820px){.maplibregl-ctrl-bottom-right{margin:0 18px 260px 0}}
 </style></head><body>
 <div id="gl" aria-hidden="true"></div><div id="map" role="application" aria-label="Map"></div>
 <div id="top"><div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Search a place to run from…" autocomplete="off" aria-label="Search a place"><div class="sres" id="sres" hidden></div></div>
 <div class="status" id="status" hidden></div>
-<div class="tbtns"><div class="tgroup glass"><button class="tb" data-act="aqi" id="aqiBtn" title="Air quality around you">Air</button><button class="tb" data-act="d3" id="d3Btn" title="Tilt the map, 3D buildings">3D</button><button class="tb" data-act="heat" id="heatBtn" title="Glow where you've run">Heatmap</button></div><button class="btn p" data-act="send">Send to PACE</button><a class="btn g" id="paceLink" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">Open PACE ↗</a></div></div>
+<div class="tbtns"><div class="tgroup glass sty"><button class="tb" data-act="mstyle" data-v="dark"><i></i>Dark</button><button class="tb" data-act="mstyle" data-v="sat"><i></i>Satellite</button><button class="tb" data-act="mstyle" data-v="light"><i></i>Light</button></div><div class="tgroup glass"><button class="tb" data-act="aqi" id="aqiBtn" title="Air quality around you">Air</button><button class="tb" data-act="d3" id="d3Btn" title="Tilt the map, 3D buildings">3D</button><button class="tb" data-act="heat" id="heatBtn" title="Glow where you've run">Heatmap</button></div><button class="btn p" data-act="send">Send to PACE</button><a class="btn g" id="paceLink" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">Open PACE ↗</a></div></div>
 <aside id="left" class="glass" aria-label="Build a route"><div class="brand"><svg width="26" height="26" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0a1222"/><path d="M8 23 C10 12 16 8 24 9" stroke="#2E8BFF" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="8" cy="23" r="3" fill="#35D07F"/><circle cx="24" cy="9" r="2.4" fill="#19D3FF"/></svg><b>ATLAS</b><span class="sync" id="sync"></span><button class="pcol" data-act="lc" title="Hide panel  [" aria-label="Hide panel">‹</button></div><div class="scroll" id="L"></div></aside>
 <aside id="right" class="glass" aria-label="The day"></aside><button class="ptab glass" id="lTab" data-act="lc" title="Show panel  [">›<span>Build</span></button><button class="ptab glass" id="rTab" data-act="rc" title="Show the day  ]"><span>Day</span>‹</button>
 <div id="aqiLeg" class="glass" hidden></div><div id="d3bar" class="glass" hidden><b>3D view</b><span class="muted small">Drag to move · right-drag or Ctrl-drag to tilt and turn · scroll to zoom</span><button class="btn" data-act="d3">Back to 2D</button></div>
 <section id="bottom" class="glass" aria-label="Route stats"></section>
 <div id="toast" role="status" aria-live="polite"></div><div id="modal"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
 "use strict";
+/* ================= map engine: MapLibre only (Leaflet-style API shim) ================= */
+const L=(()=>{let MAP=null,uidN=0;const LAYERS=new Set();let tipEl=null,layerHit=0;
+  const ll=p=>Array.isArray(p)?{lat:p[0],lng:p[1]}:p&&p.lat!=null?{lat:p.lat,lng:p.lng??p.lon}:p;
+  const tip=()=>tipEl||(tipEl=Object.assign(document.body.appendChild(document.createElement("div")),{className:"gtip tt"}));
+  function showTip(html,x,y,above){const t=tip();t.innerHTML=html;t.style.opacity=1;const w=t.offsetWidth,h=t.offsetHeight;t.style.left=Math.min(innerWidth-w-6,Math.max(6,x-(above?w/2:-14)))+"px";t.style.top=(y-(above?h+12:h+10))+"px"}
+  const hideTip=()=>{if(tipEl)tipEl.style.opacity=0};
+  class Ev{constructor(){this._h={}}on(e,f){for(const k of e.split(" "))(this._h[k]=this._h[k]||[]).push(f);return this}fire(e,o){for(const f of this._h[e]||[])f(o);}}
+  /* ---- polyline / circle as GeoJSON layers ---- */
+  class Shape extends Ev{constructor(kind,coords,o){super();this.kind=kind;this.coords=coords;this.o=o||{};this.id="sh"+(++uidN);this._tip=null}
+    _geo(){if(this.kind==="circle"){const c=ll(this.coords),R=this.o.radius||100,pts=[];for(let i=0;i<=48;i++){const a=i/48*2*Math.PI,dy=R*Math.cos(a)/111320,dx=R*Math.sin(a)/(111320*Math.cos(c.lat*Math.PI/180));pts.push([c.lng+dx,c.lat+dy])}return{type:"Feature",geometry:{type:"Polygon",coordinates:[pts]},properties:{}}}
+      return{type:"Feature",geometry:{type:"LineString",coordinates:this.coords.map(p=>{const q=ll(p);return[q.lng,q.lat]})},properties:{}}}
+    _style(){const o=this.o,cls=o.className||"";let col=o.color||"#2E8BFF",op=o.opacity??1,w=o.weight||3;if(/rt-case/.test(cls)){col="#04060a";op=.9}
+      const paint={"line-color":col,"line-opacity":op,"line-width":["interpolate",["exponential",1.4],["zoom"],11,w*.55,15,w,18,w*1.9]};if(o.dashArray){const d=o.dashArray.split(/[ ,]+/).map(Number);paint["line-dasharray"]=d.map(v=>Math.max(.1,v/Math.max(1,w*.6)))}
+      if(o.pane==="heat")paint["line-blur"]=w>6?6:0;if(/\brt\b/.test(cls)&&!/alt/.test(cls)){paint["line-blur"]=0}return paint}
+    _add(){const m=MAP?.gl;if(!m||!MAP._ready)return;try{if(m.getSource(this.id))return;m.addSource(this.id,{type:"geojson",data:this._geo()});
+      if(this.kind==="circle")m.addLayer({id:this.id,type:"fill",source:this.id,paint:{"fill-color":this.o.fillColor||this.o.color||"#888","fill-opacity":this.o.fillOpacity??.2,"fill-antialias":false}},firstLine(m));
+      else{if(/\brt\b/.test(this.o.className||"")&&!/alt/.test(this.o.className||""))m.addLayer({id:this.id+"g",type:"line",source:this.id,layout:{"line-cap":"round","line-join":"round"},paint:{"line-color":this.o.color||"#2E8BFF","line-opacity":.35,"line-blur":7,"line-width":["interpolate",["linear"],["zoom"],11,7,16,16]}});
+        m.addLayer({id:this.id,type:"line",source:this.id,layout:{"line-cap":"round","line-join":"round"},paint:this._style()})}
+      if(this.o.interactive!==false&&(this._h.click||this._tip)){m.on("click",this.id,this._ck=e=>{layerHit=Date.now();const ev={latlng:{lat:e.lngLat.lat,lng:e.lngLat.lng},originalEvent:e.originalEvent,target:this};this.fire("click",ev)});
+        m.on("mousemove",this.id,this._mm=e=>{m.getCanvas().style.cursor="pointer";if(this._tip)showTip(this._tip,e.originalEvent.clientX,e.originalEvent.clientY)});m.on("mouseleave",this.id,this._ml=()=>{m.getCanvas().style.cursor="";hideTip()})}}catch(e){console.warn(e)}}
+    _rm(){const m=MAP?.gl;if(!m)return;try{if(this._ck){m.off("click",this.id,this._ck);m.off("mousemove",this.id,this._mm);m.off("mouseleave",this.id,this._ml)}for(const id of[this.id,this.id+"g"])if(m.getLayer(id))m.removeLayer(id);if(m.getSource(this.id))m.removeSource(this.id)}catch(e){}hideTip()}
+    addTo(g){(g.add?g:DEF).add(this);return this}remove(){this._grp?.del(this);return this}getElement(){return null}
+    bindTooltip(h){this._tip=h;if(this._on){this._rm();this._add()}return this}setStyle(o){Object.assign(this.o,o);const m=MAP?.gl;if(m?.getLayer(this.id))for(const[k,v]of Object.entries(this._style()))m.setPaintProperty(this.id,k,v);return this}}
+  function firstLine(m){return m.getStyle().layers.find(l=>l.type==="symbol")?.id}
+  /* ---- markers ---- */
+  class Mk extends Ev{constructor(p,o){super();this.p=ll(p);this.o=o||{};this._tip=null;this._perm=false}
+    _add(){const m=MAP?.gl;if(!m||this.mk)return;const I=this.o.icon||L.divIcon({html:'<div class="startpin"></div>',iconSize:[18,18],iconAnchor:[9,9]}),el=document.createElement("div");el.className="gmk "+(I.className||"");el.innerHTML=I.html||"";const sz=I.iconSize||[20,20],an=I.iconAnchor||[sz[0]/2,sz[1]/2];el.style.width=sz[0]+"px";el.style.height=sz[1]+"px";
+      el.style.zIndex=String(100+(this.o.zIndexOffset||0)/10|0);if(this.o.interactive===false)el.style.pointerEvents="none";
+      this.mk=new maplibregl.Marker({element:el,draggable:!!this.o.draggable,anchor:"top-left",offset:[-an[0],-an[1]]}).setLngLat([this.p.lng,this.p.lat]).addTo(m);this.el=el;
+      if(this.o.draggable){this.mk.on("dragend",()=>{const q=this.mk.getLngLat();this.p={lat:q.lat,lng:q.lng};this.fire("dragend",{target:this})})}
+      el.addEventListener("click",e=>{e.stopPropagation();layerHit=Date.now();this.fire("click",{target:this,latlng:this.p})});el.addEventListener("contextmenu",e=>{e.preventDefault();this.fire("contextmenu",{target:this})});
+      el.addEventListener("mouseenter",()=>{if(this._tip&&!this._perm){const b=el.getBoundingClientRect();showTip(this._tip,b.left+b.width/2,b.top,true)}});el.addEventListener("mouseleave",()=>{if(!this._perm)hideTip()});
+      if(this._perm&&this._tip){const b=el.getBoundingClientRect();showTip(this._tip,b.left+b.width/2,b.top,true)}if(this._op!=null)el.style.opacity=this._op}
+    _rm(){if(this.mk){this.mk.remove();this.mk=null}if(this._perm)hideTip()}
+    addTo(g){(g.add?g:DEF).add(this);return this}remove(){this._grp?.del(this);return this}
+    bindTooltip(h,o){this._tip=h;this._perm=!!o?.permanent;if(this._perm&&this.el){const b=this.el.getBoundingClientRect();showTip(h,b.left+b.width/2,b.top,true)}return this}
+    getLatLng(){return{lat:this.p.lat,lng:this.p.lng}}setLatLng(p){this.p=ll(p);this.mk?.setLngLat([this.p.lng,this.p.lat]);return this}setOpacity(v){this._op=v;if(this.el)this.el.style.opacity=v;return this}getElement(){return this.el}}
+  /* ---- groups ---- */
+  class Grp{constructor(){this.items=new Set();this._on=false}add(x){if(x._grp&&x._grp!==this)x._grp.del(x);x._grp=this;this.items.add(x);if(this._on){x._on=true;x._add()}return this}del(x){if(!this.items.has(x))return;this.items.delete(x);x._on=false;x._rm();x._grp=null}
+    clearLayers(){for(const x of[...this.items])this.del(x);return this}addTo(){this._on=true;LAYERS.add(this);for(const x of this.items){x._on=true;x._add()}return this}remount(){for(const x of this.items){if(x instanceof Shape){x._rm();x._add()}else if(!x.mk)x._add()}}}
+  const DEF=new Grp();
+  /* ---- bounds ---- */
+  class Bd{constructor(c){this.s=90;this.w=180;this.n=-90;this.e=-180;(c||[]).forEach(p=>this.extend(p))}extend(p){const q=ll(p);this.s=Math.min(this.s,q.lat);this.n=Math.max(this.n,q.lat);this.w=Math.min(this.w,q.lng);this.e=Math.max(this.e,q.lng);return this}
+    intersects(b){return!(b.s>this.n||b.n<this.s||b.w>this.e||b.e<this.w)}isValid(){return this.s<=this.n}arr(){return[[this.w,this.s],[this.e,this.n]]}}
+  /* ---- map ---- */
+  class Mp extends Ev{constructor(id,o){super();this.o=o||{};this.gl=null;this._panes={};const ac={addAttribution(){},setPrefix(){}};this.attributionControl=ac;MAP=this;this.id=id}
+    _init(style,center,zoom){const c=this._pend?this._pend[0]:ll(center);if(this._pend?.[1])zoom=this._pend[1];this.gl=new maplibregl.Map({container:this.id,style,center:[c.lng,c.lat],zoom:zoom-1,maxZoom:19,attributionControl:{compact:true},fadeDuration:120,dragRotate:true,pitchWithRotate:true,maxPitch:70});
+      const g=this.gl;g.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"bottom-right");
+      g.on("click",e=>{if(Date.now()-layerHit<60)return;this.fire("click",{latlng:{lat:e.lngLat.lat,lng:e.lngLat.lng}})});
+      g.on("move",()=>this.fire("move",{}));g.on("moveend",()=>this.fire("moveend",{}));g.on("zoom",()=>this.fire("zoom",{}));
+      g.on("style.load",()=>{this._ready=true;for(const G of LAYERS)G.remount();DEF.remount();this.fire("styleload",{})});return g}
+    setView(p,z,o){const c=ll(p);if(!this.gl){this._pend=[c,z];return this}const opt={center:[c.lng,c.lat],zoom:(z??this.getZoom())-1};o?.animate===false?this.gl.jumpTo(opt):this.gl.easeTo({...opt,duration:600});return this}
+    getCenter(){if(!this.gl)return{lat:(this._pend?.[0].lat)||0,lng:(this._pend?.[0].lng)||0};const c=this.gl.getCenter();return{lat:c.lat,lng:c.lng}}getZoom(){return this.gl?this.gl.getZoom()+1:15}
+    fitBounds(b,o){if(!this.gl||!b.isValid())return this;const tl=o?.paddingTopLeft||[o?.padding||40,o?.padding||40],br=o?.paddingBottomRight||tl;this.gl.fitBounds(b.arr(),{padding:{left:tl[0],top:tl[1],right:br[0],bottom:br[1]},maxZoom:(o?.maxZoom||18)-1,duration:700});return this}
+    getBounds(){const b=this.gl.getBounds();return new Bd([[b.getSouth(),b.getWest()],[b.getNorth(),b.getEast()]])}
+    invalidateSize(){this.gl?.resize();return this}latLngToContainerPoint(p){const q=ll(p),r=this.gl.project([q.lng,q.lat]);return{x:r.x,y:r.y}}
+    createPane(n){return this._panes[n]=this._panes[n]||{style:{},classList:{add(){},toggle(){},remove(){}}}}getPane(n){return this.createPane(n)}addLayer(x){x.addTo(DEF);return this}removeLayer(x){x.remove();return this}}
+  DEF.addTo();
+  return{map:(id,o)=>new Mp(id,o),layerGroup:()=>new Grp(),polyline:(c,o)=>new Shape("line",c,o),circle:(c,o)=>new Shape("circle",c,o),marker:(p,o)=>new Mk(p,o),divIcon:o=>o,latLngBounds:c=>new Bd(c),
+    control:{zoom:()=>({addTo(){}})},DomEvent:{stop(e){layerHit=Date.now()}},tileLayer:()=>({addTo(){return this},on(){},remove(){},getContainer(){}}),_map:()=>MAP}})();
+
 /* ================= utils ================= */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -564,7 +659,7 @@ function renderBottom(){const el=$("#bottom"),rt=A.sel;if(A.cmp.length===2&&rend
    :`<div class="cues">${cues(rt).map(c=>`<div class="cue" data-act="cue" data-m="${c.m}"><span class="k">${c.m<0?"Before":"Km "+r1(c.m/1000)}</span><span>${esc(c.t)}</span></div>`).join("")}</div>`}
   <div class="legend" style="margin-top:6px">${[...new Set(zonesOf(rt).map(z=>z.z))].map(z=>`<span><i style="background:${ZC[z]};box-shadow:0 0 6px ${ZC[z]}"></i>${ZL[z]} ${fmtT(pz()[z])}/km</span>`).join("")}${rt.elev?"":`<span>· elevation unavailable</span>`}</div></div></div>`;
   const n2=$("#rname2");if(n2)n2.onchange=e=>{rt.name=e.target.value.trim().slice(0,60)||rt.name;if($("#rname"))$("#rname").value=rt.name;if(rt.saved)saveSel();else renderLeft()};
-  const sv=$("#prof");if(sv){sv.onmousemove=e=>{const b=sv.getBoundingClientRect(),m=clamp((e.clientX-b.left-30*b.width/1000)/(b.width*(960/1000)),0,1)*rt.dist;profHover(m)};sv.onmouseleave=()=>profHover(null)}}
+  let sv=$("#prof");if(sv){const w=sv.parentElement.clientWidth;if(w>100&&Math.abs(w-PG.W)>4){sv.outerHTML=profSvg(rt,w);sv=$("#prof")}sv.onmousemove=e=>{const b=sv.getBoundingClientRect(),m=clamp(((e.clientX-b.left)*(PG.W/b.width)-PG.pl)/PG.iw,0,1)*rt.dist;profHover(m)};sv.onmouseleave=()=>profHover(null)}}
 function renderCompare(el){const[a,b]=A.cmp.map(id=>A.options.find(o=>o.id===id));if(!a||!b){A.cmp=[];return false}
   const R=[["Score",o=>o.disp||0,1,v=>v],["Km",o=>o.dist/1000,0,v=>r1(v)],["Time",o=>estTime(o),-1,fmtT],["Difficulty",o=>difficulty(o).s,-1,v=>v],["Climb",o=>o.climb||0,-1,v=>v+" m"],["Signals",o=>o.signals||0,-1,v=>v],["Crossings",o=>o.cross||0,-1,v=>v],["Cafes",o=>cnt(o,"cafe"),1,v=>v],["Water/shops",o=>cnt(o,"water")+cnt(o,"shop"),1,v=>v],["Toilets",o=>cnt(o,"toilet"),1,v=>v],["Scenic",o=>r0((o.scenic||0)*100),1,v=>v+"%"]];
   const row=(o,j)=>`<button class="cmpn" data-act="opt" data-i="${A.options.indexOf(o)}"><i style="background:${o===A.sel?"#2E8BFF":"#B76CFF"}"></i><span>#${o.rank} ${esc(o.name)}</span></button>${R.map(([l,f,dir,fm])=>{const x=f(a),y=f(b),me=j?y:x,ot=j?x:y,win=dir&&me!==ot&&(dir>0?me>ot:me<ot);return`<b class="num ${win?"win":""}">${fm(me)}</b>`}).join("")}`;
@@ -574,9 +669,9 @@ function profSvg(rt){const W=1000,H=118,pl=30,pb=16,E=rt.elev||[{m:0,e:0},{m:rt.
   const grads=Z.map((z,i)=>`<clipPath id="zc${i}"><rect x="${X(z.a)}" y="0" width="${X(z.b)-X(z.a)}" height="${H}"/></clipPath>`).join("");
   const fills=Z.map((z,i)=>`<polygon clip-path="url(#zc${i})" points="${X(0)},${H-pb} ${line} ${X(rt.dist)},${H-pb}" fill="${ZC[z.z]}" fill-opacity=".22"/><polyline clip-path="url(#zc${i})" points="${line}" fill="none" stroke="${ZC[z.z]}" stroke-width="2.2"/>`).join("");
   const kms=[];for(let k=1;k*1000<rt.dist;k++)kms.push(`<line x1="${X(k*1000)}" x2="${X(k*1000)}" y1="${8}" y2="${H-pb}" stroke="rgba(255,255,255,.05)"/><text x="${X(k*1000)}" y="${H-3}" text-anchor="middle" class="ax">${k}</text>`);
-  const br=(rt.bridges||[]).map(b=>`<text x="${X((b.a+b.b)/2)}" y="16" text-anchor="middle" fill="#FFB020" font-size="11" font-family="IBM Plex Mono">flyover</text>`).join("");
+  const br=(rt.bridges||[]).map(b=>`<text x="${X((b.a+b.b)/2)}" y="16" text-anchor="middle" fill="#FFB020" font-size="11" font-family="JetBrains Mono">flyover</text>`).join("");
   const sg=(rt.pois||[]).filter(p=>p.t==="signal").map(p=>`<circle cx="${X(p.m)}" cy="${H-pb-3}" r="2.6" fill="#FF5C5F"/>`).join("");
-  return`<svg id="prof" class="prof" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Elevation profile"><style>.ax{fill:#5C677A;font:10px "IBM Plex Mono"}</style><defs>${grads}</defs>${kms.join("")}<text x="${pl-6}" y="${Y(hi)+4}" text-anchor="end" class="ax">${r0(hi)}m</text><text x="${pl-6}" y="${Y(lo)}" text-anchor="end" class="ax">${r0(lo)}m</text>${fills}${br}${sg}<line id="phl" x1="0" x2="0" y1="8" y2="${H-pb}" stroke="#fff" stroke-opacity=".6" visibility="hidden"/></svg>`}
+  return`<svg id="prof" class="prof" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Elevation profile"><style>.ax{fill:#5C677A;font:10px "JetBrains Mono"}</style><defs>${grads}</defs>${kms.join("")}<text x="${pl-6}" y="${Y(hi)+4}" text-anchor="end" class="ax">${r0(hi)}m</text><text x="${pl-6}" y="${Y(lo)}" text-anchor="end" class="ax">${r0(lo)}m</text>${fills}${br}${sg}<line id="phl" x1="0" x2="0" y1="8" y2="${H-pb}" stroke="#fff" stroke-opacity=".6" visibility="hidden"/></svg>`}
 function profHover(m){const ln=$("#phl"),rt=A.sel;if(hoverMk){hoverMk.remove();hoverMk=null}if(m==null||!rt){ln&&ln.setAttribute("visibility","hidden");return}const x=30+m/rt.dist*960;ln.setAttribute("x1",x);ln.setAttribute("x2",x);ln.setAttribute("visibility","visible");
   hoverMk=L.marker(ptAt(rt.coords,rt.cum,m),{interactive:false,icon:L.divIcon({className:"",html:'<div class="hover-dot"></div>',iconSize:[14,14],iconAnchor:[7,7]})}).addTo(map).bindTooltip("km "+r1(m/1000),{permanent:true,className:"tt",direction:"top",offset:[0,-10]})}
 function renderAll(){renderLeft();renderRight();renderBottom();if(A.aqiOn)drawAqi();if(A.d3)d3Route()}
@@ -608,7 +703,7 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(
     viaadd:()=>{A.viaPick=!A.viaPick;document.body.classList.toggle("picking",A.viaPick);renderLeft();if(A.viaPick)toast("Click the map where the run should pass through.")},
     viadel:()=>{A.via.splice(+t.dataset.i,1);drawVia();A.options=[];renderLeft()},
     fold:()=>{const k=t.dataset.k;A.fold[k]=!A.fold[k];LS.set("fold",A.fold);t.closest(".fold").classList.toggle("shut",A.fold[k])},
-    lc:()=>panel("l"),rc:()=>panel("r"),aqi:toggleAqi,d3:toggle3D,
+    lc:()=>panel("l"),rc:()=>panel("r"),aqi:toggleAqi,d3:toggle3D,mstyle:()=>setMapStyle(t.dataset.v),
     copyagain:()=>{const t2=$("#codeBox");t2.select();navigator.clipboard?.writeText(t2.value).then(()=>toast("Copied"),()=>document.execCommand("copy"))},
     mclose:()=>$("#modal").innerHTML="","mclose-bg":()=>{if(e.target===t)$("#modal").innerHTML=""},
     nameok:()=>{const v=$("#nmIn").value.trim();if(!v)return;$("#modal").innerHTML="";nameCb&&nameCb(v.slice(0,40))}};
@@ -697,6 +792,53 @@ function d3Route(){if(!A.d3||!gl?.getSource?.("a3d-rt"))return;const F=[],rt=A.s
   if(rt){const Z=typeof planZones==="function"?planZones(rt.dist):[{a:0,b:rt.dist,z:"easy"}];for(const z of Z){const pts=[];for(let i=0;i<rt.coords.length;i++){const m=rt.cum[i];if(m>=z.a-1&&m<=z.b+1)pts.push([rt.coords[i][1],rt.coords[i][0]])}if(pts.length>1)F.push({type:"Feature",properties:{c:ZC[z.z]||"#2E8BFF"},geometry:{type:"LineString",coordinates:pts}})}}
   if(A.start)F.push({type:"Feature",properties:{c:"#35D07F"},geometry:{type:"Point",coordinates:[A.start[1],A.start[0]]}});A.via.forEach(v=>F.push({type:"Feature",properties:{c:"#B76CFF"},geometry:{type:"Point",coordinates:[v.p[1],v.p[0]]}}));
   gl.getSource("a3d-rt").setData({type:"FeatureCollection",features:F})}
+
+/* ================= Atlas 3: single MapLibre engine, map styles, 3D ================= */
+const VT="https://tiles.versatiles.org/assets/styles/",MSTY={dark:"Dark",sat:"Satellite",light:"Light"};let styleCache={};
+async function styleJSON(name){if(styleCache[name])return styleCache[name];const j=await(await fetchT(VT+name+"/style.json",10000)).json();return styleCache[name]=j}
+function tuneLabels(st,mode){const S=JSON.parse(JSON.stringify(st));for(const l of S.layers){if(l.type!=="symbol")continue;l.layout=l.layout||{};const ts=l.layout["text-size"];if(ts!=null)l.layout["text-size"]=typeof ts==="number"?ts*1.15:["*",1.15,ts];
+    if(mode==="dark"){l.paint=l.paint||{};if(/street|road|label|place/i.test(l.id)){l.paint["text-color"]=/place|city|town|suburb/i.test(l.id)?"#DCE3EE":"#AEB8C7";l.paint["text-halo-color"]="#06080c";l.paint["text-halo-width"]=1.4}}}
+  if(mode==="dark")for(const l of S.layers){if(l.type==="line"&&/street|road|motorway|trunk|primary|secondary|tertiary/i.test(l.id)&&!/casing|outline/i.test(l.id)){l.paint=l.paint||{};l.paint["line-color"]=/motorway|trunk|primary/i.test(l.id)?"#3a4556":/secondary|tertiary/i.test(l.id)?"#2c3544":"#222a36"}if(l.type==="background"){l.paint={"background-color":"#0b0e13"}}}
+  return S}
+async function styleFor(mode){try{if(mode==="sat"){const base=await styleJSON("colorful");const st=tuneLabels(base,"sat");st.sources={...st.sources,sat:{type:"raster",tiles:["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],tileSize:256,maxzoom:19,attribution:"Imagery © Esri, Maxar, Earthstar Geographics"}};
+      st.layers=[{id:"sat",type:"raster",source:"sat",paint:{"raster-saturation":-.15,"raster-brightness-max":.85}},...st.layers.filter(l=>l.type==="symbol"&&/street|road|place|label/i.test(l.id)).map(l=>({...l,paint:{...(l.paint||{}),"text-color":"#fff","text-halo-color":"rgba(0,0,0,.85)","text-halo-width":1.6}}))];return st}
+    return tuneLabels(await styleJSON(mode==="light"?"colorful":"eclipse"),mode)}
+  catch(e){return{version:8,sources:{r:{type:"raster",tiles:[mode==="light"?"https://tile.openstreetmap.org/{z}/{x}/{y}.png":"https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"],tileSize:256,maxzoom:mode==="light"?19:16,attribution:mode==="light"?"© OpenStreetMap":"Tiles © Esri"}},layers:[{id:"r",type:"raster",source:"r"}]}}}
+function glSync(){}
+function initBase(){}
+function blockedNote(){}
+async function setMapStyle(mode){A.mapStyle=mode;LS.set("mstyle",mode);document.querySelectorAll("[data-act=mstyle]").forEach(b=>b.classList.toggle("on",b.dataset.v===mode));document.body.dataset.ms=mode;const st=await styleFor(mode);map._ready=false;gl.setStyle(st,{diff:false})}
+function initMap(){map=L.map("map",{});A.mapStyle=LS.get("mstyle","dark");document.body.dataset.ms=A.mapStyle;
+  styleFor(A.mapStyle).then(st=>{gl=map._init(st,A.start||MUMBAI,15);gl.on("style.load",()=>{baseOk=true;if(A.d3)d3Layers()});gl.on("load",()=>{baseOk=true});
+    gl.on("pitchend",()=>{const on=gl.getPitch()>8;if(on!==A.d3){A.d3=on;$("#d3Btn")?.classList.toggle("on",on);if(on)d3Layers();else gl.getLayer("a3d-bld")&&gl.setLayoutProperty("a3d-bld","visibility","none")}});
+    document.querySelectorAll("[data-act=mstyle]").forEach(b=>b.classList.toggle("on",b.dataset.v===A.mapStyle))});
+  map.createPane("heat");L_heat=L.layerGroup().addTo(map);L_alts=L.layerGroup().addTo(map);L_route=L.layerGroup().addTo(map);L_poi=L.layerGroup().addTo(map);L_marks=L.layerGroup().addTo(map);L_draw=L.layerGroup().addTo(map);
+  map.on("click",e=>{const p=[e.latlng.lat,e.latlng.lng];if(A.d3&&!A.allow3dClick){}if(A.mode==="draw")addWp(p);else if(A.viaPick){addVia(p)}else{setStart(p,true)}});
+  L_via=L.layerGroup().addTo(map);L_aqi=L.layerGroup().addTo(map);setStartMarker()}
+function toggle3D(){if(!gl||!baseOk){toast("The map is still loading.",true);return}A.d3=!A.d3;$("#d3Btn").classList.toggle("on",A.d3);
+  if(A.d3){d3Layers();gl.easeTo({pitch:60,bearing:gl.getBearing()||-20,zoom:Math.max(15,gl.getZoom()),duration:1100});toast("3D on. Right-drag (or Ctrl-drag) to tilt and turn.")}
+  else{gl.getLayer("a3d-bld")&&gl.setLayoutProperty("a3d-bld","visibility","none");gl.easeTo({pitch:0,bearing:0,duration:700})}}
+function d3Layers(){if(!gl)return;let st;try{st=gl.getStyle()}catch(e){return}const src=Object.entries(st.sources||{}).find(([k,v])=>v.type==="vector"&&/shortbread|versatiles/i.test(k))?.[0]||Object.entries(st.sources||{}).find(([k,v])=>v.type==="vector")?.[0];if(!src)return;
+  if(gl.getLayer("a3d-bld")){gl.setLayoutProperty("a3d-bld","visibility","visible");return}const sat=A.mapStyle==="sat",light=A.mapStyle==="light";
+  const before=st.layers.find(l=>l.type==="symbol")?.id;try{gl.addLayer({id:"a3d-bld",type:"fill-extrusion",source:src,"source-layer":"buildings",minzoom:13,paint:{"fill-extrusion-color":sat?"#cfd6e0":light?"#e3dccf":["interpolate",["linear"],["zoom"],13,"#151c28",17,"#222e42"],"fill-extrusion-height":["interpolate",["linear"],["zoom"],13,0,14.5,["+",7,["*",5,["%",["coalesce",["id"],3],6]]]],"fill-extrusion-opacity":sat?.55:.9,"fill-extrusion-vertical-gradient":true}},before)}catch(e){}}
+function d3Route(){}
+/* ---- elevation profile with real axes ---- */
+function nTicks(lo,hi,n=4){const span=hi-lo||1,raw=span/n,mag=Math.pow(10,Math.floor(Math.log10(raw))),st=[1,2,2.5,5,10].map(x=>x*mag).find(x=>span/x<=n+.5)||mag*10;const a=Math.floor(lo/st)*st,b=Math.ceil(hi/st)*st,o=[];for(let v=a;v<=b+st*1e-6;v+=st)o.push(+v.toFixed(6));return{t:o,lo:a,hi:b}}
+let PG=null;
+function profSvg(rt,Wp){const W=Math.max(420,Wp||900),H=150,pl=46,pr=12,pt=12,pb=24,iw=W-pl-pr,ih=H-pt-pb,E=rt.elev||[{m:0,e:0},{m:rt.dist,e:0}],lo0=Math.min(...E.map(x=>x.e)),hi0=Math.max(lo0+10,...E.map(x=>x.e)),T=nTicks(lo0,hi0,3),lo=T.lo,hi=T.hi,X=m=>pl+m/rt.dist*iw,Y=e=>pt+(1-(e-lo)/((hi-lo)||1))*ih;PG={pl,iw,W,H,pt,pb,Y,E};
+  const line=E.map(x=>`${X(x.m).toFixed(1)},${Y(x.e).toFixed(1)}`).join(" "),Z=zonesOf(rt);
+  const clips=Z.map((z,i)=>`<clipPath id="zc${i}"><rect x="${X(z.a)}" y="0" width="${Math.max(0,X(z.b)-X(z.a))}" height="${H}"/></clipPath>`).join("");
+  const fills=Z.map((z,i)=>`<polygon clip-path="url(#zc${i})" points="${X(0)},${H-pb} ${line} ${X(rt.dist)},${H-pb}" fill="${ZC[z.z]}" fill-opacity=".14"/><polyline clip-path="url(#zc${i})" points="${line}" fill="none" stroke="${ZC[z.z]}" stroke-width="1.8" stroke-linejoin="round"/>`).join("");
+  let ax="";for(const v of T.t)ax+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" class="pgl"/><text x="${pl-7}" y="${Y(v)+3.5}" text-anchor="end" class="pax">${r0(v)}</text>`;
+  const km=rt.dist/1000,st=km>12?2:km>5?1:.5;for(let k=0;k<=km+1e-9;k+=st)ax+=`<line x1="${X(k*1000)}" x2="${X(k*1000)}" y1="${H-pb}" y2="${H-pb+4}" class="ptk"/><text x="${X(k*1000)}" y="${H-6}" text-anchor="middle" class="pax">${r1(k)}</text>`;
+  ax+=`<line x1="${pl}" x2="${W-pr}" y1="${H-pb}" y2="${H-pb}" class="pal"/><line x1="${pl}" x2="${pl}" y1="${pt}" y2="${H-pb}" class="pal"/><text x="${pl+6}" y="${pt+9}" class="pun">ELEVATION · M</text><text x="${pl-7}" y="${H-6}" text-anchor="end" class="pun">KM</text>`;
+  const br=(rt.bridges||[]).map(b=>`<text x="${X((b.a+b.b)/2)}" y="${pt+10}" text-anchor="middle" class="pfl">flyover</text>`).join("");
+  const sg=(rt.pois||[]).filter(p=>p.t==="signal").map(p=>`<circle cx="${X(p.m)}" cy="${H-pb-3}" r="2.4" fill="#E5596A"/>`).join("");
+  return`<svg id="prof" class="prof" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-label="Elevation profile"><defs>${clips}</defs>${ax}${fills}${br}${sg}<g id="phg" visibility="hidden"><line id="phl" x1="0" x2="0" y1="${pt}" y2="${H-pb}" class="phl"/><circle id="phd" r="4.5" class="phd"/><g id="phb"><rect rx="6" height="34" width="132" class="phr"/><text id="pht1" class="pht1" x="8" y="14"></text><text id="pht2" class="pht2" x="8" y="27"></text></g></g></svg>`}
+function profHover(m){const g=$("#phg"),rt=A.sel;if(hoverMk){hoverMk.remove();hoverMk=null}if(m==null||!rt||!PG){g&&g.setAttribute("visibility","hidden");return}
+  const x=PG.pl+m/rt.dist*PG.iw,E=PG.E;let i=E.findIndex(q=>q.m>=m);if(i<0)i=E.length-1;const e=E[i]?.e??0,e0=E[Math.max(0,i-1)]?.e??e,dm=(E[i]?.m-E[Math.max(0,i-1)]?.m)||1,gr=(e-e0)/dm*100,z=zonesOf(rt).find(q=>m>=q.a&&m<q.b);
+  if(g){g.setAttribute("visibility","visible");$("#phl").setAttribute("x1",x);$("#phl").setAttribute("x2",x);const d=$("#phd");d.setAttribute("cx",x);d.setAttribute("cy",PG.Y(e));const bx=x+140>PG.W?x-140:x+8;$("#phb").setAttribute("transform",`translate(${bx},${PG.pt})`);$("#pht1").textContent=`km ${r1(m/1000).toFixed?.(1)??r1(m/1000)} · ${r0(e)} m`;$("#pht2").textContent=`${gr>=0?"+":""}${r1(gr)}% grade${z?" · "+ZL[z.z]:""}`}
+  hoverMk=L.marker(ptAt(rt.coords,rt.cum,m),{interactive:false,icon:L.divIcon({className:"",html:'<div class="hover-dot"></div>',iconSize:[14,14],iconAnchor:[7,7]})}).addTo(map)}
 
 /* ================= boot ================= */
 readHash();initMap();applyPanels();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
