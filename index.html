@@ -1756,6 +1756,22 @@ function planZones(L){const s=sess(),ty=rType();if(ty==="session"&&s){const d=(s
     if(/progress/i.test(d)&&!/\{/.test(d))return[{a:0,b:L*.5,z:"easy"},{a:L*.5,b:L*.8,z:"steady"},{a:L*.8,b:L,z:"tempo"}]}
   return planZones_o(L)}
 
+/* ---------- route service: back-off on 429, circuit-breaker when Valhalla is down ---------- */
+const VH={fail:0,until:0,warned:0};
+async function osrm(pts){const dark=isDark();let err;
+  const P2=(A.snapOn&&A.snapAr)?pts.map((p,i)=>i===0||i===pts.length-1||A.via.some(v=>hav(v.p,p)<8)?p:snapGood(p)):pts.slice();
+  const ex=(A.avoid||[]).filter(a=>hav(a.p,P2[0])<20000&&P2.every(q=>hav(q,a.p)>45)).map(a=>sq(a.p,20));
+  const body={locations:P2.map(p=>({lat:+p[0].toFixed(6),lon:+p[1].toFixed(6),type:"break"})),costing:"pedestrian",costing_options:{pedestrian:{walkway_factor:.75,sidewalk_factor:.85,alley_factor:14,driveway_factor:16,use_living_streets:0,use_tracks:0,service_penalty:80,service_factor:5,use_hills:0,use_lit:dark?1:0,step_penalty:80}},directions_options:{units:"kilometers"}};
+  if(ex.length)body.exclude_polygons=ex;
+  if(Date.now()>VH.until)for(let a=0;a<3;a++){try{const r=await lim2(()=>fetchT("https://valhalla1.openstreetmap.de/route?json="+encodeURIComponent(JSON.stringify(body)),12000));if(r.status===429){await sleep(1500*(a+1));continue}const j=await r.json();VH.fail=0;
+    if(j.trip){const coords=[],steps=[];for(const leg of j.trip.legs){const c=dec6(leg.shape);for(const m of leg.maneuvers||[])steps.push({name:(m.street_names||[])[0]||"",type:m.type,dist:(m.length||0)*1000,loc:c[m.begin_shape_index]||null});if(coords.length)c.shift();coords.push(...c)}
+      if(!steps.length)steps.push({name:"",type:0,dist:0,loc:coords[0]});steps[0].__pts=P2;return{coords,steps,pts:P2}}err=j.error;break}catch(e){err=e.message;if(++VH.fail>=3){VH.until=Date.now()+180000;break}}}
+  if(Date.now()<VH.until&&Date.now()-VH.warned>180000){VH.warned=Date.now();toast("The main route service isn't answering, so Atlas is using its backup router for now. Lane filtering is weaker until it's back.",true)}
+  const c=P2.map(p=>p[1].toFixed(6)+","+p[0].toFixed(6)).join(";");
+  for(const base of ROUTERS){try{const j=await lim2(async()=>(await fetchT(base+c+"?overview=full&geometries=geojson&steps=true",15000)).json());
+    if(j.code==="Ok"&&j.routes?.[0]){const r=j.routes[0],steps=r.legs.flatMap(l=>l.steps||[]).map(s=>({name:s.name||"",type:s.maneuver?.type||"",dist:s.distance,loc:s.maneuver?.location?[s.maneuver.location[1],s.maneuver.location[0]]:null}));if(!steps.length)steps.push({name:"",type:0,dist:0});steps[0].__pts=P2;return{coords:r.geometry.coordinates.map(([x,y])=>[y,x]),steps,pts:P2}}}catch(e){err=e.message}}
+  throw new Error(err||"route")}
+
 /* ================= boot ================= */
 readHash();initMap();applyPanels();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
 if(!A.start){if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{const c=[p.coords.latitude,p.coords.longitude];map.setView(c,16);setStart(c,false)},()=>{setStart(MUMBAI,false);toast("Using Marine Drive. Allow location or click the map to change the start.")},{timeout:8000,maximumAge:120000});else setStart(MUMBAI,false)}
