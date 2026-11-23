@@ -374,7 +374,7 @@ table.km6,table.cmp6{width:100%;border-collapse:collapse;font:400 11px "Space Mo
 .hrs6{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
 .hrs6 button{border-radius:10px;padding:6px 2px;text-align:center;background:var(--card);border:1px solid var(--ln);font:400 9px "Space Mono";color:#8b96a8;cursor:pointer;display:flex;flex-direction:column;gap:2px;align-items:center}
 .hrs6 button b{font:700 15px "Space Grotesk";color:#fff}.hrs6 button.on{background:rgba(39,215,242,.13);border-color:rgba(39,215,242,.55)}
-.hrs6 .aq.g{color:var(--g)}.hrs6 .aq.o{color:var(--o)}.hrs6 .aq.r{color:var(--r)}.hrs6 .pn{color:#5d6778;font-size:8.5px}
+.hrs6 .aq.g{color:var(--g)}.hrs6 .aq.o{color:var(--o)}.hrs6 .aq.r{color:var(--r)}.hrs6 .pcost{color:#5d6778;font-size:8.5px}
 .rate6{display:flex;gap:6px}.rate6 button{flex:1;height:38px;border-radius:11px;background:var(--card);border:1px solid var(--ln);font-size:17px;cursor:pointer}.rate6 button.on{background:rgba(39,215,242,.15);border-color:var(--a)}
 .profw{border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
 /* scouting + empty */
@@ -1659,7 +1659,7 @@ function cmpHTML(){const O=A.options;if(O.length<2)return"";const rows=[["Score"
 function kmTable(rt){const sp=splits(rt),k=effD(rt)/rt.dist,pois=rt.pois||[];return`<table class="km6"><tr><th>KM</th><th>PACE</th><th>ZONE</th><th>±M</th><th>STOP</th><th class="l">ON THE WAY</th></tr>${sp.map(x=>{const a=(x.k-1)*1000,b=a+x.len,mid=a+x.len/2;if(rt.finishM&&a>=rt.finishM)return"";const pk=x.t/(x.len/1000),nm=stepNameAt(rt,mid)||"",lm=pois.find(p=>p.m>=a&&p.m<b&&p.name&&p.t!=="signal");
   return`<tr data-act="cue" data-m="${r0(mid)}"><td>${x.k}</td><td>${fmtT(pk)}</td><td><span class="z" style="background:${ZC[x.z]}"></span>${ZL[x.z]}</td><td>${r0(x.el||0)>0?"+":""}${r0(x.el||0)}</td><td>${x.sg||"–"}</td><td class="l">${esc(nm||"–")}${lm?` <span class="lm">· ${esc(lm.name)}</span>`:""}</td></tr>`}).join("")}</table>`}
 function airHTML(){if(!A.wx)return`<p class="sub6">Heat and air load when you're online.</p>`;const h0=Math.floor(runHour()),hs=[];for(let h=h0-2;h<=h0+3;h++)if(h>=4&&h<=23)hs.push(h);
-  return`<div class="hrs6">${hs.map(h=>{const w=hourWx(A.day,h);if(!w)return"";const aq=w.aqi,ac=aq==null?"":aq<=100?"g":aq<=150?"o":"r";return`<button class="${Math.floor(A.hour)===h?"on":""}" data-act="x-hour" data-h="${h}">${HL(h).replace(" ","")}<b>${r0(w.feels)}°</b><span class="aq ${ac}">${aq==null?"–":"AQI "+aq}</span><span class="pn">${w.pen?"+"+w.pen+"%":"no cost"}</span></button>`}).join("")}</div>`}
+  return`<div class="hrs6">${hs.map(h=>{const w=hourWx(A.day,h);if(!w)return"";const aq=w.aqi,ac=aq==null?"":aq<=100?"g":aq<=150?"o":"r";return`<button class="${Math.floor(A.hour)===h?"on":""}" data-act="x-hour" data-h="${h}">${HL(h).replace(" ","")}<b>${r0(w.feels)}°</b><span class="aq ${ac}">${aq==null?"–":"AQI "+aq}</span><span class="pcost">${w.pen?"+"+w.pen+"%":"no cost"}</span></button>`}).join("")}</div>`}
 function briefing(rt){const P=pz(),w=hourWx(A.day,A.hour),Z=zonesOf(rt),k=effD(rt)/rt.dist,st=stopsOf(rt),out=[],dark=isDark(A.day,A.hour);
   out.push(["Go",`${dayWord()} at ${HL(A.hour??19)}${w?`, feels ${r0(w.feels)}°${w.pen?` (heat costs ~${r0(P.easy*w.pen/100)} s/km)`:""}${w.aqi!=null?`, AQI ${w.aqi}`:""}`:""}.${dark?` After sunset: ${rt.litF!=null?r0(rt.litF*100)+"% of the route is lit":"stick to the main roads"}.`:""}`]);
   out.push(["Plan",Z.map(z=>`${r1(z.a*k/1000)}–${r1(z.b*k/1000)} km ${ZL[z.z].toLowerCase()} ${fmtT(P[z.z])}`).join(" → ")]);
