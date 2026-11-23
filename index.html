@@ -229,13 +229,95 @@ body.xdrag .maplibregl-canvas-container{cursor:grabbing!important}
 .md .btn,.ft .btn{height:36px;padding:0 14px;border-radius:10px;border:1px solid var(--ln2);background:var(--p2);color:var(--tx);font-weight:600}
 .md .btn.p,.ft .btn.p{background:var(--a);color:var(--ai);border:0}
 .leaflet-tooltip.tt,.tt{background:#15181e!important;border:1px solid var(--ln2)!important}
+
+/* ===== Atlas 5 · wide two-column rail ===== */
+#rail{width:640px;background:linear-gradient(180deg,rgba(22,26,33,.95),rgba(14,17,22,.96));box-shadow:0 20px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05);border-radius:20px}
+#rail .hd{display:flex;align-items:center;gap:14px;padding:12px 16px}
+#rail .hd .logo{flex:none}
+#rail .hd .search{flex:1;margin-top:0}
+.logo s{background:linear-gradient(135deg,#27d7f2,#1a9cff)}
+#L{padding:12px 16px 18px;gap:12px}
+.wkrow{flex-shrink:0}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.wk .d{position:relative;border-radius:11px;padding:6px 3px 7px;text-align:center;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);font-size:10.5px;color:#8a94a4;line-height:1.2}
+.wk .d b{display:block;font:800 18px "Barlow Condensed",Inter,sans-serif;color:#e8edf3;margin:1px 0 3px}
+.wk .d em{display:block;font-style:normal;font-size:10px;font-weight:700;color:#7d8696;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px}
+.wk .d.run{background:linear-gradient(180deg,rgba(39,215,242,.13),rgba(39,215,242,.03));border-color:rgba(39,215,242,.25)}
+.wk .d.run em{color:#27d7f2}
+.wk .d.opt em{color:#b7bfcb}
+.wk .d.on{border-color:#27d7f2;box-shadow:0 0 0 1px #27d7f2,0 0 18px rgba(39,215,242,.25)}
+.wk .d:hover{border-color:rgba(39,215,242,.45)}
+.wk .d .pl{position:absolute;top:3px;right:5px;font-style:normal;font-size:8px;color:#35d07f}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.lc{letter-spacing:0;text-transform:none;font-weight:500;color:#aab3c0}
+.a{color:var(--a)}
+.hero{border-radius:16px;padding:13px 14px;background:radial-gradient(120% 140% at 0% 0%,rgba(39,215,242,.16),rgba(39,215,242,.02) 55%),rgba(255,255,255,.03);border:1px solid rgba(39,215,242,.22)}
+.hero .xl{display:flex;justify-content:space-between}
+.hero h3{margin:5px 0 3px;font-size:17px;font-weight:700}
+.hero .sub,.sub{font-size:12px;color:#aab3c0;line-height:1.45}
+.sub.warn{color:#ffc35a;margin-top:4px}
+.wl .xl{display:flex;justify-content:space-between}
+.wl .bar{display:flex;gap:3px;height:8px;margin-top:7px}
+.wl .bar i{display:block;height:100%;border-radius:4px;background:rgba(39,215,242,.28)}
+.wl .bar i.on{background:linear-gradient(90deg,#27d7f2,#22b8ff);box-shadow:0 0 10px rgba(39,215,242,.4)}
+.leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:#aab3c0;margin-top:6px}
+.wl .leg span.on{color:#27d7f2;font-weight:600}
+.leg span[style]::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;background:var(--c)}
+.cg{display:grid;grid-template-columns:1fr;gap:8px}
+.cc{border-radius:12px;padding:9px 11px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;gap:7px;min-width:0}
+.cc .xl{display:flex;justify-content:space-between}
+.cc .row{display:flex;align-items:center;gap:6px}
+.cc .row b{flex:1;min-width:0;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{width:30px;height:30px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#e8edf3;font-size:14px;flex:none}
+.ib:hover{border-color:var(--ab2)}
+.seg.sm button{padding:6px 0;font-size:12px}
+.dist .v b{font-size:28px}
+.where.wide{padding:9px 11px}
+.xbtn.big{height:46px;font-size:14px}
+.planw{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:10px 12px;border-radius:12px;border:1px dashed rgba(39,215,242,.35);background:none;color:var(--tx);font-size:12.5px}
+.planw:hover:not(:disabled){background:var(--ab)}
+.planw:disabled{opacity:.5;cursor:default}
+.planw .a{font-weight:800;white-space:nowrap}
+.rw{display:flex;gap:12px;align-items:center;padding:11px 12px;border-radius:14px;background:linear-gradient(135deg,rgba(255,176,32,.14),rgba(255,176,32,.02));border:1px solid rgba(255,176,32,.25);cursor:pointer}
+.rw.empty{cursor:default;opacity:.85}
+.rw .ic{font-size:22px}.rw b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rw .ch{color:#8a94a4}
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:40px 18px;border-radius:16px;border:1px dashed rgba(255,255,255,.1);color:#cfd6df}
+.empty b{font-size:14px}
+.op{padding:9px 11px;gap:10px}
+.op .i{display:flex;flex-direction:column;gap:2px}
+.mb{display:flex;gap:2px;width:100%;border-radius:3px;overflow:hidden;margin-top:3px}
+.mb i{display:block;height:100%;border-radius:2px}
+.hero2{padding:13px 14px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+.hero2 .nm{display:flex;align-items:center;gap:8px}
+.hero2 .nm input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--tx);font:700 15px Inter;padding:2px 0;border-bottom:1px dashed transparent}
+.hero2 .nm input:focus{border-bottom-color:var(--ab2)}
+.hero2 .big{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-top:8px}
+.hero2 .big .xn{font-size:40px}.hero2 .big .u{font-size:16px;color:var(--mu);margin-left:2px}.hero2 .big .sm .xn{font-size:24px}
+.xsec>.xl{display:flex;justify-content:space-between}
+table.cmp{width:100%;border-collapse:collapse;font-size:12px}
+table.cmp td,table.cmp th{padding:5px 4px;text-align:right;border-bottom:1px solid rgba(255,255,255,.05)}
+table.cmp th{font:800 15px "Barlow Condensed",Inter,sans-serif;color:#8a94a4}
+table.cmp th.on{color:var(--a)}
+table.cmp td:first-child,table.cmp th:first-child{text-align:left;color:#aab3c0;font:500 12px Inter}
+table.cmp td.w{color:#35d07f;font-weight:700}
+table.cmp td.on{background:rgba(39,215,242,.05)}
+.pp{height:56px}
+.edit button{padding:7px 2px}
+#status,#toast,#d3bar{left:calc(50% + 330px)!important}
+#tools .tg button#runBtn.on{background:rgba(53,208,127,.14);box-shadow:inset 0 0 0 1px rgba(53,208,127,.4);color:#fff}
+#mlegend{position:fixed;z-index:440;right:14px;bottom:120px;padding:9px 12px;border-radius:12px;background:var(--p);border:1px solid var(--ln);font-size:11.5px;color:#cfd6df;display:flex;flex-direction:column;gap:4px}
+#mlegend span::before{content:"";display:inline-block;width:16px;height:4px;border-radius:2px;margin-right:7px;vertical-align:middle;background:var(--c)}
+@media (max-width:1100px){#rail{width:420px}.cols{grid-template-columns:1fr}#status,#toast,#d3bar{left:calc(50% + 220px)!important}}
+.col>*{flex-shrink:0}
+.hero2 .big{flex-wrap:wrap}.hero2 .big .xn{font-size:36px}.hero2 .big .sm .xn{font-size:22px}
 </style></head><body>
 <div id="gl" aria-hidden="true"></div><div id="map" role="application" aria-label="Map"></div>
 <aside id="rail" aria-label="Build a route"><div class="hd"><div class="logo"><s></s>ATLAS<span class="sync" id="sync"></span></div>
 <div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Search a place to start from…" autocomplete="off" aria-label="Search a place"><div class="sres" id="sres" hidden></div></div></div>
 <div id="L"></div></aside>
-<div id="tools"><div class="tg"><button data-act="mstyle" data-v="slate">Slate</button><button data-act="mstyle" data-v="day">Day</button><button data-act="mstyle" data-v="sat">Satellite</button></div><div class="tg"><button data-act="d3" id="d3Btn" title="Tilt the map, 3D buildings">3D</button><button data-act="heat" id="heatBtn" title="Glow where you've run">Heatmap</button><button data-act="aqi" id="aqiBtn" title="Air quality around you">Air</button></div><div class="tg"><a id="paceLink" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">Open PACE ↗</a></div></div>
-<div id="smart" hidden></div>
+<div id="tools"><div class="tg"><button data-act="mstyle" data-v="slate">Slate</button><button data-act="mstyle" data-v="day">Day</button><button data-act="mstyle" data-v="sat">Satellite</button></div><div class="tg"><button data-act="x-runnable" id="runBtn" title="Highlight runnable roads, fade lanes">Runnable roads</button><button data-act="d3" id="d3Btn" title="Tilt the map, 3D buildings">3D</button><button data-act="heat" id="heatBtn" title="Glow where you've run">Heatmap</button><button data-act="aqi" id="aqiBtn" title="Air quality around you">Air</button></div><div class="tg"><a id="paceLink" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">Open PACE ↗</a></div></div>
+<div id="smart" hidden></div><div id="mlegend"><span style="--c:#aab7cb">Main roads</span><span style="--c:#5aa8a0">Promenades & paths</span><span style="--c:#4a5568">Lanes (faded)</span><span style="--c:#27d7f2">Your route</span></div>
 <div id="status" hidden></div>
 <div id="top" hidden></div><aside id="left" hidden></aside><aside id="right" hidden></aside><section id="bottom" hidden></section>
 <div id="aqiLeg" hidden></div><div id="d3bar" hidden><b>3D view</b><span class="muted small">Right-drag or Ctrl-drag to tilt and turn</span><button class="xbtn sm" data-act="d3">Back to 2D</button></div>
@@ -350,7 +432,7 @@ const MUMBAI=[18.9432,72.8236];
 const A={pace:LS.get("pace",null),start:LS.get("start",null),mode:"loop",km:5,prefs:LS.get("prefs",{scenic:true,cross:true,flat:true}),options:[],sel:null,draw:[],drawClosed:"",
   poiOn:LS.get("poiOn",{cafe:1,water:1,shop:1,toilet:1,bench:0,signal:1,sight:1}),wx:null,aq:null,day:0,hour:null,routes:LS.get("routes",[]),favs:LS.get("favs",[]),heat:false,colour:"easy",runType:"auto",sort:"best",cmp:[],kmTouched:false,tab:"profile",busy:false,area:null,hoverM:null,via:[],viaPick:false,aqiOn:false,aqiData:null,d3:false,fold:LS.get("fold",{prefer:false,lib:false}),lc:LS.get("lc",false),rc:LS.get("rc",false)};
 function pz(){const p=A.pace?.paces;if(p&&p.easySlow)return{easy:(p.easySlow+p.easyFast)/2,steady:p.easyFast*.97,tempo:p.tempo,int:p.int,race:p.race};return{easy:400,steady:375,tempo:345,int:318,race:360}}
-const selDate=()=>(A.wx?.daily?.time?.[A.day])||todayISO();
+const selDate=()=>{const d=new Date();d.setDate(d.getDate()+(A.day||0));return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
 const sess=()=>{const d=selDate(),Ls=A.pace?.sessions;if(Array.isArray(Ls))return Ls.find(x=>x.date===d)||null;const s=A.pace?.session;return s&&s.date===d?s:null};
 const kipx=()=>A.pace?.kipx?.[selDate()]||null;
 const TL={easy:"Easy",steady:"Steady",tempo:"Tempo",long:"Long"};
@@ -872,7 +954,7 @@ function initMap(){map=L.map("map",{});A.mapStyle=LS.get("mstyle","dark");docume
   map.createPane("heat");L_heat=L.layerGroup().addTo(map);L_alts=L.layerGroup().addTo(map);L_route=L.layerGroup().addTo(map);L_poi=L.layerGroup().addTo(map);L_marks=L.layerGroup().addTo(map);L_draw=L.layerGroup().addTo(map);
   map.on("click",e=>{const p=[e.latlng.lat,e.latlng.lng];if(window.XCLICK&&XCLICK(p))return;if(A.mode==="draw")addWp(p);else if(A.viaPick){addVia(p)}else{setStart(p,true)}});
   L_via=L.layerGroup().addTo(map);L_aqi=L.layerGroup().addTo(map);setStartMarker()}
-function toggle3D(){if(!gl||!baseOk){toast("The map is still loading.",true);return}A.d3=!A.d3;$("#d3Btn").classList.toggle("on",A.d3);
+function toggle3D_o(){if(!gl||!baseOk){toast("The map is still loading.",true);return}A.d3=!A.d3;$("#d3Btn").classList.toggle("on",A.d3);
   if(A.d3){d3Layers();gl.easeTo({pitch:60,bearing:gl.getBearing()||-20,zoom:Math.max(15,gl.getZoom()),duration:1100});toast("3D on. Right-drag (or Ctrl-drag) to tilt and turn.")}
   else{gl.getLayer("a3d-bld")&&gl.setLayoutProperty("a3d-bld","visibility","none");gl.easeTo({pitch:0,bearing:0,duration:700})}}
 function d3Layers_o(){if(!gl)return;let st;try{st=gl.getStyle()}catch(e){return}const src=Object.entries(st.sources||{}).find(([k,v])=>v.type==="vector"&&/shortbread|versatiles/i.test(k))?.[0]||Object.entries(st.sources||{}).find(([k,v])=>v.type==="vector")?.[0];if(!src)return;
@@ -925,13 +1007,14 @@ function d3Layers(){d3Layers_o();try{if(gl?.getLayer("a3d-bld")){const T=TONES[A
 /* ---------- strict main-road analysis ---------- */
 function goodAt(ar,p){return nearG(ar.goodG,p,0)||nearG(ar.coast,p,4)||inPark(ar,p)||(nearG(ar.foot,p,0)&&!nearG(ar.minorG,p,0)&&!nearG(ar.resG,p,0))}
 function analyse(rt,ar){analyse_o(rt,ar);rt.laneM=null;rt.laneMax=null;rt.mainF2=null;rt.lanes=[];
-  if(ar?.goodG&&ar?.minorG){const L=rt.dist,edge=Math.min(200,L*.08);let tot=0,main=0,lane=0,run=null;
+  if(ar?.goodG&&ar?.minorG){const L=rt.dist,edge=Math.min(200,L*.08);let tot=0,main=0,lane=0,run=null;const mix={main:0,prom:0,park:0,lane:0};
     for(const s of samples(rt.coords,rt.cum,15)){tot++;const g=goodAt(ar,s.p);if(g)main++;
+      if(inPark(ar,s.p))mix.park++;else if(nearG(ar.coast,s.p,3)||(nearG(ar.foot,s.p,0)&&!nearG(ar.goodG,s.p,0)))mix.prom++;else if(nearG(ar.goodG,s.p,0))mix.main++;else mix.lane++;
       const inner=s.m>edge&&s.m<L-edge;
       const ln=!g&&(nearG(ar.minorG,s.p,0)||nearG(ar.resG,s.p,0)||!nearG(ar.goodG,s.p,1));
       if(ln&&inner){lane+=15;if(!run)run={a:s.m,b:s.m};run.b=s.m}else if(run){if(run.b-run.a>=30)rt.lanes.push(run);run=null}}
     if(run&&run.b-run.a>=30)rt.lanes.push(run);
-    rt.laneM=lane;rt.laneMax=rt.lanes.reduce((a,r)=>Math.max(a,r.b-r.a+15),0);rt.mainF2=tot?main/tot:null}
+    rt.mix=tot?{main:mix.main/tot,prom:mix.prom/tot,park:mix.park/tot,lane:mix.lane/tot}:null;rt.laneM=lane;rt.laneMax=rt.lanes.reduce((a,r)=>Math.max(a,r.b-r.a+15),0);rt.mainF2=tot?main/tot:null}
   learnFr(rt);rt.straight=longStretch(rt);return rt}
 function longStretch(rt){let best=null,cur=null,m=0;for(const s of rt.steps||[]){const nm=s.name||"";if(cur&&nm&&nm===cur.n&&!isTurn(s)){cur.d+=s.dist}else{if(cur&&(!best||cur.d>best.d))best=cur;cur={n:nm,d:s.dist,m}}m+=s.dist}if(cur&&(!best||cur.d>best.d))best=cur;return best&&best.n&&best.d>=500?best:null}
 function learnFr(rt){const D=A.learnD;let n=0,g=0,b=0;const seen=new Set();for(const s of samples(rt.coords,rt.cum,25)){const[a,c]=cell(s.p),k=gk(a,c);n++;if(D.g[k])g++;if(D.b[k])b++}rt.lg=n?g/n:0;rt.lb=n?b/n:0}
@@ -1153,6 +1236,108 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(
   if(X[a])X[a]()});
 document.addEventListener("keydown",e=>{if(/INPUT|TEXTAREA/.test(e.target.tagName))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?redo():undo()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redo()}if(e.key==="Escape"&&A.avoidPick){A.avoidPick=false;document.body.classList.remove("xpick");renderLeft()}});
 {const t=setInterval(()=>{if(typeof gl!=="undefined"&&gl&&gl.loaded&&gl.loaded()){clearInterval(t);initDrag();drawAvoid()}},400)}
+
+
+/* ================= Atlas 5 · wide two-column rail · richer slate · runnable roads ================= */
+A.runnable=LS.get("runnable",true);A.weekPlan=LS.get("weekPlan",{});
+TONES.slate={bg:"#2a313d",lc:"#2d3441",park:"#2d4a3e",water:"#1a3854",bld:"#3b4453",bldo:"#465061",minor:"#465062",res:"#4a5568",ter:"#7f8da3",sec:"#95a3b9",pri:"#aab7cb",mw:"#c4cfdf",cas:"#1c222b",foot:"#5aa8a0",rail:"#4a5263",txt:"#eef2f7",halo:"#222833",place:"#ffffff",ext:["#384150","#4a5466"],b3:["#3a4453","#4a5567"]};
+TONES.day={bg:"#d5d8d1",lc:"#d0d4cc",park:"#b6cdaa",water:"#94bcd8",bld:"#c3c6bf",bldo:"#b2b5ad",minor:"#eeeeea",res:"#f3f3ef",ter:"#ffffff",sec:"#fff6dc",pri:"#ffe9a8",mw:"#ffd98a",cas:"#a7aba2",foot:"#7fbfb2",rail:"#a0a39b",txt:"#30353d",halo:"#e8eae5",place:"#1f242b",ext:["#c9cbc4","#dcdcd6"],b3:["#c9cbc4","#dcdcd6"]};
+function toneStyle(base,k){const s=JSON.parse(JSON.stringify(base)),t=TONES[k]||TONES.slate,minOp=A.runnable?.7:1;
+  s.layers=s.layers.filter(l=>!/^(poi-|label-address|marking-|symbol-transit-bus|label-motorway-shield|label-motorway-exit|boundary)/.test(l.id));
+  for(const l of s.layers){const id=l.id,p=l.paint=l.paint||{};
+    if(l.type==="background"){p["background-color"]=t.bg;continue}
+    if(l.type==="fill"){let c=t.lc;if(/water|ocean/.test(id))c=t.water;else if(/park|garden|forest|grass|vegetation|leisure|wetland|sportscentre/.test(id))c=t.park;else if(/building:outline/.test(id))c=t.bldo;else if(/building/.test(id))c=t.bld;else if(/street|bridge/.test(id))c=t.minor;p["fill-color"]=c;delete p["fill-pattern"];if(/landcover|land-|site-/.test(id))p["fill-opacity"]=/park|forest|grass|garden|vegetation|leisure/.test(id)?.95:.35;continue}
+    if(l.type==="line"){const isO=/:outline/.test(id);let c=t.minor,op=1,M=false;
+      if(/water/.test(id))c=t.water;else if(/rail|subway|aerial|ferry/.test(id))c=t.rail;
+      else if(/motorway|trunk/.test(id)){c=t.mw;M=true}else if(/primary/.test(id)){c=t.pri;M=true}else if(/secondary|arterial/.test(id)){c=t.sec;M=true}else if(/tertiary/.test(id)){c=t.ter;M=true}
+      else if(/footway|path|cycleway|pedestrian/.test(id)){c=t.foot;op=.8}
+      else if(/livingstreet|service|track|steps/.test(id)){c=t.minor;op=minOp*.85}else if(/minor/.test(id)){c=t.res;op=minOp}
+      if(isO){c=t.cas;op=M?1:.6}p["line-color"]=c;p["line-opacity"]=/tunnel/.test(id)?op*.4:op;continue}
+    if(l.type==="symbol"){p["text-color"]=/place/.test(id)?t.place:t.txt;p["text-halo-color"]=t.halo;p["text-halo-width"]=1.8;if(l.layout&&l.layout["text-size"]!=null)l.layout["text-size"]=scaleSz(l.layout["text-size"])}}
+  const src=Object.keys(s.sources).find(k2=>/shortbread/.test(k2))||Object.keys(s.sources)[0],i=s.layers.findIndex(l=>l.type==="symbol");
+  s.layers.splice(i<0?s.layers.length:i,0,{id:"x3d",type:"fill-extrusion",source:src,"source-layer":"buildings",minzoom:14,layout:{visibility:A.d3?"none":"visible"},paint:{"fill-extrusion-color":["interpolate",["linear"],["zoom"],14,t.ext[0],17,t.ext[1]],"fill-extrusion-height":["+",6,["*",4,["%",["coalesce",["id"],3],5]]],"fill-extrusion-opacity":.85}});
+  return s}
+function x3dVis(){try{gl?.getLayer("x3d")&&gl.setLayoutProperty("x3d","visibility",A.d3?"none":"visible")}catch(e){}}
+function d3Layers(){d3Layers_o();x3dVis();try{if(gl?.getLayer("a3d-bld")&&A.mapStyle!=="sat"){const T=TONES[A.mapStyle==="day"?"day":"slate"].b3;gl.setPaintProperty("a3d-bld","fill-extrusion-color",["interpolate",["linear"],["zoom"],13,T[0],17,T[1]])}}catch(e){}}
+function toggle3D(){toggle3D_o();setTimeout(x3dVis,50)}
+function toggleRunnable(){A.runnable=!A.runnable;LS.set("runnable",A.runnable);$("#runBtn")?.classList.toggle("on",A.runnable);setMapStyle(A.mapStyle||"slate")}
+
+/* ---------- week ---------- */
+const isoD=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function weekDays(){const o=[];for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()+i);const k=isoD(d),S=(A.pace?.sessions||[]).filter(x=>x.date===k),s=S[0]||null,kx=A.pace?.kipx?.[k]||null;o.push({i,k,d,s,kx,plan:A.weekPlan[k]})}return o}
+const shortT=s=>{const t=(s.title||"").replace(/\s*run$/i,"");const w=t.split(/[\s·\-–]+/)[0]||"Run";return(w.length>8?w.slice(0,7):w)+" "+(s.km?r0(s.km)+"k":"")};
+function weekHTML(){const W=weekDays();return`<div class="wk">${W.map(x=>{const cls=x.s?"run":x.kx?"opt":"",pl=x.plan&&A.routes.some(r=>r.id===x.plan.id);return`<button class="d ${cls} ${A.day===x.i?"on":""}" data-act="day" data-d="${x.i}" title="${esc(x.s?x.s.title+" · "+x.s.km+" km":x.kx?"Kip suggests "+TL[x.kx.type]+" "+x.kx.km+" km":"No run planned")}">${x.i===0?"Today":DN[x.d.getDay()]}<b>${x.d.getDate()}</b><em>${x.s?esc(shortT(x.s)):x.kx?"opt "+x.kx.km+"k":"Rest"}</em>${pl?'<i class="pl" title="Route planned">●</i>':""}</button>`}).join("")}</div>`}
+function weekLoad(){const W=weekDays().filter(x=>x.s),tot=W.reduce((a,x)=>a+(+x.s.km||0),0);if(!tot)return`<div class="wl"><div class="xl"><span>Week load</span><span class="lc">no runs planned in PACE</span></div></div>`;
+  return`<div class="wl"><div class="xl"><span>Week load</span><span class="lc">${r1(tot)} km · ${W.length} run${W.length>1?"s":""}</span></div><div class="bar">${W.map(x=>`<i style="width:${x.s.km/tot*100}%" class="${A.day===x.i?"on":""}" title="${esc(x.s.title)}"></i>`).join("")}</div><div class="leg">${W.map(x=>`<span class="${A.day===x.i?"on":""}">${x.i===0?"Today":DN[x.d.getDay()]} ${esc(shortT(x.s))}</span>`).join("")}</div></div>`}
+async function planWeek(){const W=weekDays().filter(x=>x.s&&x.i>=0);if(!W.length){toast("No runs planned in PACE for the next 7 days.",true);return}if(!A.start){toast("Set a start first.",true);return}
+  if(A.planning)return;A.planning=true;const day0=A.day,made=[];
+  try{for(const x of W){A.day=x.i;A.runType="session";A.km=clamp(Math.round(x.s.km*2)/2,1,30);A.kmTouched=true;if(A.mode==="draw")setMode("loop",true);toast(`Planning ${DN[x.d.getDay()]} · ${x.s.title}…`);await build();const rt=A.options[0];if(!rt)continue;
+      rt.name=`${DN[x.d.getDay()]} ${x.d.getDate()} · ${x.s.title}`;A.sel=rt;const inp=$("#rname");if(inp)inp.value=rt.name;saveSel();A.weekPlan[x.k]={id:rt.id,at:Date.now()};made.push(rt)}
+    LS.set("weekPlan",A.weekPlan);toast(`Planned ${made.length} run${made.length!==1?"s":""} this week. They're in Your routes.`)}
+  finally{A.planning=false;A.day=day0;renderLeft()}}
+
+/* ---------- route of the week ---------- */
+function routeOfWeek(){const L=A.routes.map(r=>{const rt=A.rate[r.id],ran=r.ran||[],wk=ran.filter(x=>Date.now()-(x.at||x.date&&Date.parse(x.date)||0)<14*864e5).length;return{r,s:(rt?.up?10:rt?.up===false?-20:0)+ran.length*3+wk*4,ran,rt}}).filter(x=>x.s>0).sort((a,b)=>b.s-a.s);
+  if(!L.length)return`<div class="rw empty"><span class="ic">🏆</span><div><div class="xl" style="color:#ffc35a">Route of the week</div><div class="sub">Run and 👍 a route to crown it here.</div></div></div>`;
+  const x=L[0],pr=x.ran.length?Math.min(...x.ran.map(q=>q.secs)):null;
+  return`<div class="rw" data-act="open" data-id="${x.r.id}" role="button" tabindex="0"><span class="ic">🏆</span><div style="flex:1;min-width:0"><div class="xl" style="color:#ffc35a">Route of the week</div><b>${esc(x.r.name)} · ${x.r.km} km</b><div class="sub">${x.rt?.up?"👍 rated · ":""}${x.ran.length?`ran ${x.ran.length}× · PR ${fmtT(pr)}`:"not run yet"}</div></div><span class="ch">›</span></div>`}
+
+/* ---------- results pieces ---------- */
+const MIXC={main:"#aab7cb",prom:"#35c6b2",park:"#3fa36b",lane:"#e5596a"},MIXL={main:"Main road",prom:"Promenade / path",park:"Park",lane:"Lanes"};
+function mixBar(m,h){if(!m)return"";return`<div class="mb" style="height:${h||5}px">${Object.keys(MIXC).map(k=>m[k]>0.005?`<i style="width:${m[k]*100}%;background:${MIXC[k]}"></i>`:"").join("")}</div>`}
+function compareHTML(){const O=A.options;if(O.length<2)return"";const rows=[["Score",o=>o.disp||0,1,v=>v],["Main roads",o=>r0((o.mainF2||0)*100),1,v=>v+"%"],["Stops",o=>(o.signals||0)+(o.cross||0),-1,v=>v],["Longest straight",o=>o.straight?o.straight.d:0,1,v=>v?r1(v/1000)+" km":"–"],["Climb",o=>o.climb||0,-1,v=>"+"+v+" m"],["Lanes",o=>r0(o.laneM||0),-1,v=>v+" m"],["Est. time",o=>estTime(o),-1,fmtT]];
+  return`<div class="xsec"><div class="xl"><span>Compare</span><span class="lc">green = best</span></div><table class="cmp"><tr><th></th>${O.map(o=>`<th class="${o===A.sel?"on":""}">${o.label}</th>`).join("")}</tr>${rows.map(([l,f,dir,fm])=>{const v=O.map(f),best=dir>0?Math.max(...v):Math.min(...v),ds=v.map(x=>String(fm(x))),bd=String(fm(best)),same=ds.every(x=>x===ds[0]);return`<tr><td>${l}</td>${v.map((x,i)=>`<td class="${!same&&ds[i]===bd?"w":""} ${O[i]===A.sel?"on":""}">${fm(x)}</td>`).join("")}</tr>`}).join("")}</table></div>`}
+
+/* ---------- render ---------- */
+function renderRight(){renderLeft()}
+function renderLeft(){$("#sync").innerHTML=syncHTML();const s=sess(),k0=kipx();if(!A.kmTouched&&!A.busy){if(s&&rType()==="session")A.km=clamp(Math.round(s.km*2)/2,1,30);else if(!s&&A.runType==="auto"&&k0)A.km=clamp(k0.km,1,30)}
+  const ty=rType(),rt=A.sel,mode=A.mode==="laps"?"loop":A.mode;
+  const favs=A.favs.map((f,i)=>`<button class="chip" data-act="fav" data-i="${i}" aria-pressed="${!!(A.start&&hav(A.start,f.p)<30)}">${esc(f.name)}<span class="x" data-act="favdel" data-i="${i}" title="Remove">×</span></button>`).join("");
+  const types=`<div class="seg sm">${[["session","PACE"],["easy","Easy"],["steady","Steady"],["tempo","Tempo"],["long","Long"]].filter(([v])=>v!=="session"||s).map(([v,l])=>`<button data-act="rtype" data-v="${v}" aria-pressed="${ty===v}">${l}</button>`).join("")}</div>`;
+  const ctl=`<div class="cg">
+    <div class="cc"><span class="xl">Start</span><div class="row"><b id="stN" title="${esc(startName())}">${esc(startName())}</b><button class="ib" data-act="locate" title="My location">◎</button><button class="ib" data-act="favadd" ${A.start?"":"disabled"} title="Save this start">☆</button></div>${favs?`<div class="chips">${favs}</div>`:""}</div>
+    <div class="cc"><span class="xl">Shape</span><div class="seg sm">${[["loop","Loop"],["ob","Out & back"],["draw","Draw"]].map(([k,l])=>`<button data-act="mode" data-v="${k}" aria-pressed="${mode===k}">${l}</button>`).join("")}</div>${mode!=="draw"?`<div class="chips">${A.via.map((v,i)=>`<button class="chip via" data-act="viadel" data-i="${i}" title="Remove"><i>${i+1}</i>${esc(v.name||"Via "+(i+1))} ×</button>`).join("")}${A.via.length<3?`<button class="chip" data-act="viaadd" aria-pressed="${!!A.viaPick}">+ Pass through</button>`:""}</div>`:""}</div>
+    ${mode!=="draw"?`<div class="cc wide"><div class="xl"><span>Distance</span><span class="lc">${TL[ty]||"PACE session"}</span></div><div class="dist"><input type="range" min="1" max="30" step="0.5" value="${A.km}" id="kmR" aria-label="Distance in km" style="--f:${(A.km-1)/29*100}%"><div class="v"><b class="xn" id="kmV">${A.km}</b><span class="muted"> km</span></div></div>${types}</div>`:`<div class="cc wide"><span class="xl">Draw</span><p class="hint">Click the map to add points; they snap to real paths.</p><div class="chips"><button class="chip" data-act="undo">Undo point</button><button class="chip" data-act="dclear">Clear</button><button class="chip" data-act="dloop" aria-pressed="${A.drawClosed==="loop"}">Close loop</button><button class="chip" data-act="dob" aria-pressed="${A.drawClosed==="ob"}">Out & back</button></div></div>`}
+    <button class="where wide" data-act="x-where"><i>✦</i><span><b>Where should I run?</b> <span class="muted small">popular spots within 45 min</span></span></button></div>`;
+  const W=weekDays()[A.day]||weekDays()[0],dname=A.day===0?"Today":DN[W.d.getDay()]+" "+W.d.getDate(),bt=bestTime(),rec=A.pace?.rec,pain=painNow();
+  const notes=[];if(s&&rec!=null&&rec<34&&A.day===0)notes.push(`Recovery ${rec}: cut to ${r1(s.km*.8)} km, all easy.`);if(pain>=3)notes.push(`Shin/knee ${pain}/10: flat promenades only.`);
+  const hero=!A.pace?`<div class="hero"><span class="xl a">Not linked to PACE</span><h3>Open Atlas from PACE</h3><div class="sub">PACE → Runs → Open Atlas sends your week here, so one click builds each day.</div></div>`
+    :s&&ty==="session"?`<div class="hero"><div class="xl"><span class="a">${dname} · from PACE</span>${bt?`<span class="lc">best ${bt.lbl}</span>`:""}</div><h3>${esc(s.title)} · ${s.km} km</h3><div class="sub">${s.detail?esc(s.detail.replace(/\{(\w+)\}/g,(m,z)=>fmtT(pz()[z==="racePace"?"race":z]||pz().easy)+"/km")):"Run it by feel."}</div>${notes.length?`<div class="sub warn">${esc(notes.join(" "))}</div>`:""}
+      <button class="xbtn p w" style="margin-top:11px" data-act="buildToday" ${A.busy?"disabled":""}>${A.busy?'<span class="spin"></span> BUILDING…':"BUILD "+(A.day===0?"TODAY'S":DN[W.d.getDay()].toUpperCase()+"'S")+" RUN"}</button></div>`
+    :`<div class="hero"><div class="xl"><span>${dname} · ${s?"running something else":"nothing planned"}</span>${bt?`<span class="lc">best ${bt.lbl}</span>`:""}</div><h3>${k0?`Kip suggests ${TL[k0.type]} · ${k0.km} km`:"Free run"}</h3>${k0?`<div class="sub">${esc(k0.why||"")}</div>`:""}${s?`<button class="xbtn sm" style="margin-top:9px" data-act="rtype" data-v="session">Back to ${esc(s.title)}</button>`:""}</div>`;
+  const nRun=weekDays().filter(x=>x.s).length;
+  const planB=`<button class="planw" data-act="x-planweek" ${A.planning||A.busy||!nRun?"disabled":""}><span><b>${A.planning?"Planning the week…":"Plan the whole week"}</b><br><span class="sub">${nRun?weekDays().filter(x=>x.s).map(x=>x.i===0?"Today":DN[x.d.getDay()]).join(", ")+` · ${nRun} route${nRun>1?"s":""} in one go`:"No runs planned in PACE"}</span></span><span class="a">${A.planning?'<span class="spin"></span>':"PLAN ›"}</span></button>`;
+  const buildB=mode!=="draw"?`<button class="xbtn p w big" data-act="build" ${A.busy?"disabled":""}>${A.busy?'<span class="spin"></span> BUILDING…':`BUILD ${mode==="ob"?"OUT & BACK":"LOOP"} · ${A.km} KM`}</button>`:"";
+  let right="";
+  if(A.busy&&!A.options.length)right=`<div class="empty"><span class="spin"></span><b>Scouting routes on main roads…</b><span class="sub">This takes about 15–25 seconds.</span></div>`;
+  else if(!rt)right=`<div class="empty"><svg width="46" height="46" viewBox="0 0 40 40" fill="none"><path d="M6 32c4-16 12-22 28-22" stroke="#27d7f2" stroke-width="3" stroke-linecap="round"/><circle cx="6" cy="32" r="4" fill="#35d07f"/><circle cx="34" cy="10" r="3" fill="#27d7f2"/></svg><b>Pick a day, then Build</b><span class="sub">Three clean options land here with scores, a road-mix breakdown, a compare table and the pace plan.</span></div>`;
+  else{const t=estTime(rt),sp=splits(rt),P=pz(),pk=sp.map(x=>x.t/(x.len/1000)),mx=Math.max(...pk),mn=Math.min(...pk),r=A.rate[rt.id],m=rt.mix;
+    const opts=mode!=="draw"&&A.options.length?`<div class="xsec"><div class="xl"><span>${A.options.length} options</span><span>score</span></div><div class="opts">${A.options.map((o,i)=>`<button class="op" data-act="opt" data-i="${i}" aria-pressed="${o===rt}"><span class="k">${o.label||"ABC"[i]}</span><span class="i"><b>${esc(o.name)}</b><span>${r1(o.dist/1000)} km · ${o.mainF2!=null?r0(o.mainF2*100)+"% main · ":""}${(o.signals||0)+(o.cross||0)} stops</span>${mixBar(o.mix,4)}</span><span class="s">${o.disp}</span></button>`).join("")}</div></div>`:"";
+    right=`${opts}
+    <div class="hero2"><div class="nm"><span class="num a" style="font-size:22px">${rt.label||""}</span><input id="rname" value="${esc(rt.name)}" aria-label="Route name"></div>
+      <div class="big"><div><div class="xl">Distance</div><span class="xn">${r1(rt.dist/1000)}</span><span class="u xn">KM</span></div><div><div class="xl">Score</div><span class="xn a">${rt.disp??dispOf(rt)}</span></div><div class="sm"><div class="xl">Time</div><span class="xn">${fmtT(t)}</span></div><div class="sm"><div class="xl">Climb</div><span class="xn">+${rt.climb??0}m</span></div></div>
+      <div class="kipr"><i>K</i><div>${esc(kipReason(rt))}</div></div></div>
+    ${m?`<div class="xsec"><div class="xl"><span>Route ${rt.label||""} breakdown</span><span class="lc">${r1(rt.dist/1000)} km</span></div>${mixBar(m,10)}<div class="leg">${Object.keys(MIXC).map(k=>`<span style="--c:${MIXC[k]}">${MIXL[k]} ${r0(m[k]*100)}%</span>`).join("")}</div></div>`:""}
+    <div class="xsec"><div class="xl"><span>Edit</span><span class="lc">or drag the line on the map</span></div><div class="edit">
+      <button data-act="x-minus" ${!rt.wps||A.editing?"disabled":""}><b>−1</b>km</button><button data-act="x-plus" ${!rt.wps||A.editing?"disabled":""}><b>+1</b>km</button>
+      <button data-act="x-avoid" aria-pressed="${!!A.avoidPick}" ${!rt.wps||A.editing?"disabled":""}><b>⊘</b>Avoid</button><button data-act="x-undo" ${A.hist.length?"":"disabled"}><b>↶</b>Undo</button><button data-act="x-redo" ${A.fut.length?"":"disabled"}><b>↷</b>Redo</button></div>
+      ${A.avoidPick?`<p class="hint" style="color:var(--a)">Click the road on the map you want to avoid.</p>`:""}${A.avoid.length?`<p class="hint">${A.avoid.length} road${A.avoid.length>1?"s":""} avoided · <a href="#" data-act="x-avclear" style="color:var(--mu)">clear</a></p>`:""}</div>
+    ${compareHTML()}
+    <div class="xsec"><div class="xl"><span>Elevation & pace plan</span><span class="lc">${ZL[zonesOf(rt)[0].z]} ${fmtT(P[zonesOf(rt)[0].z])}/km</span></div><div class="profw" id="profw">${profSvg(rt,300)}</div>
+      <div class="pp">${sp.map((x,i)=>{const h=mx===mn?60:30+70*(mx-pk[i])/(mx-mn);return`<div title="km ${x.k}: ${fmtT(pk[i])}/km${x.el?` · ${x.el>0?"+":""}${x.el} m`:""}${x.sg?` · ${x.sg} stops`:""}"><span>${fmtT(pk[i])}</span><i style="height:${h}%;${x.z!=="easy"?`background:${ZC[x.z]}`:""}"></i></div>`}).join("")}</div><div class="ppl">${sp.map(x=>`<span>${x.k}</span>`).join("")}</div></div>
+    <details class="fold"><summary class="xl">Kip cues for the run</summary><div class="cues">${cues(rt).map(c=>`<div class="cue" data-act="cue" data-m="${c.m}"><span class="k">${c.m<0?"Before":"Km "+r1(c.m/1000)}</span><span>${esc(c.t)}</span></div>`).join("")}</div></details>
+    <div style="display:flex;gap:6px"><button class="xbtn" style="flex:1" data-act="save">${rt.saved?"Saved ✓":"Save route"}</button><button class="xbtn p" style="flex:1.3" data-act="send">SEND TO PACE</button></div>
+    <div class="xsec"><div class="xl"><span>Ran it? Rate it</span><span class="lc">teaches Atlas</span></div><div class="rate"><button data-act="x-rate" data-v="1" aria-pressed="${r?.up===true}">👍</button><button data-act="x-rate" data-v="0" aria-pressed="${r?.up===false}">👎</button></div>
+      ${r?`<div class="chips">${(r.up?TAGS_UP:TAGS_DN).map(t2=>`<button class="chip" data-act="x-tag" data-t="${esc(t2)}" aria-pressed="${r.tags.includes(t2)}">${t2}</button>`).join("")}</div>`:""}</div>`}
+  const lib=A.routes.length?A.routes.map(r=>{const ran=r.ran||[],pr=ran.length?Math.min(...ran.map(x=>x.secs)):null,rt2=A.rate[r.id];return`<div class="lib" data-act="open" data-id="${r.id}" role="button" tabindex="0">${miniSvg(r.poly)}<div class="i"><b>${esc(r.name)}</b><span>${r.km} km${ran.length?` · ran ${ran.length}× · PR ${fmtT(pr)}`:""}${rt2?` · ${rt2.up?"👍":"👎"}`:""}</span></div>${ran.length&&!rt2?'<span class="rb">rate</span>':""}<button class="del" data-act="del" data-id="${r.id}" title="Delete">×</button></div>`}).join(""):`<p class="hint">Saved routes land here.</p>`;
+  $("#L").innerHTML=`<div class="wkrow">${weekHTML()}</div><div class="cols"><div class="col">${hero}${weekLoad()}${ctl}${buildB}${planB}${routeOfWeek()}
+    <details class="fold" ${A.routes.length&&!rt?"open":""}><summary class="xl">Your routes · ${A.routes.length}</summary><div class="opts" style="margin-top:8px">${lib}</div></details></div><div class="col">${right}</div></div>`;
+  const r=$("#kmR");if(r)r.oninput=e=>{A.km=+e.target.value;A.kmTouched=true;$("#kmV").textContent=A.km;r.style.setProperty("--f",(A.km-1)/29*100+"%");const b=$("[data-act=build]");if(b&&!A.busy)b.textContent=`BUILD ${A.mode==="ob"?"OUT & BACK":"LOOP"} · ${A.km} KM`};
+  const n=$("#rname");if(n&&A.sel)n.onchange=e=>{A.sel.name=e.target.value.trim().slice(0,60)||A.sel.name;if(A.sel.saved)saveSel()};
+  const sv=$("#prof");if(sv&&A.sel){const rt3=A.sel;sv.style.width="100%";sv.style.height="auto";sv.onmousemove=e=>{const b=sv.getBoundingClientRect(),m=clamp(((e.clientX-b.left)*(PG.W/b.width)-PG.pl)/PG.iw,0,1)*rt3.dist;profHover(m)};sv.onmouseleave=()=>profHover(null)}
+  $("#runBtn")?.classList.toggle("on",!!A.runnable)}
+function PADS(){const sm=!$("#smart").hidden;return{paddingTopLeft:[($("#rail")?.offsetWidth||640)+50,70],paddingBottomRight:[sm?380:60,50]}}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(!t)return;const a=t.dataset.act;if(a==="x-planweek")planWeek();if(a==="x-runnable")toggleRunnable()});
 
 /* ================= boot ================= */
 readHash();initMap();applyPanels();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
