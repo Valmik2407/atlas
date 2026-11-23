@@ -3,7 +3,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23050810'/%3E%3Cpath d='M8 23 C10 12 16 8 24 9' stroke='%2327d7f2' stroke-width='3.5' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='23' r='3' fill='%2335D07F'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 @keyframes sp{to{transform:rotate(360deg)}}
 .lib .mini{width:42px;height:42px;flex:none;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
@@ -416,16 +416,111 @@ table.km6,table.cmp6{width:100%;border-collapse:collapse;font:400 11px "Space Mo
 .slots{display:flex;flex-direction:column;gap:5px}.slots div{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;padding:8px 10px;border-radius:12px;background:var(--card);border:1px dashed rgba(39,215,242,.2)}
 .slots span{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;background:rgba(39,215,242,.12);color:var(--a);font:700 11px "Space Mono"}.slots b{font-size:12.5px}.slots em{font:400 10px "Space Mono";color:var(--mu);font-style:normal;animation:blink 1.4s ease-in-out infinite}
 @keyframes blink{50%{opacity:.35}}
+
+
+/* ================= Atlas 7 · Oura ================= */
+:root{--a:#c9b6ff;--a2:#ffc4a3;--g:#7ce0c3;--o:#ffc4a3;--r:#ff8fa8;--tx:#f1ecff;--mu:#9a90c2;--mu2:#c3b8e6;--ln:rgba(185,166,255,.12);--card:rgba(255,255,255,.04)}
+html,body{background:#0d0a1d;color:var(--tx);font-family:Manrope,system-ui,sans-serif}
+.lb,.lc,.mono{font-family:Manrope,system-ui,sans-serif!important}
+.p7,.p7s{position:fixed;top:16px;bottom:16px;z-index:20;width:400px;border-radius:30px;background:linear-gradient(180deg,#1d1638 0%,#130e28 55%,#0e0a1f 100%);border:1px solid rgba(185,166,255,.13);box-shadow:0 30px 80px rgba(0,0,0,.55);display:flex;flex-direction:column;overflow:hidden}
+.p7{left:16px}.p7::before{content:"";position:absolute;width:460px;height:460px;left:-30px;top:120px;background:radial-gradient(circle,rgba(185,166,255,.16),transparent 62%);pointer-events:none}
+.p7s{left:432px;width:420px;transform:translateX(-30px);opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s}
+.p7s.open{transform:none;opacity:1;pointer-events:auto}
+.scr7{position:relative;flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 20px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:rgba(185,166,255,.25) transparent}.scr7>*{flex-shrink:0}
+.p7s .scr7{padding-top:18px}
+.hd7{position:relative;padding:20px 20px 10px;display:flex;flex-direction:column;gap:12px}
+.logo7{display:flex;align-items:center}.logo7 b{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.logo7 .sync{margin-left:auto;font-size:12px;color:var(--mu);display:flex;gap:6px;align-items:center}.sync .dot{width:7px;height:7px;border-radius:50%;background:#5d5680}.sync .dot.on{background:var(--g);box-shadow:0 0 10px var(--g)}
+.search{position:relative;height:40px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid var(--ln);display:flex;align-items:center;gap:8px;padding:0 14px;color:var(--mu)}
+.search:focus-within{border-color:rgba(201,182,255,.5);box-shadow:0 0 0 3px rgba(201,182,255,.12)}.search input{flex:1;background:none;border:0;outline:0;color:var(--tx);font:500 13.5px Manrope,system-ui,sans-serif}
+.sres{position:absolute;top:46px;left:0;right:0;z-index:40;background:#1a1433;border:1px solid rgba(201,182,255,.25);border-radius:18px;max-height:360px;overflow:auto;box-shadow:0 18px 40px rgba(0,0,0,.5);padding:6px}
+.sres button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--tx);padding:9px 10px;border-radius:12px;font:500 13px Manrope,system-ui,sans-serif;cursor:pointer}.sres button:hover{background:rgba(201,182,255,.1)}.sres .small{font-size:11.5px}.sres .muted{color:var(--mu)}
+.ses7{display:flex;flex-direction:column;gap:3px}.ses7 span{font-size:12.5px;color:var(--mu);font-weight:600}.ses7 b{font-size:22px;font-weight:600;letter-spacing:-.01em}.ses7 em{font-style:normal;font-size:13px;color:var(--mu2);line-height:1.45}.ses7 em.warn{color:var(--o)}
+.pills7{display:flex;gap:6px;cursor:pointer}.pills7 span{flex:1;min-width:0;padding:8px 11px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid var(--ln);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pills7 span small{display:block;font-size:10.5px;color:var(--mu);font-weight:600}.pills7 .chev{flex:none;width:36px;display:grid;place-items:center;color:var(--mu)}.pills7:hover span{border-color:rgba(201,182,255,.3)}
+.setup{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:20px;background:rgba(255,255,255,.035);border:1px solid var(--ln);animation:in7 .25s ease}
+@keyframes in7{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.row7{display:flex;align-items:center;gap:6px;font-size:13px}.row7 b{flex:1;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row7 span{flex:1;color:var(--mu2)}
+.ib7{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid var(--ln);color:var(--mu2);cursor:pointer;font-size:13px}.ib7:hover,.ib7.on{color:#fff;border-color:var(--a)}
+.favs{display:flex;gap:5px;flex-wrap:wrap}.fv{font:600 12px Manrope,system-ui,sans-serif;padding:5px 7px 5px 10px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--ln);color:var(--mu2);cursor:pointer;display:flex;gap:6px;align-items:center}.fv[aria-pressed=true]{border-color:var(--a);color:#fff}.fv .x,.fv .to{color:var(--mu);font-size:11px}.fv .to{color:var(--o)}
+.dist7{display:flex;align-items:center;gap:12px}.dist7 input{flex:1}.dist7 b{min-width:54px;text-align:right;font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:linear-gradient(90deg,#c9b6ff,#ffc4a3 var(--f),rgba(255,255,255,.1) var(--f));outline:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(201,182,255,.3),0 0 14px rgba(201,182,255,.6);cursor:pointer}
+.seg7{display:flex;gap:3px;padding:3px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--ln)}.seg7 button{flex:1;padding:7px 0;border-radius:13px;font:600 12px Manrope,system-ui,sans-serif;color:var(--mu);background:none;border:0;cursor:pointer;white-space:nowrap}.seg7 button.on{background:rgba(201,182,255,.18);color:#fff}
+.chips7{display:flex;gap:6px;flex-wrap:wrap}.chips7 button{font:600 12px Manrope,system-ui,sans-serif;padding:6px 10px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--ln);color:var(--mu2);cursor:pointer}.chips7 button.on,.chips7 button:hover{border-color:var(--a);color:#fff}
+.btn7{height:50px;border-radius:26px;border:0;background:linear-gradient(90deg,#c9b6ff,#ffc4a3);color:#1b1235;font:700 15px Manrope,system-ui,sans-serif;cursor:pointer;box-shadow:0 10px 30px rgba(201,182,255,.25);transition:transform .15s,box-shadow .15s}.btn7:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 14px 36px rgba(201,182,255,.38)}.btn7:disabled{opacity:.7}
+.orbw{display:grid;place-items:center;height:200px;position:relative}
+.orb{width:180px;height:180px;border-radius:50%;background:radial-gradient(circle at 34% 28%,#ffd3b4 0%,#d7a8ff 32%,#7a63d6 62%,#2e2468 100%);box-shadow:0 0 70px rgba(185,140,255,.42),inset -16px -22px 46px rgba(20,10,60,.55);display:grid;place-items:center;text-align:center;animation:orbin .7s cubic-bezier(.2,.8,.2,1)}
+@keyframes orbin{from{transform:scale(.85);opacity:.4}to{transform:none;opacity:1}}
+.orb b{display:block;font-weight:300;font-size:44px;letter-spacing:-.02em;line-height:1;color:#fff}.orb b i{font-style:normal;font-size:16px;opacity:.75}.orb span{display:block;margin-top:5px;font-size:11.5px;color:#f7f0ff;opacity:.88;max-width:140px}
+.orb.idle{filter:saturate(.75);opacity:.92}.orb.busy{animation:breathe 2.2s ease-in-out infinite}@keyframes breathe{50%{transform:scale(1.05);box-shadow:0 0 110px rgba(185,140,255,.6),inset -16px -22px 46px rgba(20,10,60,.55)}}
+.rings7{display:grid;grid-template-columns:repeat(3,1fr);text-align:center}.rings7>div{display:flex;flex-direction:column;align-items:center;gap:2px}.rings7 span{font-size:11.5px;font-weight:600;color:var(--mu)}
+.rg7 .rf{transition:stroke-dasharray 1s cubic-bezier(.2,.8,.2,1)}.rg7{display:block}
+.lbl7{font-size:13px;font-weight:600;color:var(--mu2);display:flex;justify-content:space-between}.lbl7 span{color:var(--mu);font-weight:500}
+.ctb .ct{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;font-size:13px;margin-bottom:8px}.ct em{font-style:normal;color:var(--mu2)}
+.ct i{height:4px;border-radius:3px;background:rgba(255,255,255,.08);position:relative;overflow:hidden}.ct i::after{content:"";position:absolute;inset:0;width:var(--w);border-radius:3px;background:var(--c);animation:grow .9s cubic-bezier(.2,.8,.2,1)}@keyframes grow{from{width:0}}.ct b{font-size:12px;font-weight:600}
+.rc7g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rc7{text-align:left;border-radius:18px;padding:11px 12px;background:rgba(255,255,255,.04);border:1px solid var(--ln);color:var(--tx);cursor:pointer;transition:background .15s,border-color .15s,transform .15s}.rc7:hover{border-color:rgba(214,190,255,.35);transform:translateY(-1px)}
+.rc7.on{background:linear-gradient(135deg,rgba(185,166,255,.24),rgba(255,179,138,.1));border-color:rgba(214,190,255,.45)}
+.rc7 small{display:block;font-size:11px;color:var(--mu);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rc7 b{display:block;font-weight:300;font-size:26px;margin:2px 0 4px}.rc7 .mr{display:flex;gap:4px}.rc7 .mr svg{display:inline-block}
+.full7{text-align:left;border-radius:18px;padding:12px 14px;background:rgba(201,182,255,.1);border:1px solid rgba(201,182,255,.25);color:#fff;font:700 14px Manrope,system-ui,sans-serif;cursor:pointer}.full7 span{display:block;font-size:11.5px;font-weight:500;color:var(--mu2);margin-top:2px}.full7:hover{background:rgba(201,182,255,.16)}
+.edit7,.acts7{display:flex;gap:6px}.edit7 button,.acts7 button{flex:1;height:36px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid var(--ln);color:var(--tx);font:600 12.5px Manrope,system-ui,sans-serif;cursor:pointer;white-space:nowrap}.edit7 button:hover:not(:disabled),.acts7 button:hover{border-color:var(--a)}.edit7 button:disabled{opacity:.35}.edit7 button.on{border-color:var(--r);color:var(--r)}
+.acts7 .p{background:linear-gradient(90deg,#c9b6ff,#ffc4a3);color:#1b1235;border:0;font-weight:700}
+.links7{display:flex;gap:6px}.links7 button{flex:1;background:none;border:0;color:var(--mu2);font:600 12.5px Manrope,system-ui,sans-serif;padding:6px;cursor:pointer;border-radius:12px}.links7 button:hover{color:#fff;background:rgba(255,255,255,.04)}
+.note7{font-size:12.5px;color:var(--mu2);line-height:1.5;margin:0}.note7 b{color:#fff}
+/* slide-out */
+.sh7{display:flex;align-items:flex-start;gap:10px}.sh7>div{flex:1;min-width:0}.sh7 small{font-size:11.5px;color:var(--mu);font-weight:600}.sh7 b{flex:1;font-size:18px;font-weight:600}
+.sh7 input{display:block;width:100%;background:none;border:0;border-bottom:1px dashed transparent;color:#fff;font:600 18px Manrope,system-ui,sans-serif;outline:0;padding:2px 0}.sh7 input:focus{border-bottom-color:var(--a)}
+.x7{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--ln);color:var(--mu2);font-size:18px;cursor:pointer;flex:none}.x7:hover{color:#fff}
+.sec7{display:flex;flex-direction:column;gap:9px;padding:14px;border-radius:22px;background:rgba(255,255,255,.035);border:1px solid var(--ln)}
+.sec7 h3{margin:0;font-size:14px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline}.sec7 h3 span{font-size:11.5px;color:var(--mu);font-weight:500}
+.kip7{display:flex;gap:10px;font-size:13px;line-height:1.5;color:var(--mu2)}.kip7 b{color:#fff}.kip7 i{flex:none;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffd3b4,#b9a6ff 60%,#5a48b0);color:#1b1235;font:800 12px Manrope,system-ui,sans-serif;font-style:normal;display:grid;place-items:center}
+.brief span{color:var(--a)!important;font-family:Manrope!important;letter-spacing:.06em!important}.brief div{color:var(--mu2)!important}
+.check button{border-radius:14px!important;font-family:Manrope!important}.check button.on i{background:var(--g)!important;border-color:var(--g)!important}
+table.km6,table.cmp6{font-family:Manrope!important;font-size:11.5px!important}.km6 td,.cmp6 td{border-bottom-color:rgba(185,166,255,.08)!important}.km6 .l{font-family:Manrope!important;color:var(--mu2)!important}.km6 .lm{color:var(--o)!important}
+.cmp6 td.w{color:var(--g)!important}.cmp6 th.on{color:var(--a)!important}.cmp6 td.on{background:rgba(201,182,255,.07)!important}
+.radar text{fill:var(--mu)!important;font-family:Manrope!important}.radar polygon[fill="rgba(39,215,242,.22)"]{fill:rgba(201,182,255,.25);stroke:#c9b6ff}
+.hrs6 button{border-radius:14px!important;font-family:Manrope!important}.hrs6 button b{font-family:Manrope!important;font-weight:600!important}.hrs6 button.on{background:rgba(201,182,255,.15)!important;border-color:var(--a)!important}
+.bt7{height:38px;border-radius:19px;background:rgba(255,255,255,.06);border:1px solid var(--ln);color:#fff;font:600 13px Manrope,system-ui,sans-serif;cursor:pointer}.bt7:hover{border-color:var(--a)}
+.rate6 button{border-radius:16px!important}.rate6 button.on{background:rgba(201,182,255,.15)!important;border-color:var(--a)!important}
+.lib6{border-radius:16px!important;background:rgba(255,255,255,.04)!important;border-color:var(--ln)!important}.lib6 .mini{background:rgba(201,182,255,.08)!important}.lib6 .mini polyline,.lib6 .mini path{stroke:#c9b6ff!important}.lib6 .i>span{font-family:Manrope!important}
+.lbar .chips6 button{font-family:Manrope!important;border-radius:12px!important}.lbar select{font-family:Manrope!important;background:#1a1433!important;border-radius:10px!important}
+.spot6{border-radius:20px!important;border-color:var(--ln)!important}.spot6 .rk{background:var(--a)!important;color:#1b1235!important}.spot6 .chips6 span{font-family:Manrope!important;border-radius:10px!important}
+.xbtn6{border-radius:18px!important;font-family:Manrope!important}.sub6{font-family:Manrope}
+.dna.big{border-radius:16px!important;border-color:var(--ln)!important}.dnal span{font-family:Manrope!important}
+/* timeline */
+#TL{position:fixed;top:16px;left:432px;right:16px;z-index:15;border-radius:24px;background:linear-gradient(180deg,#1b1535,#130e28);border:1px solid rgba(185,166,255,.13);box-shadow:0 20px 50px rgba(0,0,0,.45);padding:11px 16px 9px;transition:left .35s cubic-bezier(.2,.8,.2,1)}
+body.slide7 #TL{left:868px}
+.tlh{display:flex;align-items:center;gap:12px;font-size:12.5px;margin-bottom:6px}.tlh b{font-weight:700}.tlh span{color:var(--mu)}.tlh .w{color:var(--o)}.tlh button{margin-left:auto;background:rgba(201,182,255,.12);border:1px solid rgba(201,182,255,.3);color:#fff;font:600 12px Manrope,system-ui,sans-serif;border-radius:14px;padding:5px 12px;cursor:pointer}.tlh button:disabled{opacity:.45}
+.tlg7{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
+.tlg7 .h{display:flex;gap:6px;align-items:baseline;font-size:12px;font-weight:700;color:var(--tx);cursor:pointer}.tlg7 .h span{color:var(--mu);font-weight:500}.tlg7 .h em{font-style:normal;color:var(--g);font-size:9px;margin-left:auto}.tlg7 .d.on .h{color:var(--o)}
+.tlg7 .bars{display:flex;align-items:flex-end;gap:2px;height:30px;margin:5px 0 3px}.tlg7 .bars i{flex:1;border-radius:2px 2px 0 0;cursor:pointer;transition:transform .12s}.tlg7 .bars i:hover{transform:scaleY(1.15);opacity:1!important}.tlg7 .bars i.on{box-shadow:0 0 0 1.5px #fff,0 0 10px #fff;opacity:1!important}
+.tlg7 .s{font-size:10.5px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:1400px){body.slide7 #TL{display:none}}
+/* tools + misc */
+#tools{position:fixed;right:16px;bottom:16px;left:auto!important;top:auto!important;transform:none!important;display:flex;flex-direction:column;align-items:flex-end;gap:6px;z-index:15}
+#tools .tg{display:flex;gap:2px;padding:4px;border-radius:18px;background:#160f2c;border:1px solid var(--ln);backdrop-filter:none!important}
+#tools .tg button,#tools .tg a{padding:6px 11px;border-radius:14px;font:600 12px Manrope,system-ui,sans-serif;color:var(--mu);background:none;border:0;cursor:pointer;text-decoration:none}#tools .tg button.on{background:rgba(201,182,255,.18);color:#fff;box-shadow:none}
+#runBtn.on{background:rgba(124,224,195,.16)!important;color:#fff!important}
+.maplibregl-ctrl-bottom-right{right:16px!important;bottom:100px!important}
+#status{left:50%!important;transform:translateX(-50%);top:auto!important;bottom:24px!important;background:#1a1433!important;border:1px solid var(--ln)!important;border-radius:20px!important;font-family:Manrope!important}
+#toast{left:50%!important;transform:translateX(-50%)}#toast div{background:#1a1433!important;border:1px solid var(--ln)!important;border-radius:18px!important;font-family:Manrope!important}
+.km7{width:20px;height:20px;border-radius:50%;background:#120d24;border:2px solid var(--c);color:#fff;font:700 10px/16px Manrope,system-ui,sans-serif;text-align:center;box-shadow:0 0 10px var(--c)}
+.spulse i{border-color:#c9b6ff!important}.finpin{box-shadow:0 0 0 2px #ffc4a3,0 4px 12px rgba(0,0,0,.5)!important;font-family:Manrope!important}.endpin{background:#ff8fb1!important}
+.gh-me{background:#c9b6ff!important;font-family:Manrope!important}.gh-g{background:#ffc4a3!important;color:#1b1235!important;font-family:Manrope!important}
+.ov .md{background:#1a1433!important;border:1px solid var(--ln)!important;border-radius:22px!important;font-family:Manrope!important}
+
+button,input,select{font-family:inherit}#mlegend{display:none!important}.rings7{margin-bottom:6px}
 </style></head><body>
 <div id="gl" aria-hidden="true"></div><div id="map" role="application" aria-label="Map"></div>
-<aside class="pn pL" aria-label="Plan a run"><div class="hd"><div class="logo"><s></s>ATLAS<span class="sync" id="sync"></span></div>
-<div class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Search places, landmarks, cafés…" autocomplete="off" aria-label="Search a place"><div class="sres" id="sres" hidden></div></div></div>
-<div id="P1" class="scr"></div></aside>
-<aside class="pn pR" aria-label="Routes"><div id="P2" class="scr"></div></aside>
-<div id="tools"><div class="tg"><button data-act="mstyle" data-v="blue">Blue</button><button data-act="mstyle" data-v="gdark">Dark</button><button data-act="mstyle" data-v="day">Day</button><button data-act="mstyle" data-v="sat">Satellite</button></div><div class="tg"><button data-act="x-runnable" id="runBtn" title="Glow on main roads and promenades, fade lanes">Runnable roads</button><button data-act="heat" id="heatBtn" title="Glow where you've run">My runs</button></div><div class="tg"><a id="paceLink" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">PACE ↗</a></div></div>
-<div id="mlegend"><span style="--c:#27d7f2">Easy</span><span style="--c:#6aa8ff">Steady</span><span style="--c:#ffb020">Tempo</span><span style="--c:#ff5c8a">Fast</span><span style="--c:#35e0a1" class="rl">Runnable</span></div>
+<aside class="p7" aria-label="Plan a run"><div class="hd7"><div class="logo7"><b>Atlas</b><span class="sync" id="sync"></span></div>
+<div class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Search anything on the map…" autocomplete="off" aria-label="Search a place"><div class="sres" id="sres" hidden></div></div></div>
+<div id="P1" class="scr7"></div></aside>
+<aside class="p7s" id="P2w" aria-label="Full analysis"><div id="P2" class="scr7"></div></aside>
+<div id="TL"></div>
+<div id="tools"><div class="tg"><button data-act="mstyle" data-v="plum">Plum</button><button data-act="mstyle" data-v="blue">Blue</button><button data-act="mstyle" data-v="day">Day</button><button data-act="mstyle" data-v="sat">Satellite</button></div><div class="tg"><button data-act="x-runnable" id="runBtn" title="Glow on main roads and promenades">Runnable</button><button data-act="heat" id="heatBtn" title="Glow where you've run">My runs</button><a id="paceLink" href="https://claude.ai/artifact/KW1cKSJQs5V4YuKQ4raQnL" target="_blank" rel="noopener">PACE ↗</a></div></div>
 <div id="smart" hidden></div><div id="status" hidden></div>
-<div id="L" hidden></div><div id="top" hidden></div><aside id="left" hidden></aside><aside id="right" hidden></aside><section id="bottom" hidden></section>
+<div id="L" hidden></div><div id="top" hidden></div><aside id="left" hidden></aside><aside id="right" hidden></aside><section id="bottom" hidden></section><div id="mlegend" hidden></div>
 <div id="aqiLeg" hidden></div><div id="d3bar" hidden></div><button id="d3Btn" hidden></button><button id="aqiBtn" hidden></button>
 <div id="toast" role="status" aria-live="polite"></div><div id="modal"></div>
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
@@ -961,7 +1056,7 @@ let sT;$("#q").addEventListener("input",e=>{clearTimeout(sT);const v=e.target.va
 $("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){clearTimeout(sT);search(e.target.value.trim())}if(e.key==="Escape")$("#sres").hidden=true});
 async function search(v){if(!v)return;const box=$("#sres"),c=map.getCenter(),C=[c.lat,c.lng],my=++search.n,all=[],state={done:0,fail:0};
   const m=v.match(/(-?\d{1,2}\.\d+)\s*[, ]\s*(-?\d{1,3}\.\d+)/);if(m){all.push({lat:+m[1],lon:+m[2],name:"Coordinates",sub:`${m[1]}, ${m[2]}`,src:"pin"})}
-  const ql=v.toLowerCase();for(const ar of Object.values(AREAS))for(const q of ar.pois||[])if(q.name&&q.name.toLowerCase().includes(ql))all.push({lat:q.p[0],lon:q.p[1],name:q.name,sub:(PT[q.t]?.[0]||"").replace(/s$/,"")+" · nearby",src:"local"});
+  const ql=v.toLowerCase();if(typeof localHits==="function")all.push(...localHits(v,C));
   const kind=x=>String(x||"").replace(/_/g," ");
   const render=()=>{if(my!==search.n)return;const seen=[];const L=all.filter(r=>{if(!isFinite(r.lat)||!isFinite(r.lon))return false;if(seen.some(x=>x.name.toLowerCase()===r.name.toLowerCase()&&hav([x.lat,x.lon],[r.lat,r.lon])<200))return false;seen.push(r);return true})
       .map(r=>({...r,d:hav(C,[r.lat,r.lon]),hit:r.name.toLowerCase().startsWith(ql)?0:r.name.toLowerCase().includes(ql)?1:2})).sort((a,b)=>(a.src==="pin"?-1:0)-(b.src==="pin"?-1:0)||a.hit-b.hit||a.d-b.d);const near=L.some(r=>r.d<150e3);L.splice(0,L.length,...L.filter(r=>!near||r.d<150e3||r.src==="pin").slice(0,12));
@@ -1457,7 +1552,7 @@ TONES.blue={bg:"#22304a",lc:"#26354f",park:"#1f5446",water:"#123f6b",bld:"#30426
 TONES.gdark={bg:"#242f3e",lc:"#242f3e",park:"#263c3f",water:"#17263c",bld:"#2c3a4c",bldo:"#34445a",minor:"#38414e",res:"#3d4757",ter:"#5b6574",sec:"#746855",pri:"#8a7a5c",mw:"#a08a5f",cas:"#1f2835",foot:"#3d5a5b",rail:"#2f3948",txt:"#d6dde8",halo:"#17263c",place:"#d59563",poi:"#e0b48a",poiH:"#17263c",ext:["#2c3a4c","#3a4a60"],b3:["#2c3a4c","#3a4a60"],run:"#35e0a1"};
 TONES.day={bg:"#f2efe9",lc:"#efece5",park:"#c8e6b0",water:"#9fd0e6",bld:"#e2ddd4",bldo:"#d3cdc2",minor:"#ffffff",res:"#ffffff",ter:"#ffffff",sec:"#fff0c2",pri:"#ffd27a",mw:"#ffb66b",cas:"#c9c3b8",foot:"#7cc3b3",rail:"#b7b2a8",txt:"#3a3f47",halo:"#ffffff",place:"#1f242b",poi:"#7a5a2a",poiH:"#ffffff",ext:["#e2ddd4","#ebe6dd"],b3:["#e2ddd4","#ebe6dd"],run:"#1fb877"};
 TONES.slate=TONES.blue;
-function toneStyle(base,k){const s=JSON.parse(JSON.stringify(base)),t=TONES[k]||TONES.blue,minOp=A.runnable?.55:1;
+function toneStyle_a6(base,k){const s=JSON.parse(JSON.stringify(base)),t=TONES[k]||TONES.blue,minOp=A.runnable?.55:1;
   s.layers=s.layers.filter(l=>!/^(label-address|marking-|symbol-transit-bus|label-motorway-shield|label-motorway-exit|boundary)/.test(l.id));
   for(const l of s.layers){const id=l.id,p=l.paint=l.paint||{};
     if(l.type==="background"){p["background-color"]=t.bg;continue}
@@ -1571,14 +1666,14 @@ async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: s
     const bears=n=>[...Array(n)].map((_,i)=>(i*360/n+Math.random()*12-6+360)%360);
     const jobs=A.mode==="ab"?abJobs(S,A.end,D):A.via.length?viaJobs(S,D):A.mode==="ob"?bears(11).map(b=>()=>obAt(S,b,D)):[...bears(9).map(b=>()=>loopAt(S,b,D)),...bears(4).map(b=>()=>longAt(S,b,D))];
     A.scout.total=jobs.length;A.scout.phase="Scouting routes";updScout();
-    const res=(await Promise.allSettled(jobs.map(f=>f().then(v=>{if(v&&v.coords?.length>1&&A.busy){L.polyline(v.coords,{color:"#7fe9fb",weight:2.5,opacity:.38,interactive:false,className:"scout"}).addTo(L_alts);if(Math.abs(v.dist-D)/D<=.15)A.scout.kept++}return v}).finally(()=>{A.scout.done++;updScout()})))).filter(r=>r.status==="fulfilled"&&r.value&&r.value.coords?.length>1).map(r=>r.value);
+    const res=(await Promise.allSettled(jobs.map(f=>f().then(v=>{if(v&&v.coords?.length>1&&A.busy){L.polyline(v.coords,{color:"#c9b6ff",weight:2.5,opacity:.38,interactive:false,className:"scout"}).addTo(L_alts);if(Math.abs(v.dist-D)/D<=.15)A.scout.kept++}return v}).finally(()=>{A.scout.done++;updScout()})))).filter(r=>r.status==="fulfilled"&&r.value&&r.value.coords?.length>1).map(r=>r.value);
     if(!res.length)throw new Error("none");A.scout.phase="Checking lanes, crossings, lighting";updScout();if(!ar.ok)toast("Couldn't read road types right now, so lanes can't be filtered this time.",true);
     const near=res.filter(r=>Math.abs(r.dist-D)/D<=.15),pool=near.length?near:res;pool.forEach(r=>analyse(r,ar));pool.forEach(r=>r.sc=score(r,D));pool.sort((a,b)=>b.sc-a.sc);
     const isClean=r=>r.laneM==null||r.laneM<=250,distinct=(L2,n)=>{const o=[];for(const r of L2){if(o.length>=n)break;if(o.every(p=>overlap(r,p)<.6&&overlap(p,r)<.6))o.push(r)}return o};
     if(distinct(pool.filter(isClean),5).length<3&&A.mode!=="ab"&&!A.via.length){const seeds=(pool.filter(isClean).length?pool.filter(isClean):pool).slice(0,3),jobs2=[];
       for(const r of seeds)for(const d of[-20,20])jobs2.push(()=>(A.mode==="ob"?obAt:r.shape==="long"?longAt:loopAt)(S,((r.bear||0)+d+360)%360,D));
       A.scout.total+=jobs2.length;A.scout.phase="Second wave around the cleanest roads";updScout();
-      const r2=(await Promise.allSettled(jobs2.map(f=>f().then(v=>{if(v&&v.coords?.length>1&&A.busy){L.polyline(v.coords,{color:"#7fe9fb",weight:2.5,opacity:.38,interactive:false,className:"scout"}).addTo(L_alts);if(Math.abs(v.dist-D)/D<=.15)A.scout.kept++}return v}).finally(()=>{A.scout.done++;updScout()})))).filter(r=>r.status==="fulfilled"&&r.value&&r.value.coords?.length>1&&Math.abs(r.value.dist-D)/D<=.15).map(r=>r.value);
+      const r2=(await Promise.allSettled(jobs2.map(f=>f().then(v=>{if(v&&v.coords?.length>1&&A.busy){L.polyline(v.coords,{color:"#c9b6ff",weight:2.5,opacity:.38,interactive:false,className:"scout"}).addTo(L_alts);if(Math.abs(v.dist-D)/D<=.15)A.scout.kept++}return v}).finally(()=>{A.scout.done++;updScout()})))).filter(r=>r.status==="fulfilled"&&r.value&&r.value.coords?.length>1&&Math.abs(r.value.dist-D)/D<=.15).map(r=>r.value);
       r2.forEach(r=>{analyse(r,ar);r.sc=score(r,D)});res.push(...r2);pool.push(...r2);pool.sort((a,b)=>b.sc-a.sc)}
     const clean=pool.filter(isClean),base=clean.length>=4?clean:pool;
     const cand=distinct(base,8);
@@ -1594,7 +1689,7 @@ async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: s
     if(fin.filter(r=>r.sc>=fin[0].sc-35).length>=3)fin.splice(0,fin.length,...fin.filter(r=>r.sc>=fin[0].sc-35));
     fin.forEach((r,i)=>{r.label="ABCDE"[i];r.rank=i+1});
     const seen={};fin.forEach(r=>{r.name=r.name||nameOf(r);if(seen[r.name])r.name+=` · ${dirWord(r.bear||0)}`;seen[r.name]=1});
-    A.lastBuild={n:res.length,jobs:jobs.length,s:r0((performance.now()-A.scout.t0)/1000)};A.options=fin;A.busy=false;status("");selectRoute(fin[0]);toast(`${fin.length} routes from ${res.length} scouted in ${A.lastBuild.s} s.`)
+    A.lastBuild={n:res.length,jobs:jobs.length,s:r0((performance.now()-A.scout.t0)/1000)};A.options=fin;A.busy=false;status("");A._built=true;selectRoute(fin[0]);toast(`${fin.length} routes from ${res.length} scouted in ${A.lastBuild.s} s.`)
   }catch(e){A.busy=false;status("");toast("Couldn't reach the route service. Check your internet and try again.",true);renderLeft()}finally{A.snapOn=false;A.snapR=0;clearInterval(tick);scoutPulse(false)}}
 
 /* ---------- map drawing extras ---------- */
@@ -1640,7 +1735,7 @@ function toSaved(rt){const o=toSaved_o(rt),prev=A.routes.find(r=>r.id===rt.id);o
 
 /* ---------- spots: where should I run? ---------- */
 function tileUrl(p,z){const n=2**z,x=Math.floor((p[1]+180)/360*n),la=rad(p[0]),y=Math.floor((1-Math.log(Math.tan(la)+1/Math.cos(la))/Math.PI)/2*n);return`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`}
-async function whereRun(){const S=A.start||MUMBAI;A.view="spots";A.spots=null;renderLeft();
+async function whereRun_a6(){const S=A.start||MUMBAI;A.view="spots";A.spots=null;renderLeft();
   const bt=bestTime(),h=bt?bt.h:new Date().getHours(),rush=(h>=8&&h<11)||(h>=17&&h<21),f=(bt?.wkend&&h<10)?1:rush?1.6:h<7||h>=21?1.05:1.25;let times=null;
   try{const q={sources:[{lat:S[0],lon:S[1]}],targets:SPOTS4.map(s=>({lat:s.p[0],lon:s.p[1]})),costing:"auto"};const j=await(await fetchT("https://valhalla1.openstreetmap.de/sources_to_targets?json="+encodeURIComponent(JSON.stringify(q)),15000)).json();times=(j.sources_to_targets?.[0]||[]).map(x=>x&&x.time!=null?x.time*f/60:null)}catch(e){}
   const w=wkType(),km=A.km||5;A.spots={rush,est:!times,bt,list:SPOTS4.map((x,i)=>{const t=times?.[i]??hav(S,x.p)/1000*3.2*f,fit=w==="long"?Math.min(x.len,km/2)*4+x.sea*6+x.straight*3:w==="work"?x.straight*12+x.len*2:x.sea*6+x.len*2+(x.straight?2:0);return{x,i,t,s:fit-t/6}}).filter(o=>o.t<=45).sort((a,b)=>b.s-a.s)};renderLeft()}
@@ -1771,6 +1866,171 @@ async function osrm(pts){const dark=isDark();let err;
   for(const base of ROUTERS){try{const j=await lim2(async()=>(await fetchT(base+c+"?overview=full&geometries=geojson&steps=true",15000)).json());
     if(j.code==="Ok"&&j.routes?.[0]){const r=j.routes[0],steps=r.legs.flatMap(l=>l.steps||[]).map(s=>({name:s.name||"",type:s.maneuver?.type||"",dist:s.distance,loc:s.maneuver?.location?[s.maneuver.location[1],s.maneuver.location[0]]:null}));if(!steps.length)steps.push({name:"",type:0,dist:0});steps[0].__pts=P2;return{coords:r.geometry.coordinates.map(([x,y])=>[y,x]),steps,pts:P2}}}catch(e){err=e.message}}
   throw new Error(err||"route")}
+
+
+/* ================= Atlas 7 · Oura look · plum map · slide-out analysis · motion ================= */
+{if(!LS.get("a7mig",false)){LS.set("a7mig",true);LS.set("mstyle","plum")}}
+const Z7={easy:"#c9b6ff",steady:"#8fb8ff",tempo:"#ffb38a",int:"#ff8fb1",race:"#ffd36e"};Object.assign(ZC,Z7);
+A.slide=null;A.setup=false;
+TONES.plum={bg:"#110c21",lc:"#140f27",park:"#15283a",water:"#0b0a28",bld:"#211a3b",bldo:"#2a2148",minor:"#2b2347",res:"#312951",ter:"#4b4073",sec:"#5f5193",pri:"#7565ad",mw:"#8b79c4",cas:"#0a0716",foot:"#2a5163",rail:"#271e44",txt:"#c3b8e6",halo:"#110c21",place:"#f1eaff",poi:"#b3a6e0",poiH:"#110c21",ext:["#211a3b","#2d2452"],b3:["#211a3b","#2d2452"],run:"#7ce0c3"};
+function toneStyle(base,k){const s=toneStyle_a6(base,k),t=TONES[k]||TONES.plum;
+  for(const l of s.layers){if(l.type!=="symbol")continue;const id=l.id,lay=l.layout=l.layout||{},p=l.paint=l.paint||{};
+    if(/^poi-/.test(id)){l.minzoom=12.5;lay["text-size"]=["interpolate",["linear"],["zoom"],12.5,10,14,11.5,16,13,18,15];lay["icon-size"]=["interpolate",["linear"],["zoom"],12.5,.45,16,.8,18,1];lay["text-padding"]=1;lay["symbol-sort-key"]=["case",["has","name"],0,1]}
+    else if(/^label-street/.test(id)){l.minzoom=Math.min(l.minzoom??13,/primary|secondary|trunk|tertiary/.test(id)?11.5:13);p["text-color"]=t.txt;p["text-opacity"]=1}
+    else if(/label-place-(neighbourhood|quarter|suburb)/.test(id)){l.minzoom=11;lay["text-transform"]="uppercase";lay["text-letter-spacing"]=.14;lay["text-size"]=["interpolate",["linear"],["zoom"],11,11,14,14,17,17];p["text-color"]=k==="day"?"#3a2f5c":"#e9e0ff";p["text-halo-width"]=2;p["text-opacity"]=.92}}
+  return s}
+async function styleFor(mode){mode={dark:"plum",slate:"plum",light:"day",blue:"blue"}[mode]||mode;
+  try{if(mode==="sat"){const base=await styleJSON("colorful");const st=JSON.parse(JSON.stringify(base));st.sources={...st.sources,sat:{type:"raster",tiles:["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],tileSize:256,maxzoom:19}};
+      st.layers=[{id:"sat",type:"raster",source:"sat",paint:{"raster-saturation":-.1,"raster-brightness-max":.9}},...st.layers.filter(l=>l.type==="symbol"&&/street|place|poi/i.test(l.id)).map(l=>({...l,minzoom:/^poi/.test(l.id)?13:l.minzoom,paint:{...(l.paint||{}),"text-opacity":1,"text-color":"#fff","text-halo-color":"rgba(0,0,0,.85)","text-halo-width":1.7}}))];return st}
+    return toneStyle(await styleJSON("colorful"),TONES[mode]?mode:"plum")}
+  catch(e){return{version:8,sources:{r:{type:"raster",tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],tileSize:256,maxzoom:19}},layers:[{id:"r",type:"raster",source:"r",paint:{"raster-saturation":-.3,"raster-brightness-max":mode==="day"?1:.6}}]}}}
+function renderTools(){const ms=A.mapStyle==="slate"?"plum":A.mapStyle;document.querySelectorAll("[data-act=mstyle]").forEach(b=>b.classList.toggle("on",b.dataset.v===ms));$("#runBtn")?.classList.toggle("on",!!A.runnable);$("#heatBtn")?.classList.toggle("on",!!A.heat)}
+
+/* ---------- route on the map: glowing gradient by pace zone, faint solid alternatives, names along the route ---------- */
+let GL7={hov:null,anim:0,last:null};
+function zGrad(rt){const Z=zonesOf(rt),L=rt.dist,st=[];let last=-1;const push=(p,c)=>{p=Math.min(1,Math.max(0,p));if(p<=last)p=Math.min(1,last+1e-6);if(p>1)return;st.push(p,c);last=p};
+  for(const z of Z){push(z.a/L,Z7[z.z]||Z7.easy);push(Math.max(z.a/L,z.b/L-.004),Z7[z.z]||Z7.easy)}if(st.length<4)return Z7.easy;return["interpolate",["linear"],["line-progress"],...st]}
+const LS7=c=>({type:"Feature",properties:{},geometry:{type:"LineString",coordinates:c.map(p=>[p[1],p[0]])}});
+function ensureGL(){if(typeof gl==="undefined"||!gl||!gl.isStyleLoaded())return false;try{
+  if(!gl.getSource("r7"))gl.addSource("r7",{type:"geojson",lineMetrics:true,data:{type:"FeatureCollection",features:[]}});
+  if(!gl.getSource("r7alt"))gl.addSource("r7alt",{type:"geojson",data:{type:"FeatureCollection",features:[]}});
+  if(!gl.getSource("r7hov"))gl.addSource("r7hov",{type:"geojson",data:{type:"FeatureCollection",features:[]}});
+  if(!gl.getSource("rtn"))gl.addSource("rtn",{type:"geojson",data:{type:"FeatureCollection",features:[]}});
+  const lay={"line-cap":"round","line-join":"round"};
+  if(!gl.getLayer("r7alt"))gl.addLayer({id:"r7alt",type:"line",source:"r7alt",layout:lay,paint:{"line-color":"#b7a9e6","line-width":2.5,"line-opacity":.42}});
+  if(!gl.getLayer("r7hov"))gl.addLayer({id:"r7hov",type:"line",source:"r7hov",layout:lay,paint:{"line-color":"#f4eeff","line-width":4,"line-opacity":.9}});
+  if(!gl.getLayer("r7glow"))gl.addLayer({id:"r7glow",type:"line",source:"r7",layout:lay,paint:{"line-width":24,"line-blur":16,"line-opacity":.55,"line-color":Z7.easy}});
+  if(!gl.getLayer("r7case"))gl.addLayer({id:"r7case",type:"line",source:"r7",layout:lay,paint:{"line-width":9,"line-color":"#0a0716","line-opacity":.6}});
+  if(!gl.getLayer("r7line"))gl.addLayer({id:"r7line",type:"line",source:"r7",layout:lay,paint:{"line-width":5,"line-color":Z7.easy}});
+  if(!gl.getLayer("rtn")&&gl.getStyle().glyphs)gl.addLayer({id:"rtn",type:"symbol",source:"rtn",layout:{"text-field":["get","n"],"text-size":11.5,"text-offset":[0,1.15],"text-anchor":"top","text-font":["noto_sans_bold"],"text-optional":true,"text-max-width":9},paint:{"text-color":"#fff4e8","text-halo-color":"#110c21","text-halo-width":1.8}});
+  return true}catch(e){return false}}
+function drawGL(reveal){if(!ensureGL())return;const rt=A.sel;cancelAnimationFrame(GL7.anim);
+  gl.getSource("r7alt").setData({type:"FeatureCollection",features:A.options.filter(o=>o!==rt).map(o=>LS7(o.coords))});
+  gl.getSource("rtn").setData({type:"FeatureCollection",features:rt?(rt.pois||[]).filter(p=>p.name&&p.t!=="signal").map(p=>({type:"Feature",properties:{n:p.name},geometry:{type:"Point",coordinates:[p.p[1],p.p[0]]}})):[]});
+  if(!rt){gl.getSource("r7").setData({type:"FeatureCollection",features:[]});return}
+  const g=zGrad(rt);for(const id of["r7glow","r7line"]){try{gl.setPaintProperty(id,"line-gradient",g)}catch(e){gl.setPaintProperty(id,"line-color",Z7.easy)}}
+  if(!reveal){gl.getSource("r7").setData(LS7(rt.coords));return}
+  const t0=performance.now(),N=rt.coords.length,dur=1500;const step=()=>{const f=Math.min(1,(performance.now()-t0)/dur),e=1-Math.pow(1-f,3),n=Math.max(2,Math.round(N*e));
+    gl.getSource("r7").setData(LS7(rt.coords.slice(0,n)));if(f<1)GL7.anim=requestAnimationFrame(step)};step()}
+function hoverRoute(o){if(!ensureGL())return;gl.getSource("r7hov").setData(o&&o!==A.sel?LS7(o.coords):{type:"FeatureCollection",features:[]})}
+function drawRoute(){clearRoute();const rt=A.sel;
+  if(rt){const Z=zonesOf(rt),L2=rt.finishM||rt.dist;for(let k=1;k*1000<L2-150;k++){const m=k*1000,z=Z.find(q=>m>=q.a&&m<q.b)||Z[0];L.marker(ptAt(rt.coords,rt.cum,m),{interactive:false,icon:L.divIcon({className:"",html:`<div class="km7" style="--c:${Z7[z.z]||Z7.easy}">${k}</div>`,iconSize:[20,20],iconAnchor:[10,10]})}).addTo(L_marks)}
+    if(rt.mode==="ob"&&rt.turn)L.marker(rt.turn,{interactive:false,icon:L.divIcon({className:"",html:'<div class="turnpin">TURN</div>',iconSize:[44,20],iconAnchor:[22,26]})}).addTo(L_marks);
+    for(const p of rt.pois||[]){if(!A.poiOn[p.t])continue;const small=p.t==="signal"||p.t==="bench";L.marker(p.p,{icon:ptIcon(p.t,small),zIndexOffset:small?0:200}).addTo(L_poi).bindTooltip(`<b>${esc(p.name||PT[p.t][0])}</b><br><span style="color:#8A97AB">km ${r1(p.m/1000)}</span>`,{className:"tt",direction:"top",offset:[0,-12]})}
+    if(rt.finishM)L.marker(ptAt(rt.coords,rt.cum,rt.finishM),{interactive:false,icon:L.divIcon({className:"",html:'<div class="finpin">FINISH</div>',iconSize:[54,20],iconAnchor:[27,26]})}).addTo(L_marks)}
+  if(A.mode!=="draw")setStartMarker();const rv=!!A._reveal;A._reveal=false;drawGL(rv)}
+{const t=setInterval(()=>{if(typeof gl!=="undefined"&&gl&&gl.on){clearInterval(t);gl.on("style.load",()=>setTimeout(()=>drawGL(false),60));gl.on("idle",()=>{if(!gl.getSource("r7")&&ensureGL())drawGL(false)})}},300)}
+function selectRoute(rt){stopGhost();const isNew=A._built;A._built=false;A.sel=rt;A._reveal=isNew;drawRoute();renderAll();
+  if(rt&&rt.coords.length>1)map.fitBounds(L.latLngBounds(rt.coords),{...PADS(),maxZoom:16,animate:true,duration:isNew?1400:700})}
+
+/* ---------- search: every named thing on the map, typo-friendly ---------- */
+const norm=s=>String(s||"").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim();
+function lev(a,b,max){if(Math.abs(a.length-b.length)>max)return max+1;let p=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){const c=[i];let mn=i;for(let j=1;j<=b.length;j++){c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));mn=Math.min(mn,c[j])}if(mn>max)return max+1;p=c}return p[b.length]}
+function fuzzyScore(q,name){const Q=norm(q).split(" ").filter(Boolean),N=norm(name).split(" ").filter(Boolean);if(!Q.length||!N.length)return 0;const full=norm(name);let tot=0,hit=0;
+  for(const t of Q){let b=0;if(full.startsWith(t))b=1;else for(const n of N){if(n.startsWith(t)){b=Math.max(b,.95);continue}if(n.includes(t)&&t.length>=3){b=Math.max(b,.8);continue}const d=lev(t,n.slice(0,t.length+1),t.length>=7?2:t.length>=4?1:0);if(d<=(t.length>=7?2:t.length>=4?1:0))b=Math.max(b,.7-d*.05)}tot+=b;if(b>0)hit++}
+  return hit/Q.length>=.5?tot/Q.length:0}
+function localHits(v,C){const out=[],seen=new Set(),add=(name,lat,lon,sub,s)=>{const k=norm(name)+"|"+lat.toFixed(3)+lon.toFixed(3);if(seen.has(k))return;seen.add(k);out.push({lat,lon,name,sub,src:"local",fz:s})};
+  try{const src=Object.keys(gl.getStyle().sources).find(k=>/shortbread/.test(k));if(src){for(const sl of["pois","place_labels","street_labels","boundary_labels"]){let F=[];try{F=gl.querySourceFeatures(src,{sourceLayer:sl})}catch(e){}
+    for(const f of F){const nm=f.properties?.name||f.properties?.name_en;if(!nm)continue;const s=fuzzyScore(v,nm);if(!s)continue;const g=f.geometry;let c=g.type==="Point"?g.coordinates:g.type==="LineString"?g.coordinates[Math.floor(g.coordinates.length/2)]:g.type==="MultiLineString"?g.coordinates[0][0]:null;if(!c)continue;
+      const kind=sl==="street_labels"?"Road":sl==="place_labels"?"Area":String(Object.entries(f.properties).find(([k,x])=>/^(amenity|shop|tourism|leisure|office|man_made|historic)$/.test(k))?.[1]||"Place").replace(/_/g," ");add(nm,c[1],c[0],kind[0].toUpperCase()+kind.slice(1)+" · on the map",s)}}}}catch(e){}
+  for(const ar of Object.values(AREAS))for(const q of ar.pois||[]){if(!q.name)continue;const s=fuzzyScore(v,q.name);if(s)add(q.name,q.p[0],q.p[1],(PT[q.t]?.[0]||"").replace(/s$/,"")+" · nearby",s)}
+  for(const r of A.routes){const s=fuzzyScore(v,r.name);if(s){const c=decPoly(r.poly)[0];if(c)add(r.name,c[0],c[1],`Your route · ${r.km} km`,s+.2)}}
+  for(const f of A.favs){const s=fuzzyScore(v,f.name);if(s)add(f.name,f.p[0],f.p[1],"Saved start",s+.2)}
+  for(const x of SPOTS4){const s=fuzzyScore(v,x.n);if(s)add(x.n,x.p[0],x.p[1],"Run spot · "+x.note,s+.1)}
+  return out.sort((a,b)=>b.fz-a.fz||hav(C,[a.lat,a.lon])-hav(C,[b.lat,b.lon])).slice(0,10)}
+
+/* ---------- small pieces ---------- */
+const strainOf=o=>Math.round(21*(1-Math.exp(-effort(o).tr/110))*10)/10;
+let RG7=0;function ring7(sz,v,c1,c2,txt,unit,cls){const id="r7g"+(RG7++),r=42,C=263.9;return`<svg class="rg7 ${cls||""}" width="${sz}" height="${sz}" viewBox="0 0 100 100"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs><circle cx="50" cy="50" r="${r}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8"/><circle class="rf" cx="50" cy="50" r="${r}" fill="none" stroke="url(#${id})" stroke-width="8" stroke-linecap="round" style="stroke-dasharray:0 ${C}" data-v="${(clamp(v,0,1)*C).toFixed(1)}" transform="rotate(-90 50 50)"/>${txt!=null?`<text x="50" y="${unit?54:58}" text-anchor="middle" font-family="Manrope,system-ui,sans-serif" font-weight="600" font-size="${String(txt).length>4?22:26}" fill="#fff">${txt}</text>`:""}${unit?`<text x="50" y="70" text-anchor="middle" font-family="Manrope,system-ui,sans-serif" font-size="10" fill="#b3a6e0">${unit}</text>`:""}</svg>`}
+function fillRings(el){requestAnimationFrame(()=>requestAnimationFrame(()=>(el||document).querySelectorAll(".rf").forEach(c=>c.style.strokeDasharray=`${c.dataset.v} 263.9`)))}
+const lvl7=v=>v>.66?["Optimal","#7ce0c3"]:v>.4?["Fair","#ffc4a3"]:["Pay attention","#ff8fa8"];
+function contrib(o){const km=effD(o)/1000,w=hourWx(A.day,A.hour);return[["Stops",`${stopsN(o)}`,1-Math.min(1,stopsN(o)/km/4)],["Lanes",`${r0(o.laneM||0)} m`,1-Math.min(1,(o.laneM||0)/800)],["Climb",`+${o.climb||0} m`,1-Math.min(1,(o.climb||0)/km/12)],["Heat",w?`${r0(w.feels)}°`:"–",w?1-Math.min(1,w.pen/4):.5],["Air",w?.aqi!=null?`AQI ${w.aqi}`:"–",w?.aqi!=null?1-clamp((w.aqi-50)/150,0,1):.5]]}
+function heroHTML(o){const rec=A.pace?.rec,s=sess(),sl=sessLoad(s);
+  if(A.busy){const sc=A.scout||{};return`<div class="orbw"><div class="orb busy"><div><b>${sc.done||0}<i>/${sc.total||"…"}</i></b><span>${esc(sc.phase||"Scouting")}</span></div></div></div>`}
+  const eff=o?strainOf(o):sl?Math.round(21*(1-Math.exp(-sl.l/110))*10)/10:null,mainP=o?.mainF2!=null?r0(o.mainF2*100):null;
+  const orb=o?`<div class="orb"><div><b class="cnt" data-t="${Math.round(predict(o).t)}">${fmtT(predict(o).t)}</b><span>predicted finish · ${fmtT(predict(o).pace)}/km</span></div></div>`:`<div class="orb idle"><div><b>${A.km}<i> km</i></b><span>${s&&rType()==="session"?esc(s.title):"ready when you are"}</span></div></div>`;
+  return`<div class="orbw">${orb}</div>
+   <div class="rings7"><div>${ring7(84,eff!=null?eff/21:0,"#c9b6ff","#8fb8ff",eff!=null?eff:"–")}<span>Effort</span></div><div>${ring7(84,rec!=null?rec/100:0,"#7ce0c3","#c6f5a8",rec!=null?rec+"%":"–")}<span>Readiness</span></div><div>${ring7(84,mainP!=null?mainP/100:0,"#ffc4a3","#ff8fb1",mainP!=null?mainP+"%":"–")}<span>Main roads</span></div></div>
+   ${o?`<div class="lbl7">Contributors <span>${o.label||""} · ${esc(o.persL||"Route")}</span></div><div class="ctb">${contrib(o).map(([l,v,x])=>{const[t,c]=lvl7(x);return`<div class="ct"><em>${l}</em><i style="--w:${Math.max(5,x*100)}%;--c:${c}"></i><b style="color:${c}">${v} · ${t}</b></div>`}).join("")}</div>`:""}`}
+function countUp(el){const b=el.querySelector(".cnt");if(!b)return;const to=+b.dataset.t,from=GL7.lastT??to;GL7.lastT=to;if(from===to)return;const t0=performance.now();const f=()=>{const k=Math.min(1,(performance.now()-t0)/700),e=1-Math.pow(1-k,3);b.textContent=fmtT(from+(to-from)*e);if(k<1)requestAnimationFrame(f)};f()}
+function paintHero(o){const el=$("#hero7");if(!el)return;el.innerHTML=heroHTML(o);fillRings(el);countUp(el)}
+function miniR(o){const km=Math.max(.5,effD(o)/1000);return`<span class="mr">${ring7(22,1-Math.min(1,stopsN(o)/km/4),"#ff8fa8","#ffc4a3")}${ring7(22,1-Math.min(1,(o.laneM||0)/800),"#ffc4a3","#ffe08a")}${ring7(22,1-Math.min(1,(o.climb||0)/km/12),"#8fb8ff","#c9b6ff")}</span>`}
+
+/* ---------- week timeline over the map ---------- */
+const runab=w=>{if(!w)return .3;return clamp(1-((w.pen||0)/4*.6+clamp(((w.aqi||50)-50)/150,0,1)*.4),0,1)};
+const tcol=v=>v>.66?"#7ce0c3":v>.4?"#ffc4a3":"#ff8fa8";
+function timelineHTML(){const W=weekDays(),Ls=W.map(x=>sessLoad(x.s)),tot=Ls.reduce((a,l)=>a+(l?l.l:0),0),km=W.reduce((a,x)=>a+(x.s?+x.s.km||0:0),0),n=W.filter(x=>x.s).length;
+  let warn="";for(let i=1;i<7;i++)if(Ls[i]?.hard&&Ls[i-1]?.hard){warn=`${DN[W[i-1].d.getDay()]} + ${DN[W[i].d.getDay()]} both hard`;break}
+  return`<div class="tlh"><b>This week</b><span>${r1(km)} km · ${n} run${n===1?"":"s"} · load ${tot}</span>${warn?`<span class="w">⚠ ${warn}</span>`:""}<button data-act="x-planweek" ${A.planning||A.busy||!n?"disabled":""}>${A.planning?"Planning…":"Plan the week"}</button></div>
+  <div class="tlg7">${W.map((x,i)=>{const b=[];for(let h=5;h<=22;h++){const w=A.wx?hourWx(x.i,h):null,v=runab(w);b.push(`<i data-act="x-slot" data-d="${x.i}" data-h="${h}" class="${x.i===A.day&&h===Math.floor(A.hour??19)?"on":""}" title="${HL(h)}${w?` · feels ${r0(w.feels)}°${w.aqi!=null?" · AQI "+w.aqi:""}`:""}" style="height:${22+v*78}%;background:${tcol(v)};opacity:${.35+v*.65}"></i>`)}
+    const pl=x.plan&&A.routes.find(r=>r.id===x.plan.id);return`<div class="d ${x.i===A.day?"on":""}"><div class="h" data-act="day" data-d="${x.i}">${x.i===0?"Today":DN[x.d.getDay()]}<span>${x.d.getDate()}</span>${pl?'<em title="Route planned">●</em>':""}</div><div class="bars">${b.join("")}</div><div class="s">${x.s?esc(shortT(x.s)):x.kx?"opt "+x.kx.km+"k":"Rest"}${Ls[i]?` · ${Ls[i].l}`:""}</div></div>`}).join("")}</div>`}
+
+/* ---------- main render ---------- */
+function setupHTML(mode,ty,s){const favs=A.favs.map((f,i)=>`<button class="fv" data-act="fav" data-i="${i}" aria-pressed="${!!(A.start&&hav(A.start,f.p)<30)}">${esc(f.name)}${mode==="ab"?`<span class="to" data-act="x-favend" data-i="${i}" title="Finish here">→B</span>`:""}<span class="x" data-act="favdel" data-i="${i}">×</span></button>`).join("");
+  return`<div class="setup">
+   <div class="row7"><b id="stN">${esc(startName())}</b><button class="ib7" data-act="locate" title="My location">◎</button><button class="ib7" data-act="favadd" ${A.start?"":"disabled"} title="Save this start">☆</button></div>${favs?`<div class="favs">${favs}</div>`:""}
+   ${mode!=="draw"?`<div class="dist7"><input type="range" min="1" max="30" step="0.5" value="${A.km}" id="kmR" aria-label="Distance" style="--f:${(A.km-1)/29*100}%"><b id="kmV">${A.km} km</b></div>
+   <div class="seg7">${[["session","PACE"],["easy","Easy"],["steady","Steady"],["tempo","Tempo"],["long","Long"]].filter(([v])=>v!=="session"||s).map(([v,l])=>`<button data-act="rtype" data-v="${v}" class="${ty===v?"on":""}">${l}</button>`).join("")}</div>`:""}
+   <div class="seg7">${[["loop","Loop"],["ob","Out & back"],["ab","A → B"],["draw","Draw"]].map(([k,l])=>`<button data-act="mode" data-v="${k}" class="${mode===k?"on":""}">${l}</button>`).join("")}</div>
+   ${mode==="draw"?`<div class="chips7"><button data-act="undo">Undo point</button><button data-act="dclear">Clear</button><button data-act="dloop" class="${A.drawClosed==="loop"?"on":""}">Close loop</button><button data-act="dob" class="${A.drawClosed==="ob"?"on":""}">Out & back</button></div>`
+     :mode==="ab"?`<div class="row7"><span>Finish B: ${A.end?"pinned":"not set"}</span><button class="ib7 ${A.endPick?"on":""}" data-act="x-endpick" title="Pick on map">⌖</button></div>`
+     :`<div class="chips7">${A.via.map((v,i)=>`<button data-act="viadel" data-i="${i}">${i+1} · ${esc(v.name||"Via")} ×</button>`).join("")}${A.via.length<3?`<button data-act="viaadd" class="${A.viaPick?"on":""}">+ Pass through a place</button>`:""}</div>`}</div>`}
+function renderLeft(){const sy=$("#sync");if(sy)sy.innerHTML=syncHTML();const s=sess(),k0=kipx();if(!A.kmTouched&&!A.busy){if(s&&rType()==="session")A.km=clamp(Math.round(s.km*2)/2,1,30);else if(!s&&A.runType==="auto"&&k0)A.km=clamp(k0.km,1,30)}
+  runHour();const ty=rType(),mode=A.mode==="laps"?"loop":A.mode,P=pz(),W=weekDays()[A.day]||weekDays()[0],dname=A.day===0?"Today":DN[W.d.getDay()]+" "+W.d.getDate(),rt=A.sel;
+  const detail=s&&ty==="session"?(s.detail?s.detail.replace(/\{(\w+)\}/g,(m,z)=>fmtT(P[z==="racePace"?"race":z]||P.easy)+"/km"):"Run it by feel."):k0?`Kip suggests ${TL[k0.type]} ${k0.km} km`:"Free run";
+  const title=s&&ty==="session"?s.title:TL[ty]?TL[ty]+" run":"Run";
+  const pills=`<div class="pills7" data-act="x-setup"><span><small>Start</small>${esc(startName()).split(",")[0]}</span><span><small>Shape</small>${{loop:"Loop",ob:"Out & back",ab:"A → B",draw:"Draw"}[mode]}</span><span><small>Distance</small>${A.km} km</span><span class="chev">${A.setup?"▴":"▾"}</span></div>`;
+  const notes=[];if(s&&A.pace?.rec!=null&&A.pace.rec<34&&A.day===0)notes.push(`Recovery ${A.pace.rec}: cut to ${r1(s.km*.8)} km, all easy.`);if(painNow()>=3)notes.push(`Shin/knee ${painNow()}/10: flat promenades only.`);
+  const routes=A.options.length&&mode!=="draw"?`<div class="lbl7">Routes <span>hover to preview</span></div><div class="rc7g">${A.options.map((o,i)=>`<button class="rc7 ${o===rt?"on":""}" data-act="opt" data-i="${i}"><small>${o.label} · ${esc(o.persL||"Route")}</small><b>${fmtT(predict(o).t)}</b>${miniR(o)}</button>`).join("")}</div>`:"";
+  const acts=rt?`<button class="full7" data-act="x-slide" data-v="analysis">Full analysis <span>briefing · km plan · heat · compare · DNA · ghost ›</span></button>
+    <div class="edit7"><button data-act="x-minus" ${!rt.wps||A.editing?"disabled":""}>−1 km</button><button data-act="x-plus" ${!rt.wps||A.editing?"disabled":""}>+1 km</button><button data-act="x-avoid" class="${A.avoidPick?"on":""}" ${!rt.wps||A.editing?"disabled":""}>Avoid</button><button data-act="x-undo" ${A.hist.length?"":"disabled"}>↶</button><button data-act="x-redo" ${A.fut.length?"":"disabled"}>↷</button></div>
+    ${A.avoidPick?`<p class="note7">Click the road on the map you want to avoid.</p>`:""}
+    <div class="acts7"><button data-act="save">${rt.saved?"Saved ✓":"Save"}</button><button data-act="x-planday">${A.weekPlan[selDate()]?.id===rt.id?"✓ "+dayWord():"Use for "+dayWord().toLowerCase()}</button><button class="p" data-act="send">Send to PACE</button></div>`:"";
+  $("#P1").innerHTML=`<div class="ses7"><span>${dname} · ${HL(A.hour)}</span><b>${esc(title)} · ${A.km} km</b><em>${esc(detail)}</em>${notes.length?`<em class="warn">${esc(notes.join(" "))}</em>`:""}</div>
+   ${pills}${A.setup?setupHTML(mode,ty,s):""}
+   ${mode!=="draw"?`<button class="btn7" data-act="${s&&ty==="session"?"buildToday":"build"}" ${A.busy||A.planning?"disabled":""}>${A.busy?"Scouting…":rt?"Find new routes":"Find routes"}</button>`:""}
+   <div id="hero7">${heroHTML(rt)}</div>${routes}${acts}
+   <div class="links7"><button data-act="x-slide" data-v="library">Your routes · ${A.routes.length}</button><button data-act="x-where">Spots ≤ 45 min</button></div>`;
+  fillRings($("#P1"));countUp($("#hero7"));
+  $("#TL").innerHTML=timelineHTML();
+  const sl=$("#P2w");if(sl){sl.classList.toggle("open",!!A.slide);document.body.classList.toggle("slide7",!!A.slide);if(A.slide)$("#P2").innerHTML=slideHTML()}
+  const r=$("#kmR");if(r)r.oninput=e=>{A.km=+e.target.value;A.kmTouched=true;$("#kmV").textContent=A.km+" km";r.style.setProperty("--f",(A.km-1)/29*100+"%")};
+  const ls=$("#libS");if(ls)ls.onchange=e=>{A.libS=e.target.value;renderLeft()};
+  const n=$("#rname");if(n&&A.sel)n.onchange=e=>{A.sel.name=e.target.value.trim().slice(0,60)||A.sel.name;if(A.sel.saved)saveSel()};
+  const sv=$("#prof");if(sv&&A.sel){const rt3=A.sel;sv.style.width="100%";sv.style.height="auto";sv.onmousemove=e=>{const b=sv.getBoundingClientRect(),m=clamp(((e.clientX-b.left)*(PG.W/b.width)-PG.pl)/PG.iw,0,1)*rt3.dist;profHover(m)};sv.onmouseleave=()=>profHover(null)}
+  renderTools();drawEnd()}
+function slideHTML(){const v=A.slide,close=`<button class="x7" data-act="x-close" title="Close">×</button>`;
+  if(v==="library")return`<div class="sh7"><b>Your routes</b>${close}</div>${libHTML()}`;
+  if(v==="spots")return`<div class="sh7"><b>Where should I run?</b>${close}</div>${spotsHTML6().replace(/<div class="lb"><span>Where should I run\?<\/span><button class="lnk" data-act="x-back">← Back to routes<\/button><\/div>/,"")}`;
+  const rt=A.sel;if(!rt)return`<div class="sh7"><b>Analysis</b>${close}</div><p class="note7">Find routes first.</p>`;
+  const ck=checklist(rt),bc=briefing(rt),lr=dnaLearn(),dm=dnaMatch(rt,lr),g=ghostFor(rt),pr=predict(rt),km=effD(rt)/1000,r=A.rate[rt.id],ef=effort(rt);
+  return`<div class="sh7"><div><small>${rt.label||""} · ${esc(rt.persL||"Route")}</small><input id="rname" value="${esc(rt.name)}" aria-label="Route name"></div>${close}</div>
+  <div class="sec7"><h3>Kip's briefing <span>${ck.done}/${ck.I.length} ready</span></h3><div class="kip7"><i>K</i><div><b>${rt.pers==="best"?"Go with "+(rt.label||"this"):(rt.label||"This")+" for "+(rt.persL||"").toLowerCase()}.</b> ${esc(kipReason(rt))}</div></div>
+   <div class="brief">${bc.map(([k,t])=>`<div><span>${k}</span><p>${esc(t)}</p></div>`).join("")}</div>
+   <div class="check">${ck.I.map(([k,l])=>`<button data-act="x-check" data-k="${k}" class="${ck.c[k]?"on":""}"><i>${ck.c[k]?"✓":""}</i>${esc(l)}</button>`).join("")}</div></div>
+  <div class="sec7"><h3>Km by km <span>effort ${ef.tr} · recovery ${ef.recH} h</span></h3>${kmTable(rt)}<div class="profw" id="profw">${profSvg(rt,360)}</div></div>
+  <div class="sec7"><h3>Heat & air <span>tap a time</span></h3>${airHTML()}</div>
+  ${A.options.length>1?`<div class="sec7"><h3>Compare <span>green = best</span></h3>${radarHTML()}${cmpHTML()}</div>`:""}
+  <div class="sec7"><h3>Route DNA <span>${dnaCode(dnaOf(rt))}</span></h3>${dnaStrip(dnaOf(rt),true)}<div class="dnal">${DNAK.map(([k,l,c])=>`<span style="--c:${c}">${l}</span>`).join("")}</div>
+   <p class="note7">${lr.ok?`${dm!=null?`<b>${r0(dm*100)}% match</b> with the routes you run best on. `:""}${lr.ins.length?lr.ins.map(x=>`You run better with ${x.d>0?"more":"less"} ${x.l.toLowerCase()}`).join("; ")+(lr.gap?` (about ${r0(lr.gap)} s/km faster).`:"."):"No strong pattern yet."}`:`Learning: ${lr.n}/3 routes with runs or ratings.`}</p></div>
+  <div class="sec7"><h3>Ghost runner <span id="ghLive">${g?fmtT(g.pace*km)+" ghost":"no ghost yet"}</span></h3><p class="note7">${g?`Ghost runs ${fmtT(g.pace)}/km (${esc(g.src)}). Plan ${fmtT(pr.t)}: ${pr.t<g.pace*km?fmtT(g.pace*km-pr.t)+" ahead":fmtT(pr.t-g.pace*km)+" behind"}.`:"Log a run on a saved route of about this distance in PACE and it becomes your ghost."}</p><button class="bt7" id="ghBtn" data-act="x-ghost">${GH?"■ Stop":"▶ "+(g?"Race the ghost":"Play the plan")}</button></div>
+  <div class="sec7"><h3>Ran it? Rate it <span>teaches Atlas</span></h3><div class="rate6"><button data-act="x-rate" data-v="1" class="${r?.up===true?"on":""}">👍</button><button data-act="x-rate" data-v="0" class="${r?.up===false?"on":""}">👎</button></div>${r?`<div class="chips7">${(r.up?TAGS_UP:TAGS_DN).map(t2=>`<button data-act="x-tag" data-t="${esc(t2)}" class="${r.tags.includes(t2)?"on":""}">${t2}</button>`).join("")}</div>`:""}</div>`}
+function rightHTML(){return""}function renderRight(){renderLeft()}function renderAll(){renderLeft()}
+function updScout(){paintHero(null)}
+function PADS(){const a=16+400+(A.slide?436:0)+40;return{paddingTopLeft:[a,($("#TL")?.offsetHeight||100)+50],paddingBottomRight:[60,60]}}
+async function whereRun(){A.slide="spots";renderLeft();await whereRun_a6();A.view="routes";A.slide="spots";renderLeft()}
+
+/* ---------- actions ---------- */
+document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(!t)return;const a=t.dataset.act;
+  const X={"x-setup":()=>{A.setup=!A.setup;renderLeft()},"x-slide":()=>{A.slide=A.slide===t.dataset.v?null:t.dataset.v;renderLeft();if(A.sel)map.fitBounds(L.latLngBounds(A.sel.coords),{...PADS(),maxZoom:16})},
+    "x-close":()=>{A.slide=null;renderLeft()},"x-spot":()=>{A.slide=null},
+    "x-slot":()=>{A.day=+t.dataset.d;A.hour=+t.dataset.h;A.hourTouched=true;A.runType="auto";A.kmTouched=false;A.options.forEach(o=>{o.sc=score(o,A.km*1000);o.disp=dispOf(o)});renderLeft();if(A.sel)drawGL(false)}};
+  if(X[a])X[a]()});
+document.addEventListener("mouseover",e=>{const c=e.target.closest?.(".rc7");if(!c||c===GL7.hov)return;GL7.hov=c;const o=A.options[+c.dataset.i];if(o){paintHero(o);hoverRoute(o)}});
+document.addEventListener("mouseout",e=>{const c=e.target.closest?.(".rc7");if(!c||c.contains(e.relatedTarget))return;GL7.hov=null;paintHero(A.sel);hoverRoute(null)});
+document.addEventListener("keydown",e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if(e.key==="Escape"&&A.slide){A.slide=null;renderLeft()}});
+
+function zonesOf(rt){const D=rt.finishM||rt.dist,Z=planZones(D);if(rt.dist>D+1)Z.push({a:D,b:rt.dist,z:"easy"});return Z}
 
 /* ================= boot ================= */
 readHash();initMap();applyPanels();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
