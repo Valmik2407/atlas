@@ -1680,7 +1680,7 @@ async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: s
     A.scout.phase="Measuring climbs";updScout();await addElevAll(cand);cand.forEach(r=>r.sc=score(r,D));cand.sort((a,b)=>b.sc-a.sc);
     A.scout.phase="Dialling in the exact distance";updScout();A.snapR=140;
     const inR=r=>r.dist>=D-100&&r.dist<=D+1500,TO=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r(null),ms))]);
-    const ref=await Promise.all(cand.map(async r=>{if(inR(r))return r;const n=await TO(refine(r,D).catch(()=>null),15000);if(!n||n===r)return r;n.sc=score(n,D);return inR(n)&&n.sc>=r.sc-4?n:r}));A.snapOn=false;A.snapR=0;
+    const ref=await Promise.all(cand.map(async r=>{if(inR(r))return r;const n=await TO(refine(r,D).catch(()=>null),25000);if(!n||n===r)return r;n.sc=score(n,D);return inR(n)&&n.sc>=r.sc-4?n:r}));A.snapOn=false;A.snapR=0;
     ref.forEach(r=>{finishAt(r,D);r.sc=score(r,D);r.disp=dispOf(r)});
     const ok=ref.filter(inR),P0=ok.length>=3?ok:ref,fin=[];
     for(const[k,l,f]of PERS){const rest=P0.filter(r=>!fin.includes(r));if(!rest.length)break;const top=fin[0]?.sc??Math.max(...rest.map(r=>r.sc));
@@ -1870,9 +1870,9 @@ async function osrm(pts){const dark=isDark();let err;
 
 /* ================= Atlas 7 · Oura look · plum map · slide-out analysis · motion ================= */
 {if(!LS.get("a7mig",false)){LS.set("a7mig",true);LS.set("mstyle","plum")}}
-const Z7={easy:"#c9b6ff",steady:"#8fb8ff",tempo:"#ffb38a",int:"#ff8fb1",race:"#ffd36e"};Object.assign(ZC,Z7);
+const Z7={easy:"#7ce0c3",steady:"#8fd0ff",tempo:"#ffb38a",int:"#ff8fb1",race:"#ffd36e"};Object.assign(ZC,Z7);
 A.slide=null;A.setup=false;
-TONES.plum={bg:"#110c21",lc:"#140f27",park:"#15283a",water:"#0b0a28",bld:"#211a3b",bldo:"#2a2148",minor:"#2b2347",res:"#312951",ter:"#4b4073",sec:"#5f5193",pri:"#7565ad",mw:"#8b79c4",cas:"#0a0716",foot:"#2a5163",rail:"#271e44",txt:"#c3b8e6",halo:"#110c21",place:"#f1eaff",poi:"#b3a6e0",poiH:"#110c21",ext:["#211a3b","#2d2452"],b3:["#211a3b","#2d2452"],run:"#7ce0c3"};
+TONES.plum={bg:"#110c21",lc:"#140f27",park:"#15283a",water:"#0b0a28",bld:"#211a3b",bldo:"#2a2148",minor:"#2b2347",res:"#312951",ter:"#4b4073",sec:"#5f5193",pri:"#7565ad",mw:"#8b79c4",cas:"#0a0716",foot:"#2a5163",rail:"#271e44",txt:"#c3b8e6",halo:"#110c21",place:"#f1eaff",poi:"#b3a6e0",poiH:"#110c21",ext:["#211a3b","#2d2452"],b3:["#211a3b","#2d2452"],run:"#d9ccff"};
 function toneStyle(base,k){const s=toneStyle_a6(base,k),t=TONES[k]||TONES.plum;
   for(const l of s.layers){if(l.type!=="symbol")continue;const id=l.id,lay=l.layout=l.layout||{},p=l.paint=l.paint||{};
     if(/^poi-/.test(id)){l.minzoom=12.5;lay["text-size"]=["interpolate",["linear"],["zoom"],12.5,10,14,11.5,16,13,18,15];lay["icon-size"]=["interpolate",["linear"],["zoom"],12.5,.45,16,.8,18,1];lay["text-padding"]=1;lay["symbol-sort-key"]=["case",["has","name"],0,1]}
@@ -1899,9 +1899,9 @@ function ensureGL(){if(typeof gl==="undefined"||!gl||!gl.isStyleLoaded())return 
   const lay={"line-cap":"round","line-join":"round"};
   if(!gl.getLayer("r7alt"))gl.addLayer({id:"r7alt",type:"line",source:"r7alt",layout:lay,paint:{"line-color":"#b7a9e6","line-width":2.5,"line-opacity":.42}});
   if(!gl.getLayer("r7hov"))gl.addLayer({id:"r7hov",type:"line",source:"r7hov",layout:lay,paint:{"line-color":"#f4eeff","line-width":4,"line-opacity":.9}});
-  if(!gl.getLayer("r7glow"))gl.addLayer({id:"r7glow",type:"line",source:"r7",layout:lay,paint:{"line-width":24,"line-blur":16,"line-opacity":.55,"line-color":Z7.easy}});
+  if(!gl.getLayer("r7glow"))gl.addLayer({id:"r7glow",type:"line",source:"r7",layout:lay,paint:{"line-width":26,"line-blur":16,"line-opacity":.7,"line-color":Z7.easy}});
   if(!gl.getLayer("r7case"))gl.addLayer({id:"r7case",type:"line",source:"r7",layout:lay,paint:{"line-width":9,"line-color":"#0a0716","line-opacity":.6}});
-  if(!gl.getLayer("r7line"))gl.addLayer({id:"r7line",type:"line",source:"r7",layout:lay,paint:{"line-width":5,"line-color":Z7.easy}});
+  if(!gl.getLayer("r7line"))gl.addLayer({id:"r7line",type:"line",source:"r7",layout:lay,paint:{"line-width":6,"line-color":Z7.easy}});
   if(!gl.getLayer("rtn")&&gl.getStyle().glyphs)gl.addLayer({id:"rtn",type:"symbol",source:"rtn",layout:{"text-field":["get","n"],"text-size":11.5,"text-offset":[0,1.15],"text-anchor":"top","text-font":["noto_sans_bold"],"text-optional":true,"text-max-width":9},paint:{"text-color":"#fff4e8","text-halo-color":"#110c21","text-halo-width":1.8}});
   return true}catch(e){return false}}
 function drawGL(reveal){if(!ensureGL())return;const rt=A.sel;cancelAnimationFrame(GL7.anim);
