@@ -2244,7 +2244,7 @@ async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: t
     await Promise.race([popP,sleep(6000)]);
     const near=res.filter(r=>Math.abs(r.dist-D)/D<=.15),pool=near.length?near:res;pool.forEach(r=>analyse(r,ar));pool.forEach(r=>r.sc=score(r,D));pool.sort((a,b)=>b.sc-a.sc);
     const isClean=r=>r.laneM==null||r.laneM<=250,distinct=(L2,n,t=.6)=>{const o=[];for(const r of L2){if(o.length>=n)break;if(o.every(p=>overlap(r,p)<t&&overlap(p,r)<t))o.push(r)}return o};
-    if(distinct(pool.filter(isClean),10).length<8&&A.mode!=="ab"&&!A.via.length){const base0=pool.filter(isClean).length?pool.filter(isClean):pool,seeds=distinct(base0,5),jobs2=[];
+    if(distinct(pool.filter(isClean),10).length<8&&A.mode!=="ab"&&!A.via.length){const seeds=distinct([...pool.filter(isClean),...pool.filter(r=>!isClean(r))],5),jobs2=[];
       for(const r of seeds)for(const d of[-26,0,26])jobs2.push(()=>(A.mode==="ob"?obAt:r.shape==="long"?longAt:loopAt)(S,((r.bear||0)+d+360)%360,D*(1.03+Math.random()*.06)));
       A.scout.total+=jobs2.length;A.scout.phase="Second wave on the best roads";updScout();
       const r2=(await run(jobs2)).filter(r=>r.status==="fulfilled"&&r.value&&r.value.coords?.length>1&&Math.abs(r.value.dist-D)/D<=.15).map(r=>r.value);
@@ -2259,7 +2259,7 @@ async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: t
     for(const[k,l,f]of PERS8){const rest=P0.filter(r=>!fin.includes(r));if(!rest.length)break;const top=fin[0]?.sc??Math.max(...rest.map(r=>r.sc));
       const pool2=rest.filter(r=>r.sc>=top-32);if(!pool2.length&&fin.length>=3)continue;const by=(L2)=>L2.slice().sort((a,b)=>k==="best"?b.sc-a.sc:f(b)-f(a)||b.sc-a.sc)[0];
       const o=by(pool2.filter(r=>fin.every(p=>overlap(r,p)<.55)))||by(pool2)||by(rest);o.pers=k;o.persL=l;fin.push(o)}
-    for(const L3 of[P0,ref.filter(near2)])for(const r of L3.slice().sort((a,b)=>b.sc-a.sc)){if(fin.length>=8)break;if(!fin.includes(r)&&r.sc>=fin[0].sc-60&&fin.every(p=>overlap(r,p)<.82)){r.pers="alt";r.persL="Also good";fin.push(r)}}
+    for(const L3 of[P0,ref.filter(near2)])for(const r of L3.slice().sort((a,b)=>b.sc-a.sc)){if(fin.length>=8)break;if(!fin.includes(r)&&r.sc>=fin[0].sc-60&&fin.every(p=>overlap(r,p)<.82)){r.pers="alt";r.persL="Another option";fin.push(r)}}
     A._dbg={res:res.length,near:near.length,pool:pool.length,clean:clean.length,cand:cand.length,ok:ok.length,fin:fin.length,sc:ref.map(r=>r.sc|0)};fin.forEach((r,i)=>{r.label="ABCDEFGH"[i];r.rank=i+1});
     const seen={};fin.forEach(r=>{r.name=r.name||nameOf(r);if(seen[r.name])r.name+=` · ${dirWord(r.bear||0)}`;seen[r.name]=1});
     popP.then(p=>{if(p?.ok&&!A.busy&&A.options===fin){fin.forEach(o=>{o.pop=popOf(o,p);o.sc=score(o,D);o.disp=dispOf(o)});renderLeft()}});A.lastBuild={n:res.length,jobs:jobs.length,s:r0((performance.now()-A.scout.t0)/1000)};A.options=fin;A.busy=false;status("");A._built=true;clearInterval(tick);scoutPulse(false);L_alts.clearLayers();selectRoute(fin[0]);requestAnimationFrame(()=>{const p=$("#P1");if(p)p.scrollTop=0});toast(`${fin.length} routes from ${res.length} scouted in ${A.lastBuild.s} s.`);
