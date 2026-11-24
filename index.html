@@ -686,8 +686,8 @@ body.slide9 #xtra9{display:none}
 #kmR9::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(201,182,255,.4),0 4px 12px rgba(0,0,0,.4);cursor:pointer}
 .kq9{display:flex;gap:6px}.kq9 button{all:unset;cursor:pointer;flex:1;text-align:center;padding:7px 0;border-radius:10px;font:700 12.5px Manrope,system-ui,sans-serif;background:rgba(255,255,255,.05);color:#c3b8e6}.kq9 button.on{background:rgba(255,196,163,.22);color:#fff}
 .lb9{font-size:12px;font-weight:800;color:#9a90c2;letter-spacing:.05em;text-transform:uppercase;margin-bottom:-6px}
-.sps9{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.sp9{all:unset;cursor:pointer;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(214,190,255,.12);display:flex;flex-direction:column;gap:2px;transition:background .2s,border-color .2s}
+.sps9{display:flex;flex-wrap:wrap;gap:8px}
+.sp9{all:unset;cursor:pointer;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(214,190,255,.14);font-size:13.5px;font-weight:600;transition:background .2s,border-color .2s}
 .sp9 b{font-size:14px}.sp9 span{font-size:11.5px;color:#9a90c2}.sp9 em{font-style:normal;font-size:11.5px;color:#ffc4a3;font-weight:700;margin-top:3px}.sp9:hover{background:rgba(255,255,255,.08)}.sp9.on{border-color:rgba(255,196,163,.7);background:rgba(255,196,163,.1)}
 .wn9{font-size:12.5px;color:#ffc4a3;margin-top:-4px}
 /* step 3 */
@@ -744,6 +744,24 @@ body.slide9 #xtra9{display:none}
 .fs9w{overflow-y:auto}.fs9w div{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}.fs9w span{color:#b9afdc}
 .p7 .hd7{justify-content:flex-start!important;text-align:left}
 .ft9{position:sticky;bottom:-24px;margin:auto -24px -24px;padding:14px 24px 20px;background:linear-gradient(180deg,rgba(16,11,36,0),#100b24 30%);z-index:3}
+
+.spq9{position:relative;margin-top:10px}
+#spq9{width:100%;box-sizing:border-box;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(214,190,255,.14);color:inherit;font:inherit;font-size:13.5px;outline:none}
+#spq9:focus{border-color:rgba(255,196,163,.6);background:rgba(255,255,255,.07)}
+#spr9{display:flex;flex-direction:column;gap:2px;margin-top:6px}#spr9:empty{display:none}
+#spr9 button{all:unset;cursor:pointer;padding:9px 12px;border-radius:12px;display:flex;flex-direction:column;gap:1px}
+#spr9 button:hover,#spr9 button:first-child{background:rgba(255,255,255,.06)}
+#spr9 b{font-size:13.5px}#spr9 span{font-size:11.5px;color:#9a90c2}#spr9 p{margin:4px 12px;font-size:12px;color:#9a90c2}
+#spr9.ld::after{content:"Searching…";font-size:11.5px;color:#9a90c2;padding:4px 12px}
+
+.lb9 i{font-style:normal;color:#9a90c2;font-weight:500;margin-left:6px;text-transform:none;letter-spacing:0}
+.sp9.rc{background:rgba(255,196,163,.06)}.sp9.ot{border-style:dashed;color:#cfc4f2}
+.sp9.on{background:rgba(255,196,163,.16)!important;border-color:rgba(255,196,163,.7)!important;color:#fff}
+.spx9{display:flex;align-items:center;gap:12px;margin-top:10px;padding:11px 14px;border-radius:14px;background:rgba(124,224,195,.07);border:1px solid rgba(124,224,195,.25)}
+.spx9 i{width:10px;height:10px;border-radius:50%;background:#7ce0c3;box-shadow:0 0 0 4px rgba(124,224,195,.18);flex:none}
+.spx9>div{flex:1;min-width:0;display:flex;flex-direction:column}.spx9 b{font-size:13.5px}.spx9 span{font-size:11.5px;color:#9a90c2}
+.spx9 button{all:unset;cursor:pointer;color:#9a90c2;padding:4px 6px;border-radius:8px}.spx9 button:hover{color:#fff;background:rgba(255,255,255,.08)}
+.spq9.open #spq9{border-color:rgba(255,196,163,.55)}
 </style></head><body>
 <div id="gl" aria-hidden="true"></div><div id="map" role="application" aria-label="Map"></div>
 <aside class="p7" aria-label="Plan a run"><div class="hd7"><div class="logo7"><b>Atlas</b><span class="sync" id="sync"></span></div>
@@ -2648,7 +2666,7 @@ function renderTools(){const ms=A.mapStyle==="slate"?"plum":A.mapStyle;document.
 /* ================= Atlas 9 · step flow (When → Where → Pick → Go), correct mapping, real previews ================= */
 A.step=A.options?.length?3:1;A.atab="overview";A.full=false;A.shapeSel=A.mode==="ab"?"ab":A.mode==="ob"?"ob":"loop";
 const NOGO9=[[[72.855,19.084],[72.880,19.084],[72.880,19.102],[72.855,19.102],[72.855,19.084]]];
-const SPOTS9=[{k:"juhu",n:"Juhu Beach",s:"Juhu Tara Rd · beach",p:[19.0988,72.8267]},{k:"bandra",n:"Bandra · Carter Rd",s:"Carter Rd + Bandstand",p:[19.0668,72.8221]},{k:"powai",n:"Powai Lake",s:"Adi Shankaracharya Marg",p:[19.1239,72.9026]},{k:"sobo",n:"South Bombay",s:"Marine Drive",p:[18.9440,72.8235]}];
+const SPOTS9=[{k:"juhu",sn:"Juhu",n:"Juhu Beach",s:"Juhu Tara Rd · beach",p:[19.0988,72.8267]},{k:"bandra",sn:"Bandra",n:"Bandra · Carter Rd",s:"Carter Rd + Bandstand",p:[19.0640,72.8224]},{k:"powai",sn:"Powai",n:"Powai Lake",s:"Adi Shankaracharya Marg",p:[19.1205,72.9033]},{k:"sobo",sn:"South Bombay",n:"South Bombay",s:"Marine Drive",p:[18.9440,72.8235]}];
 const sh9=n=>String(n||"").replace(/\s*\(.*?\)/g,"").replace(/ Road\b/g," Rd").replace(/ Marg\b/g," Mg").replace(/Mathuradas Vasanji/,"MV");
 const roads9=o=>{const r=topRoads(o,3);return r.length?r.map(sh9).join(" → "):sh9(o.name)};
 
@@ -2762,15 +2780,22 @@ function step1(){const W=weekDays(),s=sess(),ty=rType(),P=pz(),k0=kipx(),title=s
 
 /* ---------- step 2 · Where ---------- */
 function step2(){const sl=A.shapeSel,S=A.start,home=A.favs.find(f=>/home/i.test(f.name)),isHome=home&&S&&hav(home.p,S)<80;
-  const spot=x=>{const cab=S?cabMin(x.p):null,d=S?r1(hav(S,x.p)/1000):"–",sel=sl==="ab"?A.end&&hav(A.end,x.p)<300:S&&hav(S,x.p)<300;
-    return`<button class="sp9 ${sel?"on":""}" data-act="x-spot9" data-k="${x.k}"><b>${x.n}</b><span>${x.s}</span><em>${sl==="ab"?`finish here · ${d} km away`:`cab ${cab} min · run there`}</em></button>`};
+  const isSel=p=>p&&(sl==="ab"?A.end&&hav(A.end,p)<300:S&&hav(S,p)<300),ar=AREA9.find(x=>x.k===A.spotArea),sx=A.spotX&&isSel(A.spotX.p)?A.spotX:null;
+  const rec=(LS.get("spotRec9",[])||[]).filter(r=>!SPOTS9.some(x=>hav(x.p,r.p)<400)).slice(0,3);
+  const chips=[...SPOTS9.map(x=>`<button class="sp9 ${A.spotArea===x.k?"on":""}" data-act="x-spot9" data-k="${x.k}">${x.sn}</button>`),
+    ...rec.map((r,i)=>`<button class="sp9 rc ${!A.spotArea&&isSel(r.p)?"on":""}" data-act="x-spotr9" data-i="${i}">${esc(r.n)}</button>`),
+    `<button class="sp9 ot ${A.spotArea==="other"?"on":""}" data-act="x-spoto9">Somewhere else</button>`].join("");
+  const ph=ar?`Where in ${ar.n}? e.g. ${ar.eg}`:sl==="ab"?"Type where you want to finish…":"Type where you want to run…";
+  const spot=x=>`<button class="sp9 ${isSel(x.p)?"on":""}" data-act="x-spot9" data-k="${x.k}">${x.sn}</button>`;
   return`<div class="h9"><small>STEP 2 OF 4 · WHERE</small><h2>Where are you running?</h2></div>
   <div class="st9"><div class="pin9"></div><div><small>START</small><b>${esc(isHome?"Home":sh9(startName().split(",")[0]))}</b><span>${isHome?esc(startName().split(",")[0]):home?"Not home":"Tap ★ to save as home"}</span></div>
    <div class="sa9">${home&&!isHome?`<button data-act="x-home9">Home</button>`:""}<button data-act="x-loc9">My location</button>${!isHome?`<button data-act="x-sethome9" title="Save as home">★</button>`:""}</div></div>
   <div class="srch9" id="tell8"></div>
   <div class="seg9">${[["loop","Loop"],["ob","Out & back"],["ab","One-way"]].map(([k,l])=>`<button class="${sl===k?"on":""}" data-act="x-shape9" data-v="${k}">${l}</button>`).join("")}</div>
+  <div class="lb9">${sl==="ab"?"Finish at <i>cab home after</i>":"Run from somewhere else <i>cab there</i>"}</div><div class="sps9">${chips}</div>
+  <div class="spq9 ${ar||A.spotArea==="other"?"open":""}"><input id="spq9" type="text" autocomplete="off" spellcheck="false" placeholder="${esc(ph)}"><div id="spr9"></div></div>
+  ${sx?`<div class="spx9"><i></i><div><b>${esc(sx.n)}</b><span>${sx.sub?esc(sx.sub)+" · ":""}${S&&sl==="ab"?r1(hav(S,sx.p)/1000)+" km away":"cab about "+cabMin(sx.p)+" min"}</span></div><button data-act="x-spotclr9" title="Clear">✕</button></div>`:""}
   <div class="km9"><div><b id="kmV9">${A.km} km</b><span>${sl==="ab"?"from start to finish":sl==="ob"?"there and back":"back to the start"}</span></div><input type="range" id="kmR9" min="1" max="30" step="0.5" value="${A.km}" style="--f:${(A.km-1)/29*100}%"><div class="kq9">${[5,8,10,12,15,21].map(k=>`<button data-act="x-km9" data-v="${k}" class="${A.km==k?"on":""}">${k}</button>`).join("")}</div></div>
-  <div class="lb9">${sl==="ab"?"Finish at a spot (cab home after)":"Or cab to a spot and run there"}</div><div class="sps9">${SPOTS9.map(spot).join("")}</div>
   ${sl==="ab"&&A.end&&S&&hav(S,A.end)/1000>A.km*.95?`<p class="wn9">That finish is ${r1(hav(S,A.end)/1000)} km away in a straight line. Make the run longer or pick a closer spot.</p>`:""}
   <div class="ft9"><button class="bk9" data-act="x-step" data-v="1">← When</button><button class="go9" data-act="${sess()&&rType()==="session"?"buildToday":"build"}" ${A.busy?"disabled":""}>Find routes →</button></div>`}
 
@@ -2848,6 +2873,7 @@ function renderLeft(){ensure9();const sy=$("#sync");if(sy)sy.innerHTML=syncHTML(
   const P1=$("#P1"),sc=P1.scrollTop,prevStep=P1.dataset.step;P1.dataset.step=A.step;
   P1.innerHTML=[0,step1,step2,step3,step4][A.step]()+(A.wp?wpHTML():"");if(String(prevStep)===String(A.step))P1.scrollTop=sc;else P1.scrollTop=0;
   const slot=$("#tell8");if(sn){if(slot){slot.appendChild(sn);sn.hidden=false;if(foc){const i=sn.querySelector("input");i.focus();try{i.setSelectionRange(...sel0)}catch(e){}}}else{document.querySelector(".hd7")?.appendChild(sn);sn.hidden=true}}
+  const q9=$("#spq9");if(q9){if(A._spFocus){A._spFocus=false;setTimeout(()=>{q9.focus();q9.scrollIntoView({block:"center",behavior:"smooth"})},30)}q9.onfocus=()=>setTimeout(()=>q9.scrollIntoView({block:"center",behavior:"smooth"}),50);q9.oninput=()=>spotQ9(q9.value);q9.onkeydown=e=>{if(e.key==="Enter"){const b=$("#spr9 button");if(b)b.click()}else if(e.key==="Escape"){q9.value="";$("#spr9").innerHTML=""}}}
   const r=$("#kmR9");if(r)r.oninput=e=>{A.km=+e.target.value;A.kmTouched=true;$("#kmV9").textContent=A.km+" km";r.style.setProperty("--f",(A.km-1)/29*100+"%");$("#stepbar").innerHTML=stepBar()};
   const sl=$("#P2w");if(sl){sl.classList.toggle("open",!!A.slide);document.body.classList.toggle("slide9",!!A.slide);if(A.slide){const k=anKey();if(k!==AN9K.k||A.slide==="insights"||A.slide==="library"||A.slide==="spots"){AN9K.k=k;$("#P2").innerHTML=slideHTML();fillRings($("#P2"))}}}
   const n=$("#rname");if(n&&A.sel)n.onchange=e=>{A.sel.name=e.target.value.trim().slice(0,60)||A.sel.name;if(A.sel.saved)saveSel()};
@@ -2867,7 +2893,11 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(
   const X={"x-step":()=>{const v=+t.dataset.v;if(v===3&&!A.options.length)return;if(v===4&&!A.sel)return;A.step=v;if(A.full)setFull(false);renderLeft();if(v===3&&A.sel)map.fitBounds(L.latLngBounds(A.sel.coords),{...PADS(),maxZoom:16,duration:400})},
     "x-shape9":()=>{const v=t.dataset.v;A.shapeSel=v;setMode(v==="ab"?"ab":v==="ob"?"ob":"loop",true);if(v!=="ab"){A.end=null;LS.set("end",null);drawEnd()}renderLeft()},
     "x-km9":()=>{A.km=+t.dataset.v;A.kmTouched=true;renderLeft()},
-    "x-spot9":()=>{const x=SPOTS9.find(s=>s.k===t.dataset.k);if(!x)return;if(A.shapeSel==="ab"){A.end=x.p;LS.set("end",x.p);drawEnd();toast(`Finishing at ${x.n}. Cab home after.`)}else{setStart(x.p,false);toast(`Starting at ${x.n} (cab about ${cabMin(x.p)} min).`)}map.fitBounds(L.latLngBounds([A.start,x.p]),{...PADS(),maxZoom:14,duration:500});renderLeft()},
+    "x-spot9":()=>{const ar=AREA9.find(x=>x.k===t.dataset.k);if(!ar)return;A.spotArea=ar.k;A._spFocus=true;pickSpot9(ar.best,ar.p,`Best running spot in ${ar.n}`)},
+    "x-spotr9":()=>{const r=(LS.get("spotRec9",[])||[]).filter(r=>!SPOTS9.some(x=>hav(x.p,r.p)<400))[+t.dataset.i];if(r){A.spotArea=null;pickSpot9(r.n,r.p,r.sub||"")}},
+    "x-spoto9":()=>{A.spotArea=A.spotArea==="other"?null:"other";A._spFocus=A.spotArea==="other";renderLeft()},
+    "x-spotclr9":()=>{A.spotX=null;A.spotArea=null;if(A.shapeSel==="ab"){A.end=null;LS.set("end",null);drawEnd()}else{const h=A.favs.find(f=>/home/i.test(f.name));if(h)setStart(h.p,false)}renderLeft()},
+    "x-spotp9":()=>{const p=[+t.dataset.la,+t.dataset.lo],n=t.dataset.n,sub=t.dataset.s||"";const L2=(LS.get("spotRec9",[])||[]).filter(r=>hav(r.p,p)>300);L2.unshift({n,p,sub});LS.set("spotRec9",L2.slice(0,5));pickSpot9(n,p,sub)},
     "x-home9":()=>{const h=A.favs.find(f=>/home/i.test(f.name));if(h){setStart(h.p,false);map.setView(h.p,14);renderLeft()}},
     "x-sethome9":()=>{if(!A.start)return;A.favs=A.favs.filter(f=>!/home/i.test(f.name));A.favs.unshift({name:"Home",p:A.start});LS.set("favs",A.favs);toast("Saved as home.");renderLeft()},
     "x-loc9":()=>locate(),
@@ -2887,6 +2917,53 @@ function pickPois9(rt){const P=rt.pois||[],pr={water:0,toilet:1,shop:2,cafe:3,si
 
 /* one-way: the finish is the spot you picked, not a pin part-way */
 function finishAt(rt,D){rt.finishM=rt.mode!=="ab"&&rt.dist-D>100?D:null}
+
+/* places you can finish at / run from: chips + type any place */
+const AREA9=[
+  {k:"juhu",n:"Juhu",best:"Juhu Beach",p:[19.0988,72.8267],c:[19.1030,72.8300],eg:"Juhu Circle, JVPD",al:["juhu","juhu beach","juhu tara","juhu tara road"]},
+  {k:"bandra",n:"Bandra",best:"Carter Rd promenade",p:[19.0640,72.8224],c:[19.0596,72.8295],eg:"Bandstand, Carter Rd",al:["bandra","bandra west","bandra w","carter road","carter rd"]},
+  {k:"powai",n:"Powai",best:"Powai Lake",p:[19.1205,72.9033],c:[19.1197,72.9050],eg:"Hiranandani, IIT gate",al:["powai","powai lake"]},
+  {k:"sobo",n:"South Bombay",best:"Marine Drive",p:[18.9440,72.8235],c:[18.9350,72.8270],eg:"Nariman Point, Chowpatty",al:["south bombay","south mumbai","sobo","town","marine drive","churchgate"]},
+  {k:"worli",n:"Worli",best:"Worli Sea Face",p:[19.0100,72.8156],c:[19.0100,72.8180],eg:"",al:["worli","worli sea face","worli seaface"]},
+  {k:"dadar",n:"Dadar",best:"Shivaji Park",p:[19.0273,72.8384],c:[19.0200,72.8430],eg:"",al:["dadar","shivaji park","dadar west"]},
+  {k:"versova",n:"Versova",best:"Versova Beach",p:[19.1300,72.8133],c:[19.1330,72.8170],eg:"",al:["versova","versova beach"]},
+  {k:"aarey",n:"Aarey",best:"Aarey Colony",p:[19.1561,72.8707],c:[19.1561,72.8707],eg:"",al:["aarey","aarey colony","aarey milk colony"]},
+  {k:"bkc",n:"BKC",best:"Bandra Kurla Complex",p:[19.0671,72.8657],c:[19.0671,72.8657],eg:"",al:["bkc","bandra kurla complex","bandra east"]},
+  {k:"mahim",n:"Mahim",best:"Mahim Beach",p:[19.0441,72.8388],c:[19.0441,72.8388],eg:"",al:["mahim","mahim beach"]},
+  {k:"lokhandwala",n:"Lokhandwala",best:"Lokhandwala",p:[19.1431,72.8246],c:[19.1431,72.8246],eg:"",al:["lokhandwala","lokhandwala complex","andheri west"]}];
+/* named running spots, checked against OpenStreetMap */
+const PL9=[["Bandstand Promenade","bandra",[19.0505,72.8214],["bandstand","band stand"]],["Carter Rd promenade","bandra",[19.0640,72.8224],["carter road","carter rd","carter"]],["Bandra Reclamation","bandra",[19.0512,72.8326],["reclamation","bandra reclamation"]],["Joggers' Park, Bandra","bandra",[19.0596,72.8214],["joggers park","joggers"]],
+  ["Juhu Beach","juhu",[19.0988,72.8267],["juhu beach","beach"]],["Marine Drive","sobo",[18.9440,72.8235],["marine drive","queens necklace"]],["Nariman Point","sobo",[18.9271,72.8236],["nariman point","nariman"]],["Girgaon Chowpatty","sobo",[18.9540,72.8150],["chowpatty","girgaon chowpatty"]],
+  ["Oval Maidan","sobo",[18.9296,72.8289],["oval maidan","oval"]],["Gateway of India","sobo",[18.9220,72.8346],["gateway of india","gateway","colaba"]],["Priyadarshini Park","sobo",[18.9579,72.7991],["priyadarshini park","napean sea road"]],
+  ["Powai Lake","powai",[19.1205,72.9033],["powai lake","lake"]],["Hiranandani Gardens","powai",[19.1184,72.9115],["hiranandani","hiranandani gardens"]],["Worli Sea Face","worli",[19.0100,72.8156],["worli sea face","sea face"]],
+  ["Shivaji Park","dadar",[19.0273,72.8384],["shivaji park"]],["Versova Beach","versova",[19.1300,72.8133],["versova beach"]],["Mahim Beach","mahim",[19.0441,72.8388],["mahim beach"]]];
+const nz9=v=>String(v||"").toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
+function pickSpot9(n,p,sub){A.spotX={n,p,sub:sub||""};if(A.shapeSel==="ab"){A.end=p;LS.set("end",p);drawEnd();const need=A.start?Math.ceil(hav(A.start,p)/1000*1.25):0;if(need>A.km){A.km=Math.min(30,need);A.kmTouched=true;toast(`Finishing at ${n}. It is at least ${A.km} km by road, so the run is now ${A.km} km.`)}else toast(`Finishing at ${n}. Cab home after.`)}else{setStart(p,false);toast(`Starting at ${n} (cab about ${cabMin(p)} min).`)}
+  try{map.fitBounds(L.latLngBounds([A.start,p]),{...PADS(),maxZoom:14,duration:500})}catch(e){}renderLeft()}
+let SQ9=0;
+async function spotQ9(v){const box=$("#spr9");if(!box)return;v=v.trim();const my=++SQ9;if(v.length<2){box.innerHTML="";return}
+  const ar=AREA9.find(x=>x.k===A.spotArea),C=ar?ar.c:(A.start||[19.11,72.87]),q=nz9(v),R=ar?4500:40000;
+  const sc=(name,al)=>{const N=[nz9(name),...(al||[])];if(N.some(x=>x===q))return 0;if(N.some(x=>x.startsWith(q)))return 1;if(N.some(x=>x.includes(q)||q.includes(x)&&x.length>3))return 2;if(q.split(" ").every(w=>N.some(x=>x.includes(w))))return 3;return 9};
+  const row=h=>`<button data-act="x-spotp9" data-n="${esc(h.name)}" data-s="${esc(h.sub||"")}" data-la="${h.lat}" data-lo="${h.lon}"><b>${esc(h.name)}</b><span>${esc([h.sub,h.tag].filter(Boolean).join(" · "))}${A.start?` · ${r1(hav(A.start,[h.lat,h.lon])/1000)} km`:""}</span></button>`;
+  const show=(L2,more)=>{if(my!==SQ9)return;box.innerHTML=L2.slice(0,6).map(row).join("")||(more?"":`<p>No match${ar?" in "+ar.n:""}. Try another name.</p>`)};
+  /* 1. known areas and running spots: instant and exact */
+  const loc=[];for(const a of AREA9){const s=sc(a.n,a.al);if(s<9&&(!ar||a.k===ar.k))loc.push({name:a.best,sub:a.n,tag:"best for running",lat:a.p[0],lon:a.p[1],s:s-.5})}
+  for(const[n,k,p,al]of PL9){const s=sc(n,al);if(s<9&&(!ar||k===ar.k||hav(p,C)<R)&&!loc.some(o=>hav([o.lat,o.lon],p)<200))loc.push({name:n,sub:AREA9.find(a=>a.k===k)?.n||"",lat:p[0],lon:p[1],s})}
+  loc.sort((a,b)=>a.s-b.s);show(loc,true);await sleep(300);if(my!==SQ9)return;box.classList.add("ld");
+  /* 2. OpenStreetMap search, inside the area you picked (or Mumbai) */
+  const bb=ar?[C[1]-.045,C[0]-.04,C[1]+.045,C[0]+.04]:[72.75,18.88,73.15,19.35],qq=v;
+  const ph=fetchT(`https://photon.komoot.io/api/?q=${encodeURIComponent(qq)}&limit=10&lat=${C[0]}&lon=${C[1]}&location_bias_scale=${ar?0.9:0.5}&lang=en&bbox=${bb.join(",")}`,7000).then(r=>r.json()).then(j=>(j.features||[]).map(f=>{const p=f.properties,c=f.geometry.coordinates;return{name:p.name||p.street||"",sub:p.district||p.locality||p.suburb||"",ty:p.osm_value||"",lat:c[1],lon:c[0]}})).catch(()=>[]);
+  const nmQ=(b2)=>fetchT(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&addressdetails=1&q=${encodeURIComponent(qq)}&viewbox=${b2[0]},${b2[3]},${b2[2]},${b2[1]}&bounded=1`,7000,{headers:{"Accept-Language":"en"}}).then(r=>r.json()).then(j=>j.map(r=>{const a=r.address||{};return{name:r.name||(r.display_name||"").split(",")[0],sub:a.suburb||a.neighbourhood||a.city_district||"",ty:r.type||"",lat:+r.lat,lon:+r.lon}})).catch(()=>[]);
+  /* scoped search first; if nothing, widen to all of Mumbai once */
+  const nm=nmQ(bb).then(L2=>L2.length||!ar?L2:nmQ([72.75,18.88,73.15,19.35]).then(W=>W.filter(h=>hav([h.lat,h.lon],C)<9000)));
+  const[A1,B1]=await Promise.all([ph,nm]);if(my!==SQ9)return;box.classList.remove("ld");
+  const rem=[];for(const h of[...A1,...B1]){if(!h.name||!isFinite(h.lat))continue;if(ar&&hav([h.lat,h.lon],C)>9000)continue;
+    /* an area name → its best running spot, not the middle of the suburb */
+    const ma=/suburb|neighbourhood|city_district|quarter|residential|administrative/.test(h.ty)&&AREA9.find(a=>a.al.includes(nz9(h.name))||nz9(h.name).startsWith(nz9(a.n)+" "));
+    const x=ma?{name:ma.best,sub:ma.n,tag:"best for running",lat:ma.p[0],lon:ma.p[1]}:h;x.s=sc(x.name,[])+(ma?0:.2);x.d=hav([x.lat,x.lon],C);
+    if([...loc,...rem].some(o=>hav([o.lat,o.lon],[x.lat,x.lon])<150))continue;rem.push(x)}
+  rem.sort((a,b)=>a.s-b.s||a.d-b.d);const good=rem.filter(h=>h.s<9),all=[...loc,...(good.length||loc.length?good:rem)];
+  if(!A1.length&&!B1.length&&!loc.length)box.innerHTML="<p>Couldn't search right now. Check your internet and try again.</p>";else show(all)}
 
 /* ================= Atlas 9.1 · main-road graph router =================
    Builds a walkable graph from OpenStreetMap vector tiles, weighted so main roads

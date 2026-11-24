@@ -2951,16 +2951,18 @@ async function spotQ9(v){const box=$("#spr9");if(!box)return;v=v.trim();const my
   for(const[n,k,p,al]of PL9){const s=sc(n,al);if(s<9&&(!ar||k===ar.k||hav(p,C)<R)&&!loc.some(o=>hav([o.lat,o.lon],p)<200))loc.push({name:n,sub:AREA9.find(a=>a.k===k)?.n||"",lat:p[0],lon:p[1],s})}
   loc.sort((a,b)=>a.s-b.s);show(loc,true);await sleep(300);if(my!==SQ9)return;box.classList.add("ld");
   /* 2. OpenStreetMap search, inside the area you picked (or Mumbai) */
-  const bb=ar?[C[1]-.045,C[0]-.04,C[1]+.045,C[0]+.04]:[72.75,18.88,73.15,19.35],qq=ar&&!q.includes(nz9(ar.n))?v+", "+ar.n:v;
+  const bb=ar?[C[1]-.045,C[0]-.04,C[1]+.045,C[0]+.04]:[72.75,18.88,73.15,19.35],qq=v;
   const ph=fetchT(`https://photon.komoot.io/api/?q=${encodeURIComponent(qq)}&limit=10&lat=${C[0]}&lon=${C[1]}&location_bias_scale=${ar?0.9:0.5}&lang=en&bbox=${bb.join(",")}`,7000).then(r=>r.json()).then(j=>(j.features||[]).map(f=>{const p=f.properties,c=f.geometry.coordinates;return{name:p.name||p.street||"",sub:p.district||p.locality||p.suburb||"",ty:p.osm_value||"",lat:c[1],lon:c[0]}})).catch(()=>[]);
-  const nm=fetchT(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&addressdetails=1&q=${encodeURIComponent(qq)}&viewbox=${bb[0]},${bb[3]},${bb[2]},${bb[1]}&bounded=1`,7000,{headers:{"Accept-Language":"en"}}).then(r=>r.json()).then(j=>j.map(r=>{const a=r.address||{};return{name:r.name||(r.display_name||"").split(",")[0],sub:a.suburb||a.neighbourhood||a.city_district||"",ty:r.type||"",lat:+r.lat,lon:+r.lon}})).catch(()=>[]);
+  const nmQ=(b2)=>fetchT(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&addressdetails=1&q=${encodeURIComponent(qq)}&viewbox=${b2[0]},${b2[3]},${b2[2]},${b2[1]}&bounded=1`,7000,{headers:{"Accept-Language":"en"}}).then(r=>r.json()).then(j=>j.map(r=>{const a=r.address||{};return{name:r.name||(r.display_name||"").split(",")[0],sub:a.suburb||a.neighbourhood||a.city_district||"",ty:r.type||"",lat:+r.lat,lon:+r.lon}})).catch(()=>[]);
+  /* scoped search first; if nothing, widen to all of Mumbai once */
+  const nm=nmQ(bb).then(L2=>L2.length||!ar?L2:nmQ([72.75,18.88,73.15,19.35]).then(W=>W.filter(h=>hav([h.lat,h.lon],C)<9000)));
   const[A1,B1]=await Promise.all([ph,nm]);if(my!==SQ9)return;box.classList.remove("ld");
-  const rem=[];for(const h of[...A1,...B1]){if(!h.name||!isFinite(h.lat))continue;if(ar&&hav([h.lat,h.lon],C)>R)continue;
+  const rem=[];for(const h of[...A1,...B1]){if(!h.name||!isFinite(h.lat))continue;if(ar&&hav([h.lat,h.lon],C)>9000)continue;
     /* an area name → its best running spot, not the middle of the suburb */
     const ma=/suburb|neighbourhood|city_district|quarter|residential|administrative/.test(h.ty)&&AREA9.find(a=>a.al.includes(nz9(h.name))||nz9(h.name).startsWith(nz9(a.n)+" "));
     const x=ma?{name:ma.best,sub:ma.n,tag:"best for running",lat:ma.p[0],lon:ma.p[1]}:h;x.s=sc(x.name,[])+(ma?0:.2);x.d=hav([x.lat,x.lon],C);
     if([...loc,...rem].some(o=>hav([o.lat,o.lon],[x.lat,x.lon])<150))continue;rem.push(x)}
-  rem.sort((a,b)=>a.s-b.s||a.d-b.d);const all=[...loc,...rem];
+  rem.sort((a,b)=>a.s-b.s||a.d-b.d);const good=rem.filter(h=>h.s<9),all=[...loc,...(good.length||loc.length?good:rem)];
   if(!A1.length&&!B1.length&&!loc.length)box.innerHTML="<p>Couldn't search right now. Check your internet and try again.</p>";else show(all)}
 
 /* ================= Atlas 9.1 · main-road graph router =================
