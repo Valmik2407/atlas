@@ -2341,7 +2341,7 @@ async function build_a8(){if(A.busy)return;if(!A.start){toast("Set a start first
   try{const rad=clamp(Math.max(D/2.6,A.mode==="ab"?hav(S,A.end)*.7:0),900,5000);const popP=popArea(S,rad).then(p=>{A.popA=p.ok?p:A.popA;return p}).catch(()=>null);
     const ar=await loadArea(S,rad);A.snapAr=ar.ok?ar:null;A.snapOn=true;
     const bears=n=>{const o=[];for(let i=0;i<n*2&&o.length<n;i++){const b=(i*360/n+Math.random()*12-6+360)%360;if(A.exBear!=null&&Math.abs(((b-A.exBear)+540)%360-180)<50)continue;o.push(b)}if(A.exBear!=null)for(let i=0;o.length<n;i++)o.push((A.exBear+180+(i%2?1:-1)*20*Math.ceil(i/2)+360)%360);return o};
-    const jobs=A.mode==="ab"?abJobs(S,A.end,D):A.via.length?viaJobs(S,D):A.mode==="ob"?bears(14).map(b=>()=>obAt(S,b,D*1.04)):[...bears(11).map(b=>()=>loopAt(S,b,D*1.06)),...bears(5).map(b=>()=>longAt(S,b,D*1.06))];
+    const jobsV=A.mode==="ab"?abJobs(S,A.end,D):A.via.length?viaJobs(S,D):A.mode==="ob"?bears(14).map(b=>()=>obAt(S,b,D*1.04)):[...bears(11).map(b=>()=>loopAt(S,b,D*1.06)),...bears(5).map(b=>()=>longAt(S,b,D*1.06))];A.scout.phase="Mapping main roads and footpaths";updScout();const gj=A.via.length?null:await gJobs9(S,D,ar,bears).catch(e=>null);const jobs=gj&&gj.length?[...gj,...jobsV.slice(0,A.mode==="ab"?3:4)]:jobsV;
     A.scout.total=jobs.length;A.scout.phase="Runners fanning out";updScout();
     const run=L2=>Promise.allSettled(L2.map(f=>f().then(v=>{if(v&&v.coords?.length>1&&A.busy){L.polyline(v.coords,{color:"#c9b6ff",weight:2.2,opacity:.3,interactive:false,className:"scout"}).addTo(L_alts);scoutRunner(v);if(Math.abs(v.dist-D)/D<=.15)A.scout.kept++}return v}).finally(()=>{A.scout.done++;updScout()})));
     const res=(await run(jobs)).filter(r=>r.status==="fulfilled"&&r.value&&r.value.coords?.length>1).map(r=>r.value);
@@ -2749,14 +2749,14 @@ function stepBar(){const W=weekDays()[A.day]||weekDays()[0],dn=A.day===0?"Today"
 function step1(){const W=weekDays(),s=sess(),ty=rType(),P=pz(),k0=kipx(),title=s&&ty==="session"?String(s.title).replace(/\s*[·\-–,]\s*\d+(\.\d+)?\s*(k|km)\s*$/i,""):TL[ty]?TL[ty]+" run":"Run";
   const detail=s&&ty==="session"?(s.detail?s.detail.replace(/\{(\w+)\}/g,(m,z)=>fmtT(P[z==="racePace"?"race":z]||P.easy)+"/km"):""):k0?`Kip suggests ${TL[k0.type]||k0.type} ${k0.km} km: ${k0.why||""}`:"No session planned. A relaxed run is fine.";
   const bh=bestHour(A.day),vals=[];for(let h=5;h<=22;h++){const w=A.wx?hourWx(A.day,h):null;let v=w?runab(w):null;if(v!=null&&isDark(A.day,h))v-=.05;vals.push([h,v,w])}
-  const ok=vals.filter(v=>v[1]!=null).map(v=>v[1]),mn=Math.min(...ok),mx=Math.max(...ok),now=new Date().getHours(),cur=Math.floor(A.hour??19),cw=hourWx(A.day,cur),st=sunTimes(A.day);
+  const now=new Date().getHours(),ok0=vals.filter(v=>v[1]!=null&&!(A.day===0&&v[0]<now)).map(v=>v[1]),ok=ok0.length>1?ok0:vals.filter(v=>v[1]!=null).map(v=>v[1]),mn=Math.min(...ok),mx=Math.max(...ok),cur=Math.floor(A.hour??19),cw=hourWx(A.day,cur),st=sunTimes(A.day);
   const bars=vals.map(([h,v])=>{if(v==null)return`<i class="na"></i>`;const r=mx>mn?(v-mn)/(mx-mn):.5,c=r>.8?"#7ce0c3":r>.55?"#bfe8b0":r>.3?"#ffc4a3":"#ff8fa8",past=A.day===0&&h<now;
     return`<button data-act="x-slot" data-d="${A.day}" data-h="${h}" class="${h===cur?"on":""} ${bh&&h===bh.h?"best":""} ${past?"past":""}" style="--h:${22+r*78}%;--c:${c}" ${past?"disabled":""}><span>${h%3===0||h===cur?HL(h).replace(":00",""):""}</span></button>`}).join("");
   const days=W.map(x=>{const b=A.wx?bestHour(x.i):null;return`<button class="dy9 ${x.i===A.day?"on":""}" data-act="day" data-d="${x.i}"><b>${x.i===0?"Today":DN[x.d.getDay()]}</b><span>${x.d.getDate()}</span><em>${x.s?esc(shortT(x.s)):x.kx?"opt "+x.kx.km+"k":"rest"}</em>${b?`<i>${HL(b.h).replace(":00","")}</i>`:""}</button>`}).join("");
   return`<div class="h9"><small>STEP 1 OF 4 · WHEN</small><h2>When are you running?</h2></div>
   <div class="ses9"><div class="o9"></div><div><small>${s&&ty==="session"?"From PACE":"No PACE session"} · ${A.day===0?"today":DN[W[A.day].d.getDay()]}</small><b>${esc(title)} · ${A.km} km</b><p>${esc(detail)}</p></div></div>
   <div class="dys9">${days}</div>
-  <div class="hrs9"><div class="hl9"><b>Best time ${bh?HL(bh.h):"–"}</b><span>green = best hours for ${A.day===0?"today":"that day"}</span></div><div class="br9">${bars}</div>
+  <div class="hrs9"><div class="hl9"><b>Best time ${bh?HL(bh.h):"–"}</b><span>${A.day===0?"green = best of the hours left today":"green = best hours that day"}</span></div><div class="br9">${bars}</div>
    <div class="hd9"><div><b>${HL(cur)}</b><span>your time</span></div><div><b>${cw?r0(cw.feels)+"°":"–"}</b><span>feels like</span></div><div><b>${cw?.aqi??"–"}</b><span>AQI</span></div><div><b>${trafficAt(A.day,cur)}</b><span>traffic</span></div><div><b>${st?HL12(st.setS):"–"}</b><span>sunset</span></div></div></div>
   <div class="ft9"><span></span><button class="go9" data-act="x-step" data-v="2">Next · Where →</button></div>`}
 
@@ -2879,6 +2879,98 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&A.full){setFull(false)}});
 document.addEventListener("mouseover",e=>{const c=e.target.closest?.(".c9");if(!c||c===GL7.hov)return;GL7.hov=c;const o=A.options[+c.dataset.i];if(o)hoverRoute(o)});
 document.addEventListener("mouseout",e=>{const c=e.target.closest?.(".c9");if(!c||c.contains(e.relatedTarget))return;GL7.hov=null;hoverRoute(null)});
+
+/* ================= Atlas 9.1 · main-road graph router =================
+   Builds a walkable graph from OpenStreetMap vector tiles, weighted so main roads
+   and promenades are cheap and side lanes are expensive, then plans loops,
+   out-and-backs and one-ways on it. Routes follow real road geometry exactly. */
+const GLC9={};
+async function loadGL(S,rad){const key=S.map(v=>v.toFixed(3)).join()+":"+Math.ceil(rad/600);if(GLC9[key])return GLC9[key];
+  const s=dest(S,180,rad)[0],n=dest(S,0,rad)[0],w=dest(S,270,rad)[1],e=dest(S,90,rad)[1],out=[],lab=[];
+  try{const{VectorTile,Pbf}=await vtLib(),x0=Math.floor(t2x(w)),x1=Math.floor(t2x(e)),y0=Math.floor(t2y(n)),y1=Math.floor(t2y(s)),jobs=[];
+    for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++)jobs.push([x,y]);
+    await Promise.all(jobs.map(([x,y])=>lim(async()=>{try{const r=await fetchT(VT_URL.replace("{z}",VT_Z).replace("{x}",x).replace("{y}",y),12000);if(!r.ok)return;const t=new VectorTile(new Pbf(await r.arrayBuffer())),L=t.layers.streets;if(!L)return;const ex=L.extent||4096;
+      const SL=t.layers.street_labels;if(SL)for(let i=0;i<SL.length;i++){const f=SL.feature(i),p=f.properties;if(!p.name)continue;for(const ring of f.loadGeometry())lab.push({g:ring.map(pt=>[y2lat(y+pt.y/(SL.extent||4096)),x2lon(x+pt.x/(SL.extent||4096))]),n:p.name_en||p.name})}
+      for(let i=0;i<L.length;i++){const f=L.feature(i),p=f.properties,k=p.kind;if(p.tunnel||p.link||p.foot==="no"||/private|no/.test(p.access||""))continue;
+        if(!/^(primary|secondary|tertiary|trunk|residential|unclassified|living_street|pedestrian|footway|path|cycleway)$/.test(k))continue;
+        for(const ring of f.loadGeometry()){const g=ring.map(pt=>[y2lat(y+pt.y/ex),x2lon(x+pt.x/ex)]);if(g.length>1)out.push({g,k,n:p.name_en||p.name||p.ref||"",br:!!p.bridge})}}}catch(e){}})));
+    /* names live in the label layer: vote along each line */
+    const NM=new Map(),ck=p=>Math.round(p[0]*2600)*1e6+Math.round(p[1]*2600);
+    for(const l of lab)for(let i=1;i<l.g.length;i++){const a=l.g[i-1],b=l.g[i],m=Math.max(1,Math.ceil(hav(a,b)/15));for(let k=0;k<=m;k++){const p=[a[0]+(b[0]-a[0])*k/m,a[1]+(b[1]-a[1])*k/m];NM.set(ck(p),l.n)}}
+    for(const o of out){if(o.n)continue;const V=new Map();for(let i=0;i<o.g.length;i++){const nm=NM.get(ck(o.g[i]));if(nm)V.set(nm,(V.get(nm)||0)+1);if(i){const m=[(o.g[i-1][0]+o.g[i][0])/2,(o.g[i-1][1]+o.g[i][1])/2],nm2=NM.get(ck(m));if(nm2)V.set(nm2,(V.get(nm2)||0)+1)}}
+      let bn="",bv=0;for(const[k,v]of V)if(v>bv){bv=v;bn=k}o.n=bn}
+  }catch(e){}
+  return GLC9[key]=out}
+const inNo9=p=>p[1]>72.855&&p[1]<72.880&&p[0]>19.084&&p[0]<19.102;
+function gW9(k,br,len){if(/^(primary|secondary|tertiary)$/.test(k))return br&&len>140?3.2:1;if(k==="trunk")return br&&len>140?4.5:1.7;if(k==="prom")return .75;if(k==="pedestrian")return 1.15;
+  if(/^(footway|path|cycleway)$/.test(k))return 2.6;if(/^(residential|unclassified)$/.test(k))return 4.5;return 7}
+function buildG9(GL,ar){if(!GL||GL.length<30)return null;const t0=performance.now(),c0=GL[0].g[0],kx=111320*Math.cos(rad(c0[0])),ky=110574,X=p=>p[1]*kx,Y=p=>p[0]*ky;
+  const NX=[],NY=[],NP=[],H=new Map(),node=p=>{const x=X(p),y=Y(p),cx=Math.round(x/4),cy=Math.round(y/4);for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++){const L=H.get((cx+i)*1e7+(cy+j));if(L)for(const q of L)if(Math.abs(NX[q]-x)<2.5&&Math.abs(NY[q]-y)<2.5)return q}
+    const q=NX.length;NX.push(x);NY.push(y);NP.push(p);const k=cx*1e7+cy;(H.get(k)||H.set(k,[]).get(k)).push(q);return q};
+  const segs=[];GL.forEach((l,li)=>{let len=0;for(let i=1;i<l.g.length;i++)len+=hav(l.g[i-1],l.g[i]);let k=l.k;
+    if(/^(footway|path|cycleway|pedestrian)$/.test(k)&&ar){const m=l.g[l.g.length>>1];if(nearG(ar.coast,m,4)||inPark(ar,m))k="prom"}l.w=gW9(k,l.br,len);l.kk=k;
+    for(let i=1;i<l.g.length;i++){const p=l.g[i-1],q=l.g[i];if(inNo9(p)||inNo9(q))continue;segs.push({li,p,q,x1:X(p),y1:Y(p),x2:X(q),y2:Y(q),cut:[0,1]})}});
+  const C=60,grid=new Map(),gadd=(k,i)=>{(grid.get(k)||grid.set(k,[]).get(k)).push(i)};
+  segs.forEach((s,i)=>{const a0=Math.floor(Math.min(s.x1,s.x2)/C),a1=Math.floor(Math.max(s.x1,s.x2)/C),b0=Math.floor(Math.min(s.y1,s.y2)/C),b1=Math.floor(Math.max(s.y1,s.y2)/C);for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)gadd(a*1e7+b,i)});
+  const extra=[];
+  for(const L of grid.values()){if(L.length<2)continue;for(let ii=0;ii<L.length;ii++){const s=segs[L[ii]],ls=GL[s.li];for(let jj=ii+1;jj<L.length;jj++){const t=segs[L[jj]];if(t.li===s.li)continue;const lt=GL[t.li];if(ls.br!==lt.br)continue;
+    const dx1=s.x2-s.x1,dy1=s.y2-s.y1,dx2=t.x2-t.x1,dy2=t.y2-t.y1,d=dx1*dy2-dy1*dx2;if(Math.abs(d)<1e-9)continue;const u=((t.x1-s.x1)*dy2-(t.y1-s.y1)*dx2)/d,v=((t.x1-s.x1)*dy1-(t.y1-s.y1)*dx1)/d;
+    if(u>-1e-6&&u<1+1e-6&&v>-1e-6&&v<1+1e-6){s.cut.push(clamp(u,0,1));t.cut.push(clamp(v,0,1))}}}}
+  /* T-junctions: a line ending within 6 m of another line's segment */
+  GL.forEach((l,li)=>{for(const p of[l.g[0],l.g[l.g.length-1]]){if(inNo9(p))continue;const x=X(p),y=Y(p),a=Math.floor(x/C),b=Math.floor(y/C);let best=null,bd=6;
+    for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++)for(const si of grid.get((a+i)*1e7+b+j)||[]){const s=segs[si];if(s.li===li||GL[s.li].br!==l.br)continue;const dx=s.x2-s.x1,dy=s.y2-s.y1,L2=dx*dx+dy*dy||1,u=clamp(((x-s.x1)*dx+(y-s.y1)*dy)/L2,0,1),dd=Math.hypot(s.x1+u*dx-x,s.y1+u*dy-y);if(dd<bd){bd=dd;best=[si,u]}}
+    if(best){segs[best[0]].cut.push(best[1]);extra.push([p,best[0],best[1],l.w])}}});
+  const EA=[],EB=[],EL=[],EW=[],EN=[],EK=new Map(),addE=(a,b,len,w,nm)=>{if(a===b||len<.3)return;const k=a<b?a*1e7+b:b*1e7+a,o=EK.get(k);if(o!=null){if(w<EW[o]){EW[o]=w;EN[o]=nm}return}EK.set(k,EA.length);EA.push(a);EB.push(b);EL.push(len);EW.push(w);EN.push(nm)};
+  for(const s of segs){const l=GL[s.li],cs=[...new Set(s.cut.map(v=>Math.round(v*1e4)/1e4))].sort((a,b)=>a-b);let prev=null,pp=null;
+    for(const u of cs){const p=[s.p[0]+(s.q[0]-s.p[0])*u,s.p[1]+(s.q[1]-s.p[1])*u],id=node(p);if(prev!=null)addE(prev,id,hav(pp,p),l.w,l.n);prev=id;pp=p}}
+  for(const[p,si,u,w]of extra){const s=segs[si],q=[s.p[0]+(s.q[0]-s.p[0])*u,s.p[1]+(s.q[1]-s.p[1])*u];addE(node(p),node(q),Math.max(1,hav(p,q)),w,"")}
+  const n=NX.length,adj=Array.from({length:n},()=>[]);for(let e=0;e<EA.length;e++){adj[EA[e]].push(e);adj[EB[e]].push(e)}
+  /* keep the biggest connected piece */
+  const comp=new Int32Array(n).fill(-1);let bestC=-1,bestN=0;for(let s0=0,c=0;s0<n;s0++){if(comp[s0]>=0)continue;let cnt=0;const st=[s0];comp[s0]=c;while(st.length){const u=st.pop();cnt++;for(const e of adj[u]){const v=EA[e]===u?EB[e]:EA[e];if(comp[v]<0){comp[v]=c;st.push(v)}}}if(cnt>bestN){bestN=cnt;bestC=c}c++}
+  const G={n,NP,NX,NY,EA,EB,EL,EW,EN,adj,comp,main:bestC,kx,ky,ms:performance.now()-t0};
+  const NG=new Map();for(let i=0;i<n;i++){if(comp[i]!==bestC)continue;const k=Math.floor(NX[i]/80)*1e7+Math.floor(NY[i]/80);(NG.get(k)||NG.set(k,[]).get(k)).push(i)}G.NG=NG;return G}
+function nearN9(G,p,mainOnly){const x=p[1]*G.kx,y=p[0]*G.ky,a=Math.floor(x/80),b=Math.floor(y/80);let best=-1,bd=1e9;
+  for(let r=0;r<12&&(best<0||r<3);r++)for(let i=-r;i<=r;i++)for(let j=-r;j<=r;j++){if(Math.max(Math.abs(i),Math.abs(j))!==r)continue;for(const q of G.NG.get((a+i)*1e7+b+j)||[]){if(mainOnly&&!G.adj[q].some(e=>G.EW[e]<=1.7))continue;const d=Math.hypot(G.NX[q]-x,G.NY[q]-y);if(d<bd){bd=d;best=q}}}
+  return best}
+class Hp9{constructor(){this.k=[];this.v=[]}get size(){return this.k.length}push(k,v){const K=this.k,V=this.v;let i=K.length;K.push(k);V.push(v);while(i){const p=(i-1)>>1;if(V[p]<=v)break;K[i]=K[p];V[i]=V[p];i=p}K[i]=k;V[i]=v}
+  pop(){const K=this.k,V=this.v,top=K[0],tv=V[0],lk=K.pop(),lv=V.pop();if(K.length){let i=0;const n=K.length;for(;;){let c=2*i+1;if(c>=n)break;if(c+1<n&&V[c+1]<V[c])c++;if(V[c]>=lv)break;K[i]=K[c];V[i]=V[c];i=c}K[i]=lk;V[i]=lv}return[top,tv]}}
+function dij9(G,s,pen,stop,maxL){const n=G.n,dc=new Float64Array(n).fill(Infinity),dl=new Float64Array(n),pv=new Int32Array(n).fill(-1),h=new Hp9();dc[s]=0;h.push(s,0);
+  while(h.size){const[u,c]=h.pop();if(c>dc[u])continue;if(u===stop)break;if(maxL&&dl[u]>maxL)continue;for(const e of G.adj[u]){const v=G.EA[e]===u?G.EB[e]:G.EA[e],nc=c+G.EL[e]*G.EW[e]*(pen?pen[e]:1);if(nc<dc[v]){dc[v]=nc;dl[v]=dl[u]+G.EL[e];pv[v]=e;h.push(v,nc)}}}
+  return{dc,dl,pv,s}}
+function path9(G,T,t){const E=[];let u=t;while(u!==T.s){const e=T.pv[u];if(e<0)return null;E.push(e);u=G.EA[e]===u?G.EB[e]:G.EA[e]}return E.reverse()}
+function nodesOf9(G,s,E){const o=[s];let u=s;for(const e of E){u=G.EA[e]===u?G.EB[e]:G.EA[e];o.push(u)}return o}
+function penFor9(G,E,s,T0){const pen=new Float32Array(G.EA.length).fill(1),cells=new Set(),ck=i=>Math.floor(G.NX[i]/45)*1e7+Math.floor(G.NY[i]/45);
+  let u=s;for(const e of E){pen[e]=8;u=G.EA[e]===u?G.EB[e]:G.EA[e];if(T0.dl[u]>450){const k=ck(u);for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++)cells.add(k+i*1e7+j)}}
+  for(let e=0;e<G.EA.length;e++)if(pen[e]===1&&cells.has(ck(G.EA[e]))&&cells.has(ck(G.EB[e])))pen[e]=3.5;return pen}
+function mkG9(G,S,s,E,mode,extra,E2){const ns=nodesOf9(G,s,E);let coords=ns.map(i=>G.NP[i]);const near=hav(S,coords[0])>4;if(near)coords.unshift(S);
+  if(mode==="loop"&&near&&hav(S,coords[coords.length-1])>4)coords.push(S);if(mode==="ob"){const go=coords.slice();coords=[...go,...go.slice(0,-1).reverse()]}
+  const allE=mode==="ob"?[...E,...E.slice().reverse()]:E,steps=[];let ac=0;for(const e of allE){const nm=G.EN[e]||"";const last=steps[steps.length-1];if(last&&(last.name===nm||!nm)){last.dist+=G.EL[e]}else steps.push({name:nm,type:0,dist:G.EL[e],loc:G.NP[G.EA[e]]});ac+=G.EL[e]}
+  if(!steps.length)steps.push({name:"",type:0,dist:0,loc:coords[0]});const rt=mkRoute(despur(coords),steps,mode,{src:"graph",...extra});
+  const k=Math.max(3,Math.min(12,Math.round(rt.dist/900))),wp=[rt.coords[0]];for(let i=1;i<k;i++)wp.push(ptAt(rt.coords,rt.cum,rt.dist*i/k));wp.push(rt.coords[rt.coords.length-1]);steps[0].__pts=wp;rt.wps=wp;return rt}
+const angD9=(a,b)=>Math.abs(((a-b)+540)%360-180);
+/* pick far points in a bearing cone, best main-road ratio, spread apart */
+function farPts9(G,T,S,b,lo,hi,cone,n){const C=[];for(let i=0;i<G.n;i++){const L=T.dl[i];if(!(L>=lo&&L<=hi)||G.comp[i]!==G.main)continue;if(angD9(brg(S,G.NP[i]),b)>cone)continue;C.push([i,T.dc[i]/L])}
+  C.sort((a,b)=>a[1]-b[1]);const o=[];for(const c of C){if(o.length>=n)break;if(o.every(q=>hav(G.NP[q[0]],G.NP[c[0]])>350))o.push(c)}return o}
+function gLoop9(G,S,s,T0,b,D){let best=null;
+  for(const f of[.36,.31,.41,.27,.46]){const X=farPts9(G,T0,S,b,D*(f-.03),D*(f+.03),28,3);for(const[x]of X){const p1=path9(G,T0,x);if(!p1)continue;const pen=penFor9(G,p1,s,T0),T2=dij9(G,x,pen,s),p2=path9(G,T2,s);if(!p2)continue;
+      const L=T0.dl[x]+T2.dl[s];if(L<D-60||L>D+900)continue;let reuse=0;const P1=new Set(p1);for(const e of p2)if(P1.has(e))reuse+=G.EL[e];const cost=(T0.dc[x]+T2.dc[s])/L+reuse/L*3;
+      if(!best||cost<best.cost)best={cost,E:[...p1,...p2],x}}if(best)break}
+  return best?mkG9(G,S,s,best.E,"loop",{bear:b,gcost:best.cost}):null}
+function gOb9(G,S,s,T0,b,D){const X=farPts9(G,T0,S,b,D/2-40,D/2+380,24,2);if(!X.length)return null;const x=X[0][0],p1=path9(G,T0,x);if(!p1)return null;return mkG9(G,S,s,p1,"ob",{bear:b,turn:G.NP[x],gcost:X[0][1]})}
+function gAb9(G,S,s,E,e,T0,TE,D,side){const d=T0.dl[e];if(!isFinite(d))return null;const b=brg(S,E);
+  if(side===0){if(d>D+1500)return null;const p=path9(G,T0,e);return p?mkG9(G,S,s,p,"ab",{bear:b,gcost:T0.dc[e]/d}):null}
+  const C=[];for(let i=0;i<G.n;i++){if(G.comp[i]!==G.main)continue;const L=T0.dl[i]+TE.dl[i];if(L<D-40||L>D+700)continue;const sd=((brg(S,G.NP[i])-b)+540)%360-180;if(Math.sign(sd)!==side||Math.abs(sd)>side*0+80)continue;C.push([i,(T0.dc[i]+TE.dc[i])/L])}
+  C.sort((a,b)=>a[1]-b[1]);for(const[m]of C.slice(0,4)){const p1=path9(G,T0,m);if(!p1)continue;const pen=penFor9(G,p1,s,T0),T2=dij9(G,m,pen,e),p2=path9(G,T2,e);if(!p2)continue;const L=T0.dl[m]+T2.dl[e];if(L<D-80||L>D+1200)continue;
+    return mkG9(G,S,s,[...p1,...p2],"ab",{bear:(b+side*60+360)%360,gcost:(T0.dc[m]+T2.dc[e])/L})}return null}
+async function gJobs9(S,D,ar,bears){const rad=clamp(Math.max(D/2.4,A.mode==="ab"&&A.end?hav(S,A.end)*.75:0),1000,5200);let G=null;
+  try{const GL=await loadGL(S,rad);G=buildG9(GL,ar);if(ar&&GL.length&&!ar.goodLines){ar.goodLines=GL.filter(l=>/^(primary|secondary|tertiary)$/.test(l.k)).map(l=>l.g);SNAP=null}}catch(e){console.warn("graph",e)}
+  if(!G||G.n<200)return null;const s=nearN9(G,S,false);if(s<0)return null;const T0=dij9(G,s,null,-1,D*1.7);A.G9=G;
+  const out=[],job=(i,f)=>out.push(async()=>{await sleep(120+i*170);const r=f();if(!r)throw new Error("g");return r});
+  if(A.mode==="ab"&&A.end){const e=nearN9(G,A.end,false);if(e<0)return null;const TE=dij9(G,e,null,-1,D*1.7);[0,-1,1].forEach((sd,i)=>job(i,()=>gAb9(G,S,s,A.end,e,T0,TE,D,sd)));
+    /* extra variety: detour points at different spreads */
+    return out}
+  if(A.mode==="ob"){bears(16).forEach((b,i)=>job(i,()=>gOb9(G,S,s,T0,b,D)));return out}
+  bears(18).forEach((b,i)=>job(i,()=>gLoop9(G,S,s,T0,b,D)));return out}
 
 /* ================= boot ================= */
 readHash();initMap();applyPanels();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
