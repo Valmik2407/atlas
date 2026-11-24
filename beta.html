@@ -1773,7 +1773,7 @@ function abJobs(S,E,D){const d=hav(S,E),b=brg(S,E),jobs=[];
 /* ---------- exact distance ---------- */
 async function refine(rt,D){if(!rt.wps||Math.abs(rt.dist-D)<=100)return rt;let best=rt,k=D/rt.dist;const S=rt.wps[0],w=rt.wps;
   for(let it=0;it<2;it++){const nw=w.map((p,i)=>i===0||(i===w.length-1&&(hav(p,S)<5||rt.mode==="ab"))?p:[S[0]+(p[0]-S[0])*k,S[1]+(p[1]-S[1])*k]);let n=null;try{n=await reroute(rt,nw,true)}catch(e){}
-    if(n&&Math.abs(n.dist-D)<Math.abs(best.dist-D)&&(n.laneM||0)<=(rt.laneM||0)+120)best=n;if(Math.abs(best.dist-D)<=100)break;k*=clamp(D/(n?n.dist:rt.dist),.7,1.4)}
+    if(n&&Math.abs(n.dist-D)<Math.abs(best.dist-D)&&(n.laneM||0)<=(rt.laneM||0)+250)best=n;if(Math.abs(best.dist-D)<=100)break;k*=clamp(D/(n?n.dist:rt.dist),.7,1.4)}
   if(best!==rt){best.climb=rt.climb;best.elev=rt.elev&&Math.abs(best.dist-rt.dist)<300?rt.elev:null;best.pers=rt.pers;best.persL=rt.persL;try{best.pois=best.pois||rt.pois}catch(e){}}return best}
 function resize(delta){const rt=A.sel;if(!rt?.wps){toast("This route can't be resized. Rebuild it first.",true);return}const target=effD(rt)+delta*1000;if(target<1200){toast("That's as short as it goes.",true);return}
   editRun(delta>0?"Stretching the route by 1 km…":"Trimming 1 km…",async()=>{A.snapOn=!!A.snapAr;A.snapR=140;let best=null;
@@ -2180,7 +2180,7 @@ const POPC={};
 async function popArea(c,radius){radius=clamp(radius,800,5000);const key=c.map(v=>v.toFixed(2)).join()+":"+Math.ceil(radius/1500);if(POPC[key])return POPC[key];
   const P=(async()=>{const s=dest(c,180,radius)[0],n=dest(c,0,radius)[0],w=dest(c,270,radius)[1],e=dest(c,90,radius)[1],bb=`${s.toFixed(5)},${w.toFixed(5)},${n.toFixed(5)},${e.toFixed(5)}`;
     const q=`[out:json][timeout:18];(way["leisure"="track"](${bb});way["highway"~"^(footway|path|pedestrian)$"]["name"](${bb});way["highway"~"^(primary|secondary|tertiary|trunk)$"]["sidewalk"~"^(both|left|right|separate)$"](${bb});way["highway"]["name"~"${POPOV}",i](${bb});relation["route"~"^(running|fitness_trail|foot)$"](${bb});way(r)(${bb}););out geom qt;`;
-    let j=null;for(const u of[...OVERPASS].reverse()){try{const r=await fetchT(u,12000,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"data="+encodeURIComponent(q)});if(!r.ok)continue;j=await r.json();break}catch(e){}}
+    let j=null;for(const u of[...[...OVERPASS].reverse(),"https://overpass.private.coffee/api/interpreter"]){if(j)break;try{const r=await fetchT(u,11000,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"data="+encodeURIComponent(q)});if(!r.ok){await sleep(800);continue}j=await r.json();break}catch(e){}}
     const out={ok:!!j,cur:[],run:[],side:[],foot:[],named:[]};
     for(const el of j?.elements||[]){if(el.type!=="way"||!el.geometry)continue;const t=el.tags||{},g=el.geometry.map(x=>[x.lat,x.lon]),nm=t.name||"";
       if(t.leisure==="track"){out.run.push(g);continue}
@@ -2236,7 +2236,7 @@ async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: t
   try{const rad=clamp(Math.max(D/2.6,A.mode==="ab"?hav(S,A.end)*.7:0),900,5000);const popP=popArea(S,rad).then(p=>{A.popA=p.ok?p:A.popA;return p}).catch(()=>null);
     const ar=await loadArea(S,rad);A.snapAr=ar.ok?ar:null;A.snapOn=true;
     const bears=n=>{const o=[];for(let i=0;i<n*2&&o.length<n;i++){const b=(i*360/n+Math.random()*12-6+360)%360;if(A.exBear!=null&&Math.abs(((b-A.exBear)+540)%360-180)<50)continue;o.push(b)}if(A.exBear!=null)for(let i=0;o.length<n;i++)o.push((A.exBear+180+(i%2?1:-1)*20*Math.ceil(i/2)+360)%360);return o};
-    const jobs=A.mode==="ab"?abJobs(S,A.end,D):A.via.length?viaJobs(S,D):A.mode==="ob"?bears(14).map(b=>()=>obAt(S,b,D)):[...bears(11).map(b=>()=>loopAt(S,b,D)),...bears(5).map(b=>()=>longAt(S,b,D))];
+    const jobs=A.mode==="ab"?abJobs(S,A.end,D):A.via.length?viaJobs(S,D):A.mode==="ob"?bears(14).map(b=>()=>obAt(S,b,D*1.04)):[...bears(11).map(b=>()=>loopAt(S,b,D*1.06)),...bears(5).map(b=>()=>longAt(S,b,D*1.06))];
     A.scout.total=jobs.length;A.scout.phase="Runners fanning out";updScout();
     const run=L2=>Promise.allSettled(L2.map(f=>f().then(v=>{if(v&&v.coords?.length>1&&A.busy){L.polyline(v.coords,{color:"#c9b6ff",weight:2.2,opacity:.3,interactive:false,className:"scout"}).addTo(L_alts);scoutRunner(v);if(Math.abs(v.dist-D)/D<=.15)A.scout.kept++}return v}).finally(()=>{A.scout.done++;updScout()})));
     const res=(await run(jobs)).filter(r=>r.status==="fulfilled"&&r.value&&r.value.coords?.length>1).map(r=>r.value);
@@ -2244,8 +2244,8 @@ async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: t
     await Promise.race([popP,sleep(6000)]);
     const near=res.filter(r=>Math.abs(r.dist-D)/D<=.15),pool=near.length?near:res;pool.forEach(r=>analyse(r,ar));pool.forEach(r=>r.sc=score(r,D));pool.sort((a,b)=>b.sc-a.sc);
     const isClean=r=>r.laneM==null||r.laneM<=250,distinct=(L2,n,t=.6)=>{const o=[];for(const r of L2){if(o.length>=n)break;if(o.every(p=>overlap(r,p)<t&&overlap(p,r)<t))o.push(r)}return o};
-    if(distinct(pool.filter(isClean),10).length<6&&A.mode!=="ab"&&!A.via.length){const base0=pool.filter(isClean).length?pool.filter(isClean):pool,seeds=base0.slice(0,4),jobs2=[];
-      for(const r of seeds)for(const d of[-24,24])jobs2.push(()=>(A.mode==="ob"?obAt:r.shape==="long"?longAt:loopAt)(S,((r.bear||0)+d+360)%360,D*(.97+Math.random()*.06)));
+    if(distinct(pool.filter(isClean),10).length<8&&A.mode!=="ab"&&!A.via.length){const base0=pool.filter(isClean).length?pool.filter(isClean):pool,seeds=distinct(base0,5),jobs2=[];
+      for(const r of seeds)for(const d of[-24,24])jobs2.push(()=>(A.mode==="ob"?obAt:r.shape==="long"?longAt:loopAt)(S,((r.bear||0)+d+360)%360,D*(1.03+Math.random()*.06)));
       A.scout.total+=jobs2.length;A.scout.phase="Second wave on the best roads";updScout();
       const r2=(await run(jobs2)).filter(r=>r.status==="fulfilled"&&r.value&&r.value.coords?.length>1&&Math.abs(r.value.dist-D)/D<=.15).map(r=>r.value);
       r2.forEach(r=>{analyse(r,ar);r.sc=score(r,D)});res.push(...r2);pool.push(...r2);pool.sort((a,b)=>b.sc-a.sc)}
@@ -2255,14 +2255,14 @@ async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: t
     const inR=r=>r.dist>=D-120&&r.dist<=D+1500,TO=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r(null),ms))]);
     const ref=await Promise.all(cand.map(async r=>{if(inR(r))return r;const n=await TO(refine(r,D).catch(()=>null),25000);if(!n||n===r)return r;n.pop=null;analyseLite(n);n.sc=score(n,D);return inR(n)&&n.sc>=r.sc-4?n:r}));A.snapOn=false;A.snapR=0;
     ref.forEach(r=>{finishAt(r,D);r.sc=score(r,D);r.disp=dispOf(r)});
-    const ok=ref.filter(inR),P0=ok.length>=5?ok:ref,fin=[];
+    const near2=r=>r.dist>=D-250&&r.dist<=D+1500,ok=ref.filter(inR),P0=ok.length>=4?ok:ref.filter(near2).length>=3?ref.filter(near2):ref,fin=[];
     for(const[k,l,f]of PERS8){const rest=P0.filter(r=>!fin.includes(r));if(!rest.length)break;const top=fin[0]?.sc??Math.max(...rest.map(r=>r.sc));
       const pool2=rest.filter(r=>r.sc>=top-32);if(!pool2.length&&fin.length>=3)continue;const by=(L2)=>L2.slice().sort((a,b)=>k==="best"?b.sc-a.sc:f(b)-f(a)||b.sc-a.sc)[0];
       const o=by(pool2.filter(r=>fin.every(p=>overlap(r,p)<.55)))||by(pool2)||by(rest);o.pers=k;o.persL=l;fin.push(o)}
-    for(const r of P0){if(fin.length>=8)break;if(!fin.includes(r)&&r.sc>=fin[0].sc-38){r.pers="alt";r.persL="Also good";fin.push(r)}}
-    fin.forEach((r,i)=>{r.label="ABCDEFGH"[i];r.rank=i+1});
+    for(const L3 of[P0,ref.filter(near2)])for(const r of L3.slice().sort((a,b)=>b.sc-a.sc)){if(fin.length>=8)break;if(!fin.includes(r)&&r.sc>=fin[0].sc-60&&fin.every(p=>overlap(r,p)<.82)){r.pers="alt";r.persL="Also good";fin.push(r)}}
+    A._dbg={res:res.length,near:near.length,pool:pool.length,clean:clean.length,cand:cand.length,ok:ok.length,fin:fin.length,sc:ref.map(r=>r.sc|0)};fin.forEach((r,i)=>{r.label="ABCDEFGH"[i];r.rank=i+1});
     const seen={};fin.forEach(r=>{r.name=r.name||nameOf(r);if(seen[r.name])r.name+=` · ${dirWord(r.bear||0)}`;seen[r.name]=1});
-    A.lastBuild={n:res.length,jobs:jobs.length,s:r0((performance.now()-A.scout.t0)/1000)};A.options=fin;A.busy=false;status("");A._built=true;clearInterval(tick);scoutPulse(false);L_alts.clearLayers();selectRoute(fin[0]);requestAnimationFrame(()=>{const p=$("#P1");if(p)p.scrollTop=0});toast(`${fin.length} routes from ${res.length} scouted in ${A.lastBuild.s} s.`);
+    popP.then(p=>{if(p?.ok&&!A.busy&&A.options===fin){fin.forEach(o=>{o.pop=popOf(o,p);o.sc=score(o,D);o.disp=dispOf(o)});renderLeft()}});A.lastBuild={n:res.length,jobs:jobs.length,s:r0((performance.now()-A.scout.t0)/1000)};A.options=fin;A.busy=false;status("");A._built=true;clearInterval(tick);scoutPulse(false);L_alts.clearLayers();selectRoute(fin[0]);requestAnimationFrame(()=>{const p=$("#P1");if(p)p.scrollTop=0});toast(`${fin.length} routes from ${res.length} scouted in ${A.lastBuild.s} s.`);
     if(A.wp)setTimeout(()=>{const el=$(".wp8");el?.scrollIntoView({block:"nearest",behavior:"smooth"})},300)}
   catch(e){console.error(e);toast("Couldn't reach the routing servers just now. Try again in a minute.",true)}
   finally{clearInterval(tick);A.busy=false;A.snapOn=false;A.snapR=0;scoutPulse(false);if(!A.options.length){L_alts.clearLayers();renderLeft()}}}
