@@ -2245,11 +2245,11 @@ async function build(){if(A.busy)return;if(!A.start){toast("Set a start first: t
     const near=res.filter(r=>Math.abs(r.dist-D)/D<=.15),pool=near.length?near:res;pool.forEach(r=>analyse(r,ar));pool.forEach(r=>r.sc=score(r,D));pool.sort((a,b)=>b.sc-a.sc);
     const isClean=r=>r.laneM==null||r.laneM<=250,distinct=(L2,n,t=.6)=>{const o=[];for(const r of L2){if(o.length>=n)break;if(o.every(p=>overlap(r,p)<t&&overlap(p,r)<t))o.push(r)}return o};
     if(distinct(pool.filter(isClean),10).length<8&&A.mode!=="ab"&&!A.via.length){const base0=pool.filter(isClean).length?pool.filter(isClean):pool,seeds=distinct(base0,5),jobs2=[];
-      for(const r of seeds)for(const d of[-24,24])jobs2.push(()=>(A.mode==="ob"?obAt:r.shape==="long"?longAt:loopAt)(S,((r.bear||0)+d+360)%360,D*(1.03+Math.random()*.06)));
+      for(const r of seeds)for(const d of[-26,0,26])jobs2.push(()=>(A.mode==="ob"?obAt:r.shape==="long"?longAt:loopAt)(S,((r.bear||0)+d+360)%360,D*(1.03+Math.random()*.06)));
       A.scout.total+=jobs2.length;A.scout.phase="Second wave on the best roads";updScout();
       const r2=(await run(jobs2)).filter(r=>r.status==="fulfilled"&&r.value&&r.value.coords?.length>1&&Math.abs(r.value.dist-D)/D<=.15).map(r=>r.value);
       r2.forEach(r=>{analyse(r,ar);r.sc=score(r,D)});res.push(...r2);pool.push(...r2);pool.sort((a,b)=>b.sc-a.sc)}
-    const clean=pool.filter(isClean),base=clean.length>=6?clean:pool;let cand=distinct(base,12);if(cand.length<8)cand=[...cand,...distinct(base.filter(r=>!cand.includes(r)),12-cand.length,.75)].slice(0,12);
+    const clean=pool.filter(isClean),base=clean.length>=10?clean:[...clean,...pool.filter(r=>!isClean(r))];let cand=distinct(base,12);if(cand.length<8)cand=[...cand,...distinct(base.filter(r=>!cand.includes(r)),12-cand.length,.75)].slice(0,12);
     A.scout.phase="Measuring climbs";updScout();await addElevAll(cand);cand.forEach(r=>r.sc=score(r,D));cand.sort((a,b)=>b.sc-a.sc);
     A.scout.phase="Dialling in the exact distance";updScout();A.snapR=140;
     const inR=r=>r.dist>=D-120&&r.dist<=D+1500,TO=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r(null),ms))]);
