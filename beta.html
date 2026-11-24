@@ -2149,7 +2149,7 @@ function hoverRoute(o){if(!ensureGL())return;gl.getSource("r7hov").setData(o&&o!
 function drawRoute(){clearRoute();const rt=A.sel;
   if(rt){const Z=zonesOf(rt),L2=rt.finishM||rt.dist;for(let k=1;k*1000<L2-150;k++){const m=k*1000,z=Z.find(q=>m>=q.a&&m<q.b)||Z[0];L.marker(ptAt(rt.coords,rt.cum,m),{interactive:false,icon:L.divIcon({className:"",html:`<div class="km7" style="--c:${Z7[z.z]||Z7.easy}">${k}</div>`,iconSize:[20,20],iconAnchor:[10,10]})}).addTo(L_marks)}
     if(rt.mode==="ob"&&rt.turn)L.marker(rt.turn,{interactive:false,icon:L.divIcon({className:"",html:'<div class="turnpin">TURN</div>',iconSize:[44,20],iconAnchor:[22,26]})}).addTo(L_marks);
-    for(const p of rt.pois||[]){if(!A.poiOn[p.t])continue;const small=p.t==="signal"||p.t==="bench";L.marker(p.p,{icon:ptIcon(p.t,small),zIndexOffset:small?0:200}).addTo(L_poi).bindTooltip(`<b>${esc(p.name||PT[p.t][0])}</b><br><span style="color:#8A97AB">km ${r1(p.m/1000)}</span>`,{className:"tt",direction:"top",offset:[0,-12]})}
+    for(const p of pickPois9(rt)){if(!A.poiOn[p.t])continue;const small=p.t==="signal"||p.t==="bench";L.marker(p.p,{icon:ptIcon(p.t,small),zIndexOffset:small?0:200}).addTo(L_poi).bindTooltip(`<b>${esc(p.name||PT[p.t][0])}</b><br><span style="color:#8A97AB">km ${r1(p.m/1000)}</span>`,{className:"tt",direction:"top",offset:[0,-12]})}
     if(rt.finishM)L.marker(ptAt(rt.coords,rt.cum,rt.finishM),{interactive:false,icon:L.divIcon({className:"",html:'<div class="finpin">FINISH</div>',iconSize:[54,20],iconAnchor:[27,26]})}).addTo(L_marks)}
   if(A.mode!=="draw")setStartMarker();const rv=!!A._reveal;A._reveal=false;drawGL(rv)}
 {const t=setInterval(()=>{if(typeof gl!=="undefined"&&gl&&gl.on){clearInterval(t);gl.on("style.load",()=>setTimeout(()=>drawGL(false),60));gl.on("idle",()=>{if(!gl.getSource("r7")&&ensureGL())drawGL(false)})}},300)}
@@ -2263,7 +2263,7 @@ document.addEventListener("mouseover",e=>{const c=e.target.closest?.(".rc7");if(
 document.addEventListener("mouseout",e=>{const c=e.target.closest?.(".rc7");if(!c||c.contains(e.relatedTarget))return;GL7.hov=null;paintHero(A.sel);hoverRoute(null)});
 document.addEventListener("keydown",e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if(e.key==="Escape"&&A.slide){A.slide=null;renderLeft()}});
 
-function zonesOf(rt){const D=rt.finishM||rt.dist,Z=planZones(D);if(rt.dist>D+1)Z.push({a:D,b:rt.dist,z:"easy"});return Z}
+function zonesOf(rt){const D=rt.finishM||rt.dist,Z=planZones(D);if(rt.dist>D+1)Z.push({a:D,b:rt.dist,z:"easy"});const o=[];for(const z of Z){const l=o[o.length-1];if(l&&l.z===z.z)l.b=z.b;else o.push({...z})}return o}
 
 
 /* ================= Atlas 8 · rich panel, time-of-day light, 8 routes, popular roads, Tell Atlas ================= */
@@ -2880,6 +2880,14 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&A.full){setFull(fal
 document.addEventListener("mouseover",e=>{const c=e.target.closest?.(".c9");if(!c||c===GL7.hov)return;GL7.hov=c;const o=A.options[+c.dataset.i];if(o)hoverRoute(o)});
 document.addEventListener("mouseout",e=>{const c=e.target.closest?.(".c9");if(!c||c.contains(e.relatedTarget))return;GL7.hov=null;hoverRoute(null)});
 
+/* only the stops that matter on the map: water, toilets, a shop now and then; spaced out */
+function pickPois9(rt){const P=rt.pois||[],pr={water:0,toilet:1,shop:2,cafe:3,sight:4},o=[];
+  for(const p of P.filter(p=>pr[p.t]!=null).sort((a,b)=>pr[a.t]-pr[b.t]||a.m-b.m)){if(o.length>=6)break;if(o.every(q=>Math.abs(q.m-p.m)>(q.t===p.t?1500:600)))o.push(p)}
+  return[...P.filter(p=>p.t==="signal"),...o]}
+
+/* one-way: the finish is the spot you picked, not a pin part-way */
+function finishAt(rt,D){rt.finishM=rt.mode!=="ab"&&rt.dist-D>100?D:null}
+
 /* ================= Atlas 9.1 · main-road graph router =================
    Builds a walkable graph from OpenStreetMap vector tiles, weighted so main roads
    and promenades are cheap and side lanes are expensive, then plans loops,
@@ -2943,9 +2951,9 @@ function penFor9(G,E,s,T0){const pen=new Float32Array(G.EA.length).fill(1),cells
   let u=s;for(const e of E){pen[e]=8;u=G.EA[e]===u?G.EB[e]:G.EA[e];if(T0.dl[u]>450){const k=ck(u);for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++)cells.add(k+i*1e7+j)}}
   for(let e=0;e<G.EA.length;e++)if(pen[e]===1&&cells.has(ck(G.EA[e]))&&cells.has(ck(G.EB[e])))pen[e]=3.5;return pen}
 function mkG9(G,S,s,E,mode,extra,E2){const ns=nodesOf9(G,s,E);let coords=ns.map(i=>G.NP[i]);const near=hav(S,coords[0])>4;if(near)coords.unshift(S);
-  if(mode==="loop"&&near&&hav(S,coords[coords.length-1])>4)coords.push(S);if(mode==="ob"){const go=coords.slice();coords=[...go,...go.slice(0,-1).reverse()]}
+  if(mode==="loop"&&near&&hav(S,coords[coords.length-1])>4)coords.push(S);coords=despur(coords);if(mode==="ob"){const go=coords.slice();coords=[...go,...go.slice(0,-1).reverse()]}
   const allE=mode==="ob"?[...E,...E.slice().reverse()]:E,steps=[];let ac=0;for(const e of allE){const nm=G.EN[e]||"";const last=steps[steps.length-1];if(last&&(last.name===nm||!nm)){last.dist+=G.EL[e]}else steps.push({name:nm,type:0,dist:G.EL[e],loc:G.NP[G.EA[e]]});ac+=G.EL[e]}
-  if(!steps.length)steps.push({name:"",type:0,dist:0,loc:coords[0]});const rt=mkRoute(despur(coords),steps,mode,{src:"graph",...extra});
+  if(!steps.length)steps.push({name:"",type:0,dist:0,loc:coords[0]});const rt=mkRoute(coords,steps,mode,{src:"graph",...extra});
   const k=Math.max(3,Math.min(12,Math.round(rt.dist/900))),wp=[rt.coords[0]];for(let i=1;i<k;i++)wp.push(ptAt(rt.coords,rt.cum,rt.dist*i/k));wp.push(rt.coords[rt.coords.length-1]);steps[0].__pts=wp;rt.wps=wp;return rt}
 const angD9=(a,b)=>Math.abs(((a-b)+540)%360-180);
 /* pick far points in a bearing cone, best main-road ratio, spread apart */
@@ -2963,17 +2971,18 @@ function gTri9(G,S,s,T0,b,D){const V=[];
       V.push({cost:(T0.dc[x1]+T1.dc[x2]+T2.dc[s])/L,E:[...p1,...p2,...p3]})}if(V.length)break}
   return V.sort((a,b)=>a.cost-b.cost).map(v=>()=>mkG9(G,S,s,v.E,"loop",{bear:b,gcost:v.cost,shape:"tri"}))}
 function gOb9(G,S,s,T0,b,D){const X=farPts9(G,T0,S,b,D/2-40,D/2+380,24,2);if(!X.length)return null;const x=X[0][0],p1=path9(G,T0,x);if(!p1)return null;return mkG9(G,S,s,p1,"ob",{bear:b,turn:G.NP[x],gcost:X[0][1]})}
-function gAb9(G,S,s,E,e,T0,TE,D,side){const d=T0.dl[e];if(!isFinite(d))return null;const b=brg(S,E);
-  if(side===0){if(d>D+1500)return null;const p=path9(G,T0,e);return p?mkG9(G,S,s,p,"ab",{bear:b,gcost:T0.dc[e]/d}):null}
-  const C=[];for(let i=0;i<G.n;i++){if(G.comp[i]!==G.main)continue;const L=T0.dl[i]+TE.dl[i];if(L<D-40||L>D+700)continue;const sd=((brg(S,G.NP[i])-b)+540)%360-180;if(Math.sign(sd)!==side||Math.abs(sd)>side*0+80)continue;C.push([i,(T0.dc[i]+TE.dc[i])/L])}
-  C.sort((a,b)=>a[1]-b[1]);for(const[m]of C.slice(0,4)){const p1=path9(G,T0,m);if(!p1)continue;const pen=penFor9(G,p1,s,T0),T2=dij9(G,m,pen,e),p2=path9(G,T2,e);if(!p2)continue;const L=T0.dl[m]+T2.dl[e];if(L<D-80||L>D+1200)continue;
-    return mkG9(G,S,s,[...p1,...p2],"ab",{bear:(b+side*60+360)%360,gcost:(T0.dc[m]+T2.dc[e])/L})}return null}
+function gAb9(G,S,s,E,e,T0,TE,D,side){const d=T0.dl[e];if(!isFinite(d))return[];const b=brg(S,E);
+  if(side===0){if(d>D+1500)return[];const p=path9(G,T0,e);return p?[()=>mkG9(G,S,s,p,"ab",{bear:b,gcost:T0.dc[e]/d})]:[]}
+  const C=[];for(let i=0;i<G.n;i++){if(G.comp[i]!==G.main)continue;const L=T0.dl[i]+TE.dl[i];if(L<D-60||L>D+600)continue;const sd=((brg(S,G.NP[i])-b)+540)%360-180;if(Math.sign(sd)!==Math.sign(side)||Math.abs(sd)<(Math.abs(side)>1?35:5)||Math.abs(sd)>(Math.abs(side)>1?100:45))continue;C.push([i,(T0.dc[i]+TE.dc[i])/L])}
+  C.sort((a,b)=>a[1]-b[1]);const M=[];for(const c of C){if(M.length>=3)break;if(M.every(q=>hav(G.NP[q],G.NP[c[0]])>700))M.push(c[0])}
+  return M.map(m=>()=>{const p1=path9(G,T0,m);if(!p1)return null;const pen=penFor9(G,p1,s,T0),T2=dij9(G,m,pen,e),p2=path9(G,T2,e);if(!p2)return null;const L=T0.dl[m]+T2.dl[e];if(L<D-100||L>D+1000)return null;
+    return mkG9(G,S,s,[...p1,...p2],"ab",{bear:(b+Math.sign(side)*60+360)%360,gcost:(T0.dc[m]+T2.dc[e])/L})})}
 async function gJobs9(S,D,ar,bears){const rad=clamp(Math.max(D/2.4,A.mode==="ab"&&A.end?hav(S,A.end)*.75:0),1000,5200);let G=null;
   try{const GL=await loadGL(S,rad);G=buildG9(GL,ar);if(ar&&GL.length&&!ar.goodLines){ar.goodLines=GL.filter(l=>/^(primary|secondary|tertiary)$/.test(l.k)).map(l=>l.g);SNAP=null}}catch(e){console.warn("graph",e)}
   if(!G||G.n<200)return null;const s=nearN9(G,S,false);if(s<0)return null;const T0=dij9(G,s,null,-1,D*1.7);A.G9=G;
   const out=[],made=[],uniq=r=>{if(!r)return null;if(made.some(p=>overlap(r,p)>.7||overlap(p,r)>.7))return null;made.push(r);return r};
   const job=(i,f)=>out.push(async()=>{await sleep(150+i*160);let r=null;for(const g of f()){r=uniq(g());if(r)break}if(!r)throw new Error("g");return r});
-  if(A.mode==="ab"&&A.end){const e=nearN9(G,A.end,false);if(e<0)return null;const TE=dij9(G,e,null,-1,D*1.7);[0,-1,1].forEach((sd,i)=>job(i,()=>[()=>gAb9(G,S,s,A.end,e,T0,TE,D,sd)]));return out}
+  if(A.mode==="ab"&&A.end){const e=nearN9(G,A.end,false);if(e<0)return null;const TE=dij9(G,e,null,-1,D*1.7);[0,-1,1,-2,2].forEach((sd,i)=>{const L=gAb9(G,S,s,A.end,e,T0,TE,D,sd);L.forEach((f,j)=>job(i+j*5,()=>[f,...L.filter(g=>g!==f)]))});return out}
   if(A.mode==="ob"){bears(16).forEach((b,i)=>job(i,()=>{const r=gOb9(G,S,s,T0,b,D);return r?[()=>r]:[]}));return out}
   bears(12).forEach((b,i)=>job(i*2,()=>gLoop9(G,S,s,T0,b,D).slice(0,3)));bears(8).forEach((b,i)=>job(i*2+1,()=>gTri9(G,S,s,T0,(b+22)%360,D).slice(0,3)));return out}
 
