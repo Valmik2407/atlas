@@ -3032,7 +3032,7 @@ function mkG9(G,S,s,E,mode,extra,E2){const ns=nodesOf9(G,s,E);let coords=ns.map(
   const allE=mode==="ob"?[...E,...E.slice().reverse()]:E,steps=[];let ac=0;for(const e of allE){const nm=G.EN[e]||"";const last=steps[steps.length-1];if(last&&(last.name===nm||!nm)){last.dist+=G.EL[e]}else steps.push({name:nm,type:0,dist:G.EL[e],loc:G.NP[G.EA[e]]});ac+=G.EL[e]}
   if(!steps.length)steps.push({name:"",type:0,dist:0,loc:coords[0]});
   /* exact flyover stretches: only edges that are on a bridge deck */
-  const gb=[];{let m=near?hav(S,G.NP[s]):0,cur=null;for(const e of allE){if(G.EBR[e]){if(!cur)cur={a:m,b:m};cur.b=m+G.EL[e]}else if(cur){if(cur.b-cur.a>=40)gb.push(cur);cur=null}m+=G.EL[e]}if(cur&&cur.b-cur.a>=40)gb.push(cur)}
+  const gb=[];{let m=near?hav(S,G.NP[s]):0,cur=null;for(const e of allE){if(G.EBR[e]){if(!cur)cur={a:m,b:m};cur.b=m+G.EL[e]}else if(cur){if(cur.b-cur.a>=100)gb.push(cur);cur=null}m+=G.EL[e]}if(cur&&cur.b-cur.a>=100)gb.push(cur)}
   const rt=mkRoute(coords,steps,mode,{src:"graph",...extra});rt.gBridges=gb;
   const k=Math.max(3,Math.min(12,Math.round(rt.dist/900))),wp=[rt.coords[0]];for(let i=1;i<k;i++)wp.push(ptAt(rt.coords,rt.cum,rt.dist*i/k));wp.push(rt.coords[rt.coords.length-1]);steps[0].__pts=wp;rt.wps=wp;return rt}
 const angD9=(a,b)=>Math.abs(((a-b)+540)%360-180);
@@ -3074,7 +3074,7 @@ function onDeck9(G,p,hd){const M=edgeGrid9(G),x=p[1]*G.kx,y=p[0]*G.ky,cx=Math.fl
     if(d<bd-(G.EBR[e]?0:3)){bd=d;best=e}}
   return best==null?null:!!G.EBR[best]}
 function fixBr9(rt){if(rt.gBridges)return rt.gBridges;const G=A.G9;if(!G||!(rt.bridges||[]).length)return null;const out=[];
-  for(const b of rt.bridges){let cur=null;for(let m=b.a;m<=b.b;m+=10){const p=ptAt(rt.coords,rt.cum,m),q=ptAt(rt.coords,rt.cum,Math.min(rt.dist,m+8)),hd=brg(p,q),on=onDeck9(G,p,hd);if(on){if(!cur)cur={a:m,b:m};cur.b=m}else if(cur){if(cur.b-cur.a>=60)out.push(cur);cur=null}}if(cur&&cur.b-cur.a>=60)out.push(cur)}
+  for(const b of rt.bridges){let cur=null;for(let m=b.a;m<=b.b;m+=10){const p=ptAt(rt.coords,rt.cum,m),q=ptAt(rt.coords,rt.cum,Math.min(rt.dist,m+8)),hd=brg(p,q),on=onDeck9(G,p,hd);if(on){if(!cur)cur={a:m,b:m};cur.b=m}else if(cur){if(cur.b-cur.a>=100)out.push(cur);cur=null}}if(cur&&cur.b-cur.a>=100)out.push(cur)}
   return out}
 
 /* ================= boot ================= */
