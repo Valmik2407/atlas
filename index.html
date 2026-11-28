@@ -2009,10 +2009,10 @@ function airHTML(){if(!A.wx)return`<p class="sub6">Heat and air load when you're
 function briefing(rt){const P=pz(),w=hourWx(A.day,A.hour),Z=zonesOf(rt),k=effD(rt)/rt.dist,st=stopsOf(rt),out=[],dark=isDark(A.day,A.hour);
   out.push(["Go",`${dayWord()} at ${HL(A.hour??19)}${w?`, feels ${r0(w.feels)}°${w.pen?` (heat costs ~${r0(P.easy*w.pen/100)} s/km)`:""}${w.aqi!=null?`, AQI ${w.aqi}`:""}`:""}.${dark?` After sunset: ${rt.litF!=null?r0(rt.litF*100)+"% of the route is lit":"stick to the main roads"}.`:""}`]);
   out.push(["Plan",Z.map(z=>`${r1(z.a*k/1000)}–${r1(z.b*k/1000)} km ${ZL[z.z].toLowerCase()} ${fmtT(P[z.z])}`).join(" → ")]);
-  out.push(["Water",st.need?st.list.map(x=>x.poi?`km ${r1(x.m/1000)} ${esc(x.poi.name||PT[x.poi.t][0])}`:`carry a bottle for km ${r1(x.m/1000)}`).join(", "):`Under ${r0(st.tmin)} min. Drink before you go, no stops needed.`]);
+  out.push(["Water",st.need?st.list.map(x=>x.poi?`km ${r1(x.m/1000)} ${x.poi.name||PT[x.poi.t][0]}`:`carry a bottle for km ${r1(x.m/1000)}`).join(", "):`Under ${r0(st.tmin)} min. Drink before you go, no stops needed.`]);
   const watch=[];if(rt.laneM>0){const big=rt.lanes?.slice().sort((a,b)=>(b.b-b.a)-(a.b-a.a))[0];watch.push(`${r0(rt.laneM)} m of lane${big?` near km ${r1(big.a/1000)}`:""}`)}for(const b of rt.bridges||[])watch.push(`flyover at km ${r1(b.a/1000)}`);if(rt.workStops)watch.push(`${rt.workStops} crossing${rt.workStops>1?"s":""} inside the hard part`);if(rt.mode==="ob")watch.push(`turn at km ${r1(effD(rt)/2000)}`);
   out.push(["Watch",watch.length?watch.join(" · "):"Nothing tricky. Clean route."]);
-  out.push(["Finish",rt.finishM?`Stop at the FINISH marker, ${r0(rt.dist-rt.finishM)} m before the start, to hit exactly ${r1(rt.finishM/1000)} km.`:rt.mode==="ab"?"Finish at B.":"Back at the start."]);
+  out.push(["Finish",rt.finishM?`Stop at the FINISH marker, ${r0(rt.dist-rt.finishM)} m before the start, to hit exactly ${r1(rt.finishM/1000)} km.`:rt.mode==="ab"?`Finish at ${A.spotX&&A.end&&hav(A.spotX.p,A.end)<300?A.spotX.n:"your finish spot"}, then cab home.`:"Back at the start."]);
   return out}
 function checklist(rt){const w=hourWx(A.day,A.hour),pr=predict(rt),dark=isDark(A.day,A.hour),st=stopsOf(rt),I=[["shoes","Shoes laced, watch charged"],["warm","8–10 min warm-up + drills"]];
   if(st.need&&st.carry||pr.t>50*60)I.push(["water","Water bottle"]);if(pr.t>65*60)I.push(["gel","Gel or dates for after 45 min"]);if(dark)I.push(["light","Reflective top / light"]);if(w&&(w.feels>=30||w.uv>=3))I.push(["cap","Cap"+(w.uv>=3?" + sunscreen":"")]);if(w?.aqi>150)I.push(["mask","AQI is high: keep it easy"]);I.push(["phone","Phone + cash for a cab"]);
@@ -2700,7 +2700,7 @@ function predict(rt){const r=predict_a6(rt),k=effD(rt)/Math.max(1,rt.dist),h=A.h
 /* ---------- routes that make sense: no doubling back, no lanes without footpaths ---------- */
 function spurOf(rt){if(rt.mode==="ob"||A.mode==="ob")return 0;const S=samples(rt.coords,rt.cum,20),L2=rt.dist;let m=0;
   for(let i=0;i<S.length;i++){const a=S[i];if(a.m<350||a.m>L2-350)continue;for(let j=0;j<i;j++){const b=S[j];if(a.m-b.m<220)break;if(b.m<350)continue;if(Math.abs(a.p[0]-b.p[0])<.0002&&Math.abs(a.p[1]-b.p[1])<.0002&&hav(a.p,b.p)<18){m+=20;break}}}return m}
-function analyse(rt,ar){analyse_a8(rt,ar);rt.spurM=spurOf(rt);return rt}
+function analyse(rt,ar){analyse_a8(rt,ar);rt.spurM=spurOf(rt);try{const b=fixBr9(rt);if(b){rt.bridges=b;rt.flyoverM=b.reduce((x,y)=>x+(y.b-y.a),0)+(rt.src==="graph"?0:(rt.steps||[]).filter(s=>/flyover|bridge|setu/i.test(s.name)).reduce((x,s)=>x+s.dist,0))}}catch(e){}return rt}
 function scoreParts(rt,D){const o=scoreParts_a8(rt,D);if(rt.spurM==null)rt.spurM=spurOf(rt);if(rt.spurM>60)o.push(["doubles back",-rt.spurM/22]);if((rt.laneM||0)>200)o.push(["lanes without footpaths",-(rt.laneM-200)/30]);return o}
 
 /* ---------- search animation: roads light up from home, then comet trails for every route tested ---------- */
@@ -2982,12 +2982,12 @@ async function loadGL(S,rad){const key=S.map(v=>v.toFixed(3)).join()+":"+Math.ce
     /* names live in the label layer: vote along each line */
     const NM=new Map(),ck=p=>Math.round(p[0]*2600)*1e6+Math.round(p[1]*2600);
     for(const l of lab)for(let i=1;i<l.g.length;i++){const a=l.g[i-1],b=l.g[i],m=Math.max(1,Math.ceil(hav(a,b)/15));for(let k=0;k<=m;k++){const p=[a[0]+(b[0]-a[0])*k/m,a[1]+(b[1]-a[1])*k/m];NM.set(ck(p),l.n)}}
-    for(const o of out){if(o.n)continue;const V=new Map();for(let i=0;i<o.g.length;i++){const nm=NM.get(ck(o.g[i]));if(nm)V.set(nm,(V.get(nm)||0)+1);if(i){const m=[(o.g[i-1][0]+o.g[i][0])/2,(o.g[i-1][1]+o.g[i][1])/2],nm2=NM.get(ck(m));if(nm2)V.set(nm2,(V.get(nm2)||0)+1)}}
-      let bn="",bv=0;for(const[k,v]of V)if(v>bv){bv=v;bn=k}o.n=bn}
+    const FLY=/flyover|bridge|setu|elevated|skywalk|overpass/i;for(const o of out){if(o.n)continue;const V=new Map();for(let i=0;i<o.g.length;i++){const nm=NM.get(ck(o.g[i]));if(nm)V.set(nm,(V.get(nm)||0)+1);if(i){const m=[(o.g[i-1][0]+o.g[i][0])/2,(o.g[i-1][1]+o.g[i][1])/2],nm2=NM.get(ck(m));if(nm2)V.set(nm2,(V.get(nm2)||0)+1)}}
+      let bn="",bv=0;for(const[k,v]of V)if(v>bv&&(o.br||!FLY.test(k))){bv=v;bn=k}o.n=bn}
   }catch(e){}
   return GLC9[key]=out}
 const inNo9=p=>p[1]>72.855&&p[1]<72.880&&p[0]>19.084&&p[0]<19.102;
-function gW9(k,br,len){if(/^(primary|secondary|tertiary)$/.test(k))return br&&len>140?3.2:1;if(k==="trunk")return br&&len>140?6:3.2;if(k==="prom")return .75;if(k==="pedestrian")return 1.15;
+function gW9(k,br,len){if(/^(primary|secondary|tertiary)$/.test(k))return br&&len>140?7:1;if(k==="trunk")return br&&len>140?10:3.2;if(k==="prom")return .75;if(k==="pedestrian")return 1.15;
   if(/^(footway|path|cycleway)$/.test(k))return 2.6;if(/^(residential|unclassified)$/.test(k))return 4.5;return 7}
 function buildG9(GL,ar){if(!GL||GL.length<30)return null;const t0=performance.now(),c0=GL[0].g[0],kx=111320*Math.cos(rad(c0[0])),ky=110574,X=p=>p[1]*kx,Y=p=>p[0]*ky;
   const NX=[],NY=[],NP=[],H=new Map(),node=p=>{const x=X(p),y=Y(p),cx=Math.round(x/4),cy=Math.round(y/4);for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++){const L=H.get((cx+i)*1e7+(cy+j));if(L)for(const q of L)if(Math.abs(NX[q]-x)<2.5&&Math.abs(NY[q]-y)<2.5)return q}
@@ -3005,14 +3005,14 @@ function buildG9(GL,ar){if(!GL||GL.length<30)return null;const t0=performance.no
   GL.forEach((l,li)=>{for(const p of[l.g[0],l.g[l.g.length-1]]){if(inNo9(p))continue;const x=X(p),y=Y(p),a=Math.floor(x/C),b=Math.floor(y/C);let best=null,bd=6;
     for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++)for(const si of grid.get((a+i)*1e7+b+j)||[]){const s=segs[si];if(s.li===li||GL[s.li].br!==l.br)continue;const dx=s.x2-s.x1,dy=s.y2-s.y1,L2=dx*dx+dy*dy||1,u=clamp(((x-s.x1)*dx+(y-s.y1)*dy)/L2,0,1),dd=Math.hypot(s.x1+u*dx-x,s.y1+u*dy-y);if(dd<bd){bd=dd;best=[si,u]}}
     if(best){segs[best[0]].cut.push(best[1]);extra.push([p,best[0],best[1],l.w])}}});
-  const EA=[],EB=[],EL=[],EW=[],EN=[],EK=new Map(),addE=(a,b,len,w,nm)=>{if(a===b||len<.3)return;const k=a<b?a*1e7+b:b*1e7+a,o=EK.get(k);if(o!=null){if(w<EW[o]){EW[o]=w;EN[o]=nm}return}EK.set(k,EA.length);EA.push(a);EB.push(b);EL.push(len);EW.push(w);EN.push(nm)};
+  const EA=[],EB=[],EL=[],EW=[],EN=[],EBR=[],EK=new Map(),addE=(a,b,len,w,nm,br)=>{if(a===b||len<.3)return;const k=a<b?a*1e7+b:b*1e7+a,o=EK.get(k);if(o!=null){if(w<EW[o]){EW[o]=w;EN[o]=nm;EBR[o]=!!br}return}EK.set(k,EA.length);EA.push(a);EB.push(b);EL.push(len);EW.push(w);EN.push(nm);EBR.push(!!br)};
   for(const s of segs){const l=GL[s.li],cs=[...new Set(s.cut.map(v=>Math.round(v*1e4)/1e4))].sort((a,b)=>a-b);let prev=null,pp=null;
-    for(const u of cs){const p=[s.p[0]+(s.q[0]-s.p[0])*u,s.p[1]+(s.q[1]-s.p[1])*u],id=node(p);if(prev!=null)addE(prev,id,hav(pp,p),l.w,l.n);prev=id;pp=p}}
+    for(const u of cs){const p=[s.p[0]+(s.q[0]-s.p[0])*u,s.p[1]+(s.q[1]-s.p[1])*u],id=node(p);if(prev!=null)addE(prev,id,hav(pp,p),l.w,l.n,l.br);prev=id;pp=p}}
   for(const[p,si,u,w]of extra){const s=segs[si],q=[s.p[0]+(s.q[0]-s.p[0])*u,s.p[1]+(s.q[1]-s.p[1])*u];addE(node(p),node(q),Math.max(1,hav(p,q)),w,"")}
   const n=NX.length,adj=Array.from({length:n},()=>[]);for(let e=0;e<EA.length;e++){adj[EA[e]].push(e);adj[EB[e]].push(e)}
   /* keep the biggest connected piece */
   const comp=new Int32Array(n).fill(-1);let bestC=-1,bestN=0;for(let s0=0,c=0;s0<n;s0++){if(comp[s0]>=0)continue;let cnt=0;const st=[s0];comp[s0]=c;while(st.length){const u=st.pop();cnt++;for(const e of adj[u]){const v=EA[e]===u?EB[e]:EA[e];if(comp[v]<0){comp[v]=c;st.push(v)}}}if(cnt>bestN){bestN=cnt;bestC=c}c++}
-  const G={n,NP,NX,NY,EA,EB,EL,EW,EN,adj,comp,main:bestC,kx,ky,ms:performance.now()-t0};
+  const G={n,NP,NX,NY,EA,EB,EL,EW,EN,EBR,adj,comp,main:bestC,kx,ky,ms:performance.now()-t0};
   const NG=new Map();for(let i=0;i<n;i++){if(comp[i]!==bestC)continue;const k=Math.floor(NX[i]/80)*1e7+Math.floor(NY[i]/80);(NG.get(k)||NG.set(k,[]).get(k)).push(i)}G.NG=NG;return G}
 function nearN9(G,p,mainOnly){const x=p[1]*G.kx,y=p[0]*G.ky,a=Math.floor(x/80),b=Math.floor(y/80);let best=-1,bd=1e9;
   for(let r=0;r<12&&(best<0||r<3);r++)for(let i=-r;i<=r;i++)for(let j=-r;j<=r;j++){if(Math.max(Math.abs(i),Math.abs(j))!==r)continue;for(const q of G.NG.get((a+i)*1e7+b+j)||[]){if(mainOnly&&!G.adj[q].some(e=>G.EW[e]<=1.7))continue;const d=Math.hypot(G.NX[q]-x,G.NY[q]-y);if(d<bd){bd=d;best=q}}}
@@ -3030,7 +3030,10 @@ function penFor9(G,E,s,T0){const pen=new Float32Array(G.EA.length).fill(1),cells
 function mkG9(G,S,s,E,mode,extra,E2){const ns=nodesOf9(G,s,E);let coords=ns.map(i=>G.NP[i]);const near=hav(S,coords[0])>4;if(near)coords.unshift(S);
   if(mode==="loop"&&near&&hav(S,coords[coords.length-1])>4)coords.push(S);coords=despur(coords);if(mode==="ob"){const go=coords.slice();coords=[...go,...go.slice(0,-1).reverse()]}
   const allE=mode==="ob"?[...E,...E.slice().reverse()]:E,steps=[];let ac=0;for(const e of allE){const nm=G.EN[e]||"";const last=steps[steps.length-1];if(last&&(last.name===nm||!nm)){last.dist+=G.EL[e]}else steps.push({name:nm,type:0,dist:G.EL[e],loc:G.NP[G.EA[e]]});ac+=G.EL[e]}
-  if(!steps.length)steps.push({name:"",type:0,dist:0,loc:coords[0]});const rt=mkRoute(coords,steps,mode,{src:"graph",...extra});
+  if(!steps.length)steps.push({name:"",type:0,dist:0,loc:coords[0]});
+  /* exact flyover stretches: only edges that are on a bridge deck */
+  const gb=[];{let m=near?hav(S,G.NP[s]):0,cur=null;for(const e of allE){if(G.EBR[e]){if(!cur)cur={a:m,b:m};cur.b=m+G.EL[e]}else if(cur){if(cur.b-cur.a>=40)gb.push(cur);cur=null}m+=G.EL[e]}if(cur&&cur.b-cur.a>=40)gb.push(cur)}
+  const rt=mkRoute(coords,steps,mode,{src:"graph",...extra});rt.gBridges=gb;
   const k=Math.max(3,Math.min(12,Math.round(rt.dist/900))),wp=[rt.coords[0]];for(let i=1;i<k;i++)wp.push(ptAt(rt.coords,rt.cum,rt.dist*i/k));wp.push(rt.coords[rt.coords.length-1]);steps[0].__pts=wp;rt.wps=wp;return rt}
 const angD9=(a,b)=>Math.abs(((a-b)+540)%360-180);
 /* pick far points in a bearing cone, best main-road ratio, spread apart */
@@ -3062,6 +3065,17 @@ async function gJobs9(S,D,ar,bears){const rad=clamp(Math.max(D/2.4,A.mode==="ab"
   if(A.mode==="ab"&&A.end){const e=nearN9(G,A.end,false);if(e<0)return null;const TE=dij9(G,e,null,-1,D*1.7);[0,-1,1,-2,2].forEach((sd,i)=>{const L=gAb9(G,S,s,A.end,e,T0,TE,D,sd);L.forEach((f,j)=>job(i+j*5,()=>[f,...L.filter(g=>g!==f)]))});return out}
   if(A.mode==="ob"){bears(16).forEach((b,i)=>job(i,()=>{const r=gOb9(G,S,s,T0,b,D);return r?[()=>r]:[]}));return out}
   bears(12).forEach((b,i)=>job(i*2,()=>gLoop9(G,S,s,T0,b,D).slice(0,3)));bears(8).forEach((b,i)=>job(i*2+1,()=>gTri9(G,S,s,T0,(b+22)%360,D).slice(0,3)));return out}
+
+/* is a stretch really ON a flyover? compare with the road graph: the nearest road going the same way decides */
+function edgeGrid9(G){if(G.EG)return G.EG;const M=new Map();for(let e=0;e<G.EA.length;e++){const a=G.EA[e],b=G.EB[e],n=Math.max(1,Math.ceil(G.EL[e]/20));for(let k=0;k<=n;k++){const x=G.NX[a]+(G.NX[b]-G.NX[a])*k/n,y=G.NY[a]+(G.NY[b]-G.NY[a])*k/n,key=Math.floor(x/25)*1e7+Math.floor(y/25);const L=M.get(key);if(L){if(L[L.length-1]!==e)L.push(e)}else M.set(key,[e])}}return G.EG=M}
+function onDeck9(G,p,hd){const M=edgeGrid9(G),x=p[1]*G.kx,y=p[0]*G.ky,cx=Math.floor(x/25),cy=Math.floor(y/25);let best=null,bd=18;const seen=new Set();
+  for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++)for(const e of M.get((cx+i)*1e7+cy+j)||[]){if(seen.has(e))continue;seen.add(e);const a=G.EA[e],b=G.EB[e],dx=G.NX[b]-G.NX[a],dy=G.NY[b]-G.NY[a],L2=dx*dx+dy*dy||1,u=clamp(((x-G.NX[a])*dx+(y-G.NY[a])*dy)/L2,0,1),d=Math.hypot(G.NX[a]+u*dx-x,G.NY[a]+u*dy-y);
+    if(hd!=null&&G.EL[e]>4){const eh=(Math.atan2(dx,dy)*180/Math.PI+360)%360,df=Math.abs(((eh-hd)+540)%360-180);if(Math.min(df,180-df)>32)continue}
+    if(d<bd-(G.EBR[e]?0:3)){bd=d;best=e}}
+  return best==null?null:!!G.EBR[best]}
+function fixBr9(rt){if(rt.gBridges)return rt.gBridges;const G=A.G9;if(!G||!(rt.bridges||[]).length)return null;const out=[];
+  for(const b of rt.bridges){let cur=null;for(let m=b.a;m<=b.b;m+=10){const p=ptAt(rt.coords,rt.cum,m),q=ptAt(rt.coords,rt.cum,Math.min(rt.dist,m+8)),hd=brg(p,q),on=onDeck9(G,p,hd);if(on){if(!cur)cur={a:m,b:m};cur.b=m}else if(cur){if(cur.b-cur.a>=60)out.push(cur);cur=null}}if(cur&&cur.b-cur.a>=60)out.push(cur)}
+  return out}
 
 /* ================= boot ================= */
 readHash();initMap();applyPanels();renderAll();if(A.focus&&A.routes.some(r=>r.id===A.focus))setTimeout(()=>openSaved(A.focus),300);
