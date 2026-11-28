@@ -2988,7 +2988,7 @@ async function loadGL(S,rad){const key=S.map(v=>v.toFixed(3)).join()+":"+Math.ce
   return GLC9[key]=out}
 const inNo9=p=>p[1]>72.855&&p[1]<72.880&&p[0]>19.084&&p[0]<19.102;
 function gW9(k,br,len){if(/^(primary|secondary|tertiary)$/.test(k))return br&&len>140?7:1;if(k==="trunk")return br&&len>140?10:3.2;if(k==="prom")return .75;if(k==="pedestrian")return 1.15;
-  if(/^(footway|path|cycleway)$/.test(k))return 2.6;if(/^(residential|unclassified)$/.test(k))return 4.5;return 7}
+  if(/^(footway|path|cycleway|pedestrian)$/.test(k)&&br&&len>140)return 9;if(/^(footway|path|cycleway)$/.test(k))return 2.6;if(/^(residential|unclassified)$/.test(k))return 4.5;return 7}
 function buildG9(GL,ar){if(!GL||GL.length<30)return null;const t0=performance.now(),c0=GL[0].g[0],kx=111320*Math.cos(rad(c0[0])),ky=110574,X=p=>p[1]*kx,Y=p=>p[0]*ky;
   const NX=[],NY=[],NP=[],H=new Map(),node=p=>{const x=X(p),y=Y(p),cx=Math.round(x/4),cy=Math.round(y/4);for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++){const L=H.get((cx+i)*1e7+(cy+j));if(L)for(const q of L)if(Math.abs(NX[q]-x)<2.5&&Math.abs(NY[q]-y)<2.5)return q}
     const q=NX.length;NX.push(x);NY.push(y);NP.push(p);const k=cx*1e7+cy;(H.get(k)||H.set(k,[]).get(k)).push(q);return q};
